@@ -1,0 +1,50 @@
+{
+  "name": "react-router-zod-forms",
+  "version": "0.0.1",
+  "description": "Forms management for React Router 7 applications using Zod 4 for validation and schemas",
+  "author": "boylett <ryan@boylett.dev>",
+  "repository": "https://github.com/boylett/react-router-zod-forms.git",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./server": {
+      "import": {
+        "types": "./dist/server.d.ts",
+        "default": "./dist/server.js"
+      },
+      "types": "./dist/server.d.ts",
+      "default": "./dist/server.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "postinstall": "npm run ts-patch",
+    "ts-patch": "./scripts/Annotation\\ Truncation\\ Length.sh",
+    "ts-unpatch": "./scripts/Annotation\\ Truncation\\ Length\\ \\(Unpatch\\).sh",
+    "watch": "tsc -w -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/luxon": "^3.6.2",
+    "@types/react": "^19.1.2",
+    "type-fest": "^4.40.0",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@mjackson/form-data-parser": "^0.7.0",
+    "luxon": "^3.6.1",
+    "react-dom": "^19.1.0",
+    "react-router": "^7.5.1",
+    "react": "^19.1.0",
+    "zod": "^4.0.0-beta.20250418T202744"
+  }
+}
