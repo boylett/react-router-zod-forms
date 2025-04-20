@@ -60,7 +60,7 @@ export interface HandleZodFormMessage<
   /**
    * Form validation result
    */
-  validation?: z.ZodSafeParseResult<Exclude<z.infer<SchemaType>, string>>;
+  validation: z.ZodSafeParseResult<Exclude<z.infer<SchemaType>, string>>;
 }
 
 /**
@@ -82,7 +82,7 @@ export type HandleZodFormResponsePayloadType<
   /**
    * Form validation result
    */
-  validation?: z.ZodSafeParseResult<z.infer<SchemaType>>;
+  validation: z.ZodSafeParseResult<z.infer<SchemaType>>;
 };
 
 /**
@@ -130,8 +130,9 @@ export async function handleZodForm<
   forms: FormsType,
   hooks?: HooksType
 ): Promise<
-  | ReturnType<Exclude<FormsType[ "default" ], undefined>>
   | HandleZodFormMessage<SchemaType | SchemaType[ "def" ][ "shape" ][ Extract<keyof z.infer<SchemaType>, string> ]>
+  | ReturnType<Exclude<FormsType[ "default" ], undefined>>
+  | Partial<HandleZodFormMessage<SchemaType>>
 > {
   const {
     parserOptions,
@@ -283,5 +284,5 @@ export async function handleZodForm<
     payload: null,
     status: 501,
     validation: undefined,
-  } as HandleZodFormMessage<SchemaType>;
+  } as Partial<HandleZodFormMessage<SchemaType>>;
 }

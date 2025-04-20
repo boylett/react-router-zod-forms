@@ -114,7 +114,7 @@ export function useZodForm({ schema }) {
                 const defaultValue = path.pickFrom(form?.data?.validation?.data || actionData?.validation?.data);
                 // If the default value exists
                 if (defaultValue !== undefined) {
-                    // Popualte it on the field
+                    // Populate it on the field
                     rest.defaultValue = defaultValue;
                 }
                 // Get the shape of the field schema

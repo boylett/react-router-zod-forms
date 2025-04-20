@@ -46,7 +46,7 @@ export interface HandleZodFormMessage<SchemaType extends z.ZodInterface<any>> {
     /**
      * Form validation result
      */
-    validation?: z.ZodSafeParseResult<Exclude<z.infer<SchemaType>, string>>;
+    validation: z.ZodSafeParseResult<Exclude<z.infer<SchemaType>, string>>;
 }
 /**
  * The payload delivered to each form action
@@ -63,7 +63,7 @@ export type HandleZodFormResponsePayloadType<SchemaType extends z.ZodInterface<a
     /**
      * Form validation result
      */
-    validation?: z.ZodSafeParseResult<z.infer<SchemaType>>;
+    validation: z.ZodSafeParseResult<z.infer<SchemaType>>;
 };
 /**
  * Form handlers for a given schema
@@ -80,5 +80,5 @@ type HandleZodFormHooks<SchemaType extends z.ZodInterface<any>> = {
 /**
  * Handle Zod Form submission
  */
-export declare function handleZodForm<SchemaType extends z.ZodInterface<any>, FormsType extends HandleZodFormForms<SchemaType> = HandleZodFormForms<SchemaType>, HooksType extends HandleZodFormHooks<SchemaType> = HandleZodFormHooks<SchemaType>>(props: HandleZodFormRequest<SchemaType>, forms: FormsType, hooks?: HooksType): Promise<ReturnType<Exclude<FormsType["default"], undefined>> | HandleZodFormMessage<SchemaType | SchemaType["def"]["shape"][Extract<keyof z.infer<SchemaType>, string>]>>;
+export declare function handleZodForm<SchemaType extends z.ZodInterface<any>, FormsType extends HandleZodFormForms<SchemaType> = HandleZodFormForms<SchemaType>, HooksType extends HandleZodFormHooks<SchemaType> = HandleZodFormHooks<SchemaType>>(props: HandleZodFormRequest<SchemaType>, forms: FormsType, hooks?: HooksType): Promise<HandleZodFormMessage<SchemaType | SchemaType["def"]["shape"][Extract<keyof z.infer<SchemaType>, string>]> | ReturnType<Exclude<FormsType["default"], undefined>> | Partial<HandleZodFormMessage<SchemaType>>>;
 export {};
