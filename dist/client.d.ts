@@ -59,4 +59,4 @@ export type ZodFormFieldProps<SchemaType extends z.ZodInterface<any>, FieldPath 
 /**
  * Initialize a new ZodForm instance
  */
-export declare function useZodForm<SchemaType extends z.ZodInterface<any>>({ schema }: useZodFormProps<SchemaType>): Record<string, ZodFormContextType<SchemaType["def"]["shape"][Extract<keyof z.core.output<SchemaType>, string>]>>;
+export declare function useZodForm<SchemaType extends z.ZodInterface<any>>({ schema }: useZodFormProps<SchemaType>): { [Intent in Extract<keyof z.infer<SchemaType>, string>]: ZodFormContextType<SchemaType["def"]["shape"][Intent]>; };

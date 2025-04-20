@@ -132,7 +132,7 @@ export function useZodForm<
   }
 
   // List of intent forms
-  const intents: Record<string, ZodFormContextType<SchemaType[ "def" ][ "shape" ][ Extract<keyof z.infer<SchemaType>, string> ]>> = {};
+  const intents: Record<string, any> = {};
 
   // Create a form instance for each schema intent
   for (const intent of Object.keys(schema.def.shape)) {
@@ -534,5 +534,7 @@ export function useZodForm<
     intents[ intent ] = form;
   }
 
-  return intents;
+  return intents as {
+    [ Intent in Extract<keyof z.infer<SchemaType>, string> ]: ZodFormContextType<SchemaType[ "def" ][ "shape" ][ Intent ]>;
+  };
 }
