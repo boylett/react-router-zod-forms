@@ -75,7 +75,7 @@ type HandleZodFormForms<SchemaType extends z.ZodInterface<any>> = {
  * Event hook handlers for a given schema
  */
 type HandleZodFormHooks<SchemaType extends z.ZodInterface<any>> = {
-    [key in `${"after" | "before"}${"Validate" | ""}`]?: key extends "beforeValidate" ? (data?: z.infer<SchemaType>) => z.infer<SchemaType> | void : key extends "afterValidate" ? (result?: z.ZodSafeParseResult<z.infer<SchemaType>>) => z.ZodSafeParseResult<z.infer<SchemaType>> | void : () => void;
+    [key in `${"after" | "before"}${"Validate" | ""}`]?: key extends "after" | "before" ? (data: FormData) => void : key extends "beforeValidate" ? (data?: z.infer<SchemaType>) => z.infer<SchemaType> | void : key extends "afterValidate" ? (result?: z.ZodSafeParseResult<z.infer<SchemaType>>) => z.ZodSafeParseResult<z.infer<SchemaType>> | void : () => void;
 };
 /**
  * Handle Zod Form submission

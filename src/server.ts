@@ -111,7 +111,9 @@ type HandleZodFormHooks<
   SchemaType extends z.ZodInterface<any>
 > = {
     [ key in `${ "after" | "before" }${ "Validate" | "" }` ]?:
-    key extends "beforeValidate"
+    key extends "after" | "before"
+    ? (data: FormData) => void
+    : key extends "beforeValidate"
     ? (data?: z.infer<SchemaType>) => z.infer<SchemaType> | void
     : key extends "afterValidate"
     ? (result?: z.ZodSafeParseResult<z.infer<SchemaType>>) => z.ZodSafeParseResult<z.infer<SchemaType>> | void
@@ -142,13 +144,13 @@ export async function handleZodForm<
     uploadHandler = file => file,
   } = props;
 
-  hooks?.before?.();
-
   const formData = (
     parserOptions
       ? await parseFormData(request, parserOptions, uploadHandler)
       : await parseFormData(request, uploadHandler)
   );
+
+  hooks?.before?.(formData);
 
   const intent = (
     formData.get("_intent") as string ?? "default"
@@ -225,7 +227,7 @@ export async function handleZodForm<
     }
 
     finally {
-      hooks?.after?.();
+      hooks?.after?.(formData);
     }
   }
 
@@ -268,7 +270,7 @@ export async function handleZodForm<
     }
 
     finally {
-      hooks?.after?.();
+      hooks?.after?.(formData);
     }
   }
 
@@ -276,7 +278,7 @@ export async function handleZodForm<
 
   console.error(`Unhandled form submission for intent '${ intent as string }' in ${ request.url }`);
 
-  hooks?.after?.();
+  hooks?.after?.(formData);
 
   return {
     intent,

@@ -6,10 +6,10 @@ import { formDataToObject } from "./utils/formDataToObject";
  */
 export async function handleZodForm(props, forms, hooks) {
     const { parserOptions, request, schema, transform, uploadHandler = file => file, } = props;
-    hooks?.before?.();
     const formData = (parserOptions
         ? await parseFormData(request, parserOptions, uploadHandler)
         : await parseFormData(request, uploadHandler));
+    hooks?.before?.(formData);
     const intent = (formData.get("_intent") ?? "default");
     let data = (formDataToObject(formData, transform));
     let validation = {
@@ -58,7 +58,7 @@ export async function handleZodForm(props, forms, hooks) {
             };
         }
         finally {
-            hooks?.after?.();
+            hooks?.after?.(formData);
         }
     }
     if ("default" in forms && forms.default) {
@@ -90,12 +90,12 @@ export async function handleZodForm(props, forms, hooks) {
             };
         }
         finally {
-            hooks?.after?.();
+            hooks?.after?.(formData);
         }
     }
     console.trace();
     console.error(`Unhandled form submission for intent '${intent}' in ${request.url}`);
-    hooks?.after?.();
+    hooks?.after?.(formData);
     return {
         intent,
         message: "Not Implemented",
