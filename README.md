@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  Strongly typed form management with [React Router 7](https://reactrouter.com) and [Zod 4](https://v4.zod.dev).
+  Strongly typed form management with <a href="https://reactrouter.com">React Router 7</a> and <a href="https://v4.zod.dev">Zod 4</a>.
 </p>
 
 <p align="center">
