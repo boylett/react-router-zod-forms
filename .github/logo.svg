@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient_1" gradientUnits="userSpaceOnUse" x1="120" y1="0" x2="120" y2="270">
+      <stop offset="0" stop-color="#4194DC" />
+      <stop offset="0.455" stop-color="#408AFF" />
+      <stop offset="1" stop-color="#3A6AFF" />
+    </linearGradient>
+    <linearGradient id="gradient_2" gradientUnits="userSpaceOnUse" x1="0" y1="91" x2="113" y2="0">
+      <stop offset="0" stop-color="#D2E3FF" />
+      <stop offset="1" stop-color="#D3E6FF" />
+    </linearGradient>
+    <radialGradient id="gradient_3" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1" gradientTransform="matrix(76 0 0 85.758 100 0)">
+      <stop offset="0.344" stop-color="#D8E6FF" />
+      <stop offset="0.503" stop-color="#FFFFFF" />
+    </radialGradient>
+    <filter color-interpolation-filters="sRGB" x="-10" y="-42" width="12" height="44" id="filter_4">
+      <feFlood flood-opacity="0" result="BackgroundImageFix_1" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0" in="SourceAlpha" />
+      <feOffset dx="0" dy="4" />
+      <feGaussianBlur stdDeviation="2" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.149 0" />
+      <feBlend mode="normal" in2="BackgroundImageFix_1" result="Shadow_2" />
+      <feBlend mode="normal" in="SourceGraphic" in2="Shadow_2" result="Shape_3" />
+    </filter>
+  </defs>
+  <g>
+    <path d="M210 0C226.571 0 240 13.4292 240 30L240 240C240 256.571 226.571 270 210 270L30 270C13.4292 270 0 256.571 0 240L0 30C0 13.4292 13.4292 0 30 0L210 0Z" fill="url(#gradient_1)" transform="translate(30 15)" />
+    <rect width="87" height="54" fill="#F23A46" fill-rule="evenodd" transform="translate(107 205)" />
+    <g transform="translate(50 35)">
+      <path d="M0 91L103.575 0.0645752L200 0L96.0695 90.9803L0 91Z" fill="url(#gradient_2)" fill-rule="evenodd" transform="translate(0 70)" />
+      <path d="M188 0C194.628 0 200 5.37168 200 12L200 70L12 70C5.37168 70 0 64.6283 0 58L0 12C0 5.37168 5.37168 0 12 0L188 0Z" fill="#FFFFFF" />
+      <path d="M200 12C200 5.37167 194.628 0 188 0L0 0L0 58C0 64.6283 5.37168 70 12 70L188 70C194.628 70 200 64.6283 200 58L200 12ZM121.73 35.9627C121.73 37.9841 120.922 39.8157 119.618 41.1385C118.312 42.4641 116.509 43.2836 114.513 43.2836C112.518 43.2836 110.715 44.1032 109.411 45.426C108.105 46.7516 107.297 48.5804 107.297 50.6046C107.297 52.6287 106.489 54.4575 105.185 55.7803C103.878 57.1059 102.076 57.9255 100.08 57.9255C98.085 57.9255 96.2822 57.1059 94.9782 55.7803C93.6715 54.4575 92.8637 52.6259 92.8637 50.6046C92.8637 48.5832 93.6715 46.7516 94.9782 45.426C96.2822 44.1004 98.0877 43.2836 100.08 43.2836C102.073 43.2836 103.878 42.4641 105.185 41.1385C106.492 39.8157 107.297 37.9841 107.297 35.9627C107.297 31.92 104.068 28.6418 100.08 28.6418C98.0877 28.6418 96.2822 27.8223 94.9782 26.4967C93.6715 25.1739 92.8637 23.3423 92.8637 21.3209C92.8637 19.2995 93.6715 17.4679 94.9782 16.1424C96.2822 14.8168 98.0877 14 100.08 14C104.065 14 107.297 17.2782 107.297 21.3209C107.297 23.3423 108.105 25.1739 109.411 26.4967C110.715 27.8223 112.521 28.6418 114.513 28.6418C118.499 28.6418 121.73 31.92 121.73 35.9627ZM85.6498 28.6418C89.6354 28.6418 92.8664 31.9195 92.8664 35.9627C92.8664 40.006 89.6354 43.2836 85.6498 43.2836C81.6642 43.2836 78.4332 40.006 78.4332 35.9627C78.4332 31.9195 81.6642 28.6418 85.6498 28.6418ZM78.4332 50.6046C78.4332 46.5613 75.2022 43.2836 71.2166 43.2836C67.231 43.2836 64 46.5613 64 50.6046C64 54.6478 67.231 57.9255 71.2166 57.9255C75.2022 57.9255 78.4332 54.6478 78.4332 50.6046ZM128.947 43.2836C132.932 43.2836 136.163 46.5613 136.163 50.6046C136.163 54.6478 132.932 57.9255 128.947 57.9255C124.961 57.9255 121.73 54.6478 121.73 50.6046C121.73 46.5613 124.961 43.2836 128.947 43.2836Z" fill="url(#gradient_3)" fill-rule="evenodd" transform="translate(0 161)" />
+    </g>
+    <path d="M0 0L0 2L5 2L5 42L0 42L0 44L12 44L12 42L7 42L7 2L12 2L12 0L0 0L0 0Z" fill="#1A427D" fill-rule="evenodd" fill-opacity="0.698" filter="url(#filter_4)" transform="translate(75 48)" />
+  </g>
+</svg>
