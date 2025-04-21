@@ -5,7 +5,6 @@
   "author": "boylett <ryan@boylett.dev>",
   "repository": "https://github.com/boylett/react-router-zod-forms.git",
   "license": "MIT",
-  "private": true,
   "type": "module",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
