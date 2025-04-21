@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/boylett/react-router-zod-forms/releases"><img src="https://img.shields.io/npm/v/react-router-zod-forms" alt="Latest Release" /></a>
+  <a href="https://www.npmjs.com/package/react-router-zod-forms"><img src="https://img.shields.io/npm/v/react-router-zod-forms" alt="View Package on NPM" /></a>
   <a href="https://github.com/boylett/react-router-zod-forms/blob/master/LICENSE"><img src="https://img.shields.io/npm/l/react-router-zod-forms" alt="License" /></a>
 </p>
 

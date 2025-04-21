@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Aria attributes for invalid fields
 
-## [0.0.2] - 2025-04-21
+## [0.0.2-beta] - 2025-04-21
 
 ### Added
 
@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed type bug with intent-bound field names
 - Validation should not be optional in form handler methods
 
-## [0.0.1] - 2025-04-20
+## [0.0.1-beta] - 2025-04-20
 
 ### Added
 
