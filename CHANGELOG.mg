@@ -11,10 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Aria attributes for invalid fields
 
+## [0.0.2] - 2025-04-21
+
+### Added
+
+- GitHub package meta
+- Give `before` and `after` handler hooks access to current `formData`
+- Pass `load` and `submit` props from form fetchers to contextual output
+
+### Fixed
+
+- Fixed type bug with intent-bound field names
+- Validation should not be optional in form handler methods
+
 ## [0.0.1] - 2025-04-20
 
-- Added `useZodForm()` client-side method with strong typing
-- Added `handleZodForm()` server-side method with strong typing
-- Added `createZodFormSchema()` method with strong typing
-- Added `<ZodForm />` React component with strong typing
-- Added `<ZodFormField />` React component with strong typing
+### Added
+
+- `useZodForm()` client-side method with strong typing
+- `handleZodForm()` server-side method with strong typing
+- `createZodFormSchema()` method with strong typing
+- `<ZodForm />` React component with strong typing
+- `<ZodFormField />` React component with strong typing
