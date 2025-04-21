@@ -69,7 +69,7 @@ export type HandleZodFormResponsePayloadType<SchemaType extends z.ZodInterface<a
  * Form handlers for a given schema
  */
 type HandleZodFormForms<SchemaType extends z.ZodInterface<any>> = {
-    [Intent in "default" | Exclude<keyof z.infer<SchemaType>, "_intent">]?: (props: Intent extends "default" ? HandleZodFormResponsePayloadType<SchemaType> : HandleZodFormResponsePayloadType<SchemaType["def"]["shape"][Intent]>) => Promise<(Intent extends "default" ? HandleZodFormMessage<SchemaType> | any : HandleZodFormMessage<SchemaType["def"]["shape"][Intent]>) | void>;
+    [Intent in "default" | keyof z.infer<SchemaType>]?: (props: Intent extends "default" ? HandleZodFormResponsePayloadType<SchemaType> : HandleZodFormResponsePayloadType<SchemaType["def"]["shape"][Intent]>) => Promise<(Intent extends "default" ? HandleZodFormMessage<SchemaType> | any : HandleZodFormMessage<SchemaType["def"]["shape"][Intent]>) | void>;
 };
 /**
  * Event hook handlers for a given schema

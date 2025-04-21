@@ -91,7 +91,7 @@ export type HandleZodFormResponsePayloadType<
 type HandleZodFormForms<
   SchemaType extends z.ZodInterface<any>
 > = {
-    [ Intent in "default" | Exclude<keyof z.infer<SchemaType>, "_intent"> ]?: (
+    [ Intent in "default" | keyof z.infer<SchemaType> ]?: (
       props: Intent extends "default"
         ? HandleZodFormResponsePayloadType<SchemaType>
         : HandleZodFormResponsePayloadType<SchemaType[ "def" ][ "shape" ][ Intent ]>

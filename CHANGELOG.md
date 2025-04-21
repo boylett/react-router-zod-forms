@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Aria attributes for invalid fields
 
+### Changed
+
+- Schemas should be a standard `ZodInterface` rather than a custom structure
+- Handling multiple forms now means calling `useZodForm` multiple times rather than picking from the schema
+
 ## [0.0.2-beta] - 2025-04-21
 
 ### Added

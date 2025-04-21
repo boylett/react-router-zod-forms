@@ -6,20 +6,11 @@ import { type ZodFormContextType } from "./context";
 /**
  * Props for the ZodForm component
  */
-export interface useZodFormProps<SchemaType extends z.ZodInterface<any>> {
-    /**
-     * The Zod schema used to validate form data
-     */
-    schema: SchemaType;
-}
-/**
- * Props for the ZodForm component
- */
 export interface ZodFormProps<SchemaType extends z.ZodInterface<any>> extends Omit<FormProps, "id"> {
     /**
      * Called during form data validation
      */
-    onValidate?: (data: z.infer<SchemaType>, validation: z.ZodSafeParseResult<z.core.output<SchemaType>>) => void;
+    onValidate?: (data: z.infer<SchemaType>, validation: z.ZodSafeParseResult<z.infer<SchemaType>>) => void;
 }
 /**
  * Props for the ZodFormField component
@@ -57,6 +48,19 @@ export type ZodFormFieldProps<SchemaType extends z.ZodInterface<any>, FieldPath 
     value?: FieldValue;
 };
 /**
+ * Options for the useZodForms hook
+ */
+export interface useZodFormOptions<SchemaType extends z.ZodInterface<any>, Intent extends keyof z.infer<SchemaType["def"]["shape"]>> {
+    /**
+     * The current form intent
+     */
+    intent: Intent;
+    /**
+     * The Zod schema used to validate form data
+     */
+    schema: SchemaType;
+}
+/**
  * Initialize a new ZodForm instance
  */
-export declare function useZodForm<SchemaType extends z.ZodInterface<any>>({ schema }: useZodFormProps<SchemaType>): { [Intent in Extract<keyof z.infer<SchemaType>, string>]: ZodFormContextType<SchemaType["def"]["shape"][Intent]>; };
+export declare function useZodForm<SchemaType extends z.ZodInterface<any>, Intent extends keyof z.infer<SchemaType>, IntentSchemaType extends z.ZodInterface<any> = SchemaType["def"]["shape"][Intent]>({ intent, schema, }: useZodFormOptions<SchemaType, Intent>): ZodFormContextType<IntentSchemaType>;
