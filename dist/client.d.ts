@@ -8,6 +8,10 @@ import { type ZodFormContextType } from "./context";
  */
 export interface ZodFormProps<SchemaType extends z.ZodInterface<any>> extends Omit<FormProps, "id"> {
     /**
+     * Called when data returns from the action
+     */
+    onResponse?: (data: any) => void;
+    /**
      * Called during form data validation
      */
     onValidate?: (data: z.infer<SchemaType>, validation: z.ZodSafeParseResult<z.infer<SchemaType>>) => void;
@@ -38,6 +42,10 @@ export type ZodFormFieldProps<SchemaType extends z.ZodInterface<any>, FieldPath 
      * The name of the field in the schema
      */
     name?: FieldPath;
+    /**
+     * Whether the field should be read only
+     */
+    readOnly?: boolean;
     /**
      * The type of the field
      */

@@ -115,14 +115,14 @@ export type ZodFormContextType<
   validation?: z.ZodSafeParseResult<z.core.output<SchemaType>>;
 
   /**
-   * ZodForm component
+   * Field component
    */
-  ZodForm: (props: ZodFormProps<SchemaType>) => React.JSX.Element;
+  Field: (props: ZodFormFieldProps<SchemaType, FieldPath>) => React.JSX.Element;
 
   /**
-   * ZodFormField component
+   * Form component
    */
-  ZodFormField: (props: ZodFormFieldProps<SchemaType, FieldPath>) => React.JSX.Element;
+  Form: (props: ZodFormProps<SchemaType>) => React.JSX.Element;
 };
 
 /**

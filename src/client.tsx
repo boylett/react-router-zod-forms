@@ -17,6 +17,11 @@ export interface ZodFormProps<
   | "id"
 > {
   /**
+   * Called when data returns from the action
+   */
+  onResponse?: (data: any) => void;
+
+  /**
    * Called during form data validation
    */
   onValidate?: (data: z.infer<SchemaType>, validation: z.ZodSafeParseResult<z.infer<SchemaType>>) => void;
@@ -87,6 +92,11 @@ export type ZodFormFieldProps<
   name?: FieldPath;
 
   /**
+   * Whether the field should be read only
+   */
+  readOnly?: boolean;
+
+  /**
    * The type of the field
    */
   type?: FieldType;
@@ -153,7 +163,7 @@ export function useZodForm<
   );
 
   // Create the React Router fetcher for this form
-  const { data, Form, load, state, submit } = (
+  const { data, Form: FetcherForm, load, state, submit } = (
     useFetcher()
   );
 
@@ -199,13 +209,14 @@ export function useZodForm<
   /**
    * ZodForm component
    */
-  function ZodForm (
+  function Form (
     props: ZodFormProps<IntentSchemaType>
   ) {
     const {
       children,
       onBlur,
       onInput,
+      onResponse,
       onValidate,
       ...rest
     } = props;
@@ -215,11 +226,16 @@ export function useZodForm<
       useContext(ZodFormContext)
     );
 
+    // If there is no context
+    if (forms === undefined) {
+      throw new Error("`ZodFormContext` is not defined. Make sure to wrap your `<App />` with `<ZodFormProvider />`.");
+    }
+
     // Create a new form reference
     const formRef = useRef<HTMLFormElement>(null);
 
     // Get the current form
-    const form = formId && forms?.current?.[ formId ];
+    const form = formId && forms?.current?.[ formId ] || undefined;
 
     // Assign the reference to context
     if (form) {
@@ -274,8 +290,15 @@ export function useZodForm<
       };
     }, [ formRef.current ]);
 
+    // Watch fetcher data to trigger response handler
+    useEffect(() => {
+      if (form?.data && form?.state === "idle") {
+        onResponse?.(form?.data || data);
+      }
+    }, [ form?.data, form?.state, onResponse ]);
+
     return (
-      <Form
+      <FetcherForm
         id={ formId }
         method="post"
         navigate={ false }
@@ -288,14 +311,14 @@ export function useZodForm<
           type="hidden"
           value={ String(intent) } />
         { children }
-      </Form>
+      </FetcherForm>
     );
   }
 
   /**
    * ZodFormField component
    */
-  function ZodFormField<
+  function Field<
     FieldPath extends Paths<z.infer<IntentSchemaType>, { bracketNotation: true; }>,
   > (
     props: ZodFormFieldProps<IntentSchemaType, FieldPath>
@@ -532,8 +555,8 @@ export function useZodForm<
     state,
     submit,
     validate,
-    ZodForm,
-    ZodFormField,
+    Field,
+    Form,
   };
 
   // Add this form to the list

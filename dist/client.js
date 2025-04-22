@@ -25,7 +25,7 @@ export function useZodForm({ intent, schema, }) {
     // Get action data
     const actionData = (useActionData());
     // Create the React Router fetcher for this form
-    const { data, Form, load, state, submit } = (useFetcher());
+    const { data, Form: FetcherForm, load, state, submit } = (useFetcher());
     /**
      * Validate the form data against the schema
      */
@@ -51,14 +51,18 @@ export function useZodForm({ intent, schema, }) {
     /**
      * ZodForm component
      */
-    function ZodForm(props) {
-        const { children, onBlur, onInput, onValidate, ...rest } = props;
+    function Form(props) {
+        const { children, onBlur, onInput, onResponse, onValidate, ...rest } = props;
         // Get form context
         const { forms } = (useContext(ZodFormContext));
+        // If there is no context
+        if (forms === undefined) {
+            throw new Error("`ZodFormContext` is not defined. Make sure to wrap your `<App />` with `<ZodFormProvider />`.");
+        }
         // Create a new form reference
         const formRef = useRef(null);
         // Get the current form
-        const form = formId && forms?.current?.[formId];
+        const form = formId && forms?.current?.[formId] || undefined;
         // Assign the reference to context
         if (form) {
             forms.current[formId].form = formRef;
@@ -90,14 +94,20 @@ export function useZodForm({ intent, schema, }) {
                 delete forms?.current[formId];
             };
         }, [formRef.current]);
-        return (React.createElement(Form, { id: formId, method: "post", navigate: false, onBlur: handleBlur, onInput: handleInput, ...rest, ref: formRef },
+        // Watch fetcher data to trigger response handler
+        useEffect(() => {
+            if (form?.data && form?.state === "idle") {
+                onResponse?.(form?.data || data);
+            }
+        }, [form?.data, form?.state, onResponse]);
+        return (React.createElement(FetcherForm, { id: formId, method: "post", navigate: false, onBlur: handleBlur, onInput: handleInput, ...rest, ref: formRef },
             React.createElement("input", { name: "_intent", type: "hidden", value: String(intent) }),
             children));
     }
     /**
      * ZodFormField component
      */
-    function ZodFormField(props) {
+    function Field(props) {
         let { children, onBlur, onInput, type = "text", ...rest } = props;
         // Get form context
         const { forms } = (useContext(ZodFormContext));
@@ -252,8 +262,8 @@ export function useZodForm({ intent, schema, }) {
         state,
         submit,
         validate,
-        ZodForm,
-        ZodFormField,
+        Field,
+        Form,
     };
     // Add this form to the list
     forms.current[formId] = form;
