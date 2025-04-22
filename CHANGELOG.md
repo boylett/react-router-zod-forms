@@ -8,13 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-
 - Aria attributes for invalid fields
+
+## [0.0.3-beta] - 2025-04-22
+
+### Added
+
+- Type safety for `File` instances parsed with `uploadHandler`
+- `beforeUpload` and `afterUpload` hooks
+- `onResponse` handler on `Form` component
 
 ### Changed
 
 - Schemas should be a standard `ZodInterface` rather than a custom structure
 - Handling multiple forms now means calling `useZodForm` multiple times rather than picking from the schema
+- Utilise default file upload handler if none specified
+- Rename exported components `ZodForm` and `ZodField` to `Form` and `Field` respectively
 
 ## [0.0.2-beta] - 2025-04-21
 
