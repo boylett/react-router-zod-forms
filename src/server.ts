@@ -8,7 +8,7 @@ import type { Replace } from "./utils/types";
  */
 type HandleZodFormOptions<
   SchemaType extends z.ZodInterface<any>,
-  UploadHandlerReturnType extends Blob | File | null | string | void,
+  UploadHandlerReturnType extends Blob | null | string | void,
 > = {
   /**
    * Maximum file size for multipart data
@@ -46,7 +46,7 @@ type HandleZodFormOptions<
  */
 type HandleZodFormForms<
   SchemaType extends z.ZodInterface<any>,
-  UploadHandlerReturnType extends Blob | File | null | string | void,
+  UploadHandlerReturnType extends Blob | null | string | void,
   PayloadTypes extends { [ key in keyof SchemaType[ "def" ][ "shape" ] ]: any; },
 > = {
     [ Intent in "default" | keyof z.infer<SchemaType> ]?: (
@@ -67,15 +67,15 @@ type HandleZodFormForms<
  */
 type HandleZodFormHooks<
   SchemaType extends z.ZodInterface<any>,
-  UploadHandlerReturnType extends Blob | File | null | string | void,
+  UploadHandlerReturnType extends Blob | null | string | void,
 > = {
     [ key in `${ "after" | "before" }${ "Upload" | "Validate" | "" }` ]?:
     key extends "after" | "before"
     ? (data: FormData) => void
     : key extends "afterUpload"
-    ? (data?: UploadHandlerReturnType) => Promise<UploadHandlerReturnType> | UploadHandlerReturnType
+    ? (file?: UploadHandlerReturnType) => Promise<UploadHandlerReturnType> | UploadHandlerReturnType
     : key extends "beforeUpload"
-    ? (data: FileUpload) => Promise<FileUpload | void> | FileUpload | void
+    ? (file: FileUpload) => Promise<FileUpload | void> | FileUpload | void
     : key extends "afterValidate"
     ? (result?: z.ZodSafeParseResult<z.infer<SchemaType>>) => z.ZodSafeParseResult<z.infer<SchemaType>> | void
     : key extends "beforeValidate"
@@ -155,9 +155,9 @@ export type HandleZodFormResponsePayloadType<
 export async function handleZodForm<
   SchemaType extends z.ZodInterface<Record<string, z.ZodInterface<any>>>,
   PayloadTypes extends { [ key in keyof SchemaType[ "def" ][ "shape" ] ]: any; },
-  UploadHandlerReturnType extends Blob | File | null | string | void = File,
+  UploadHandlerReturnType extends Blob | null | string | void = File,
 > (
-  props: HandleZodFormOptions<SchemaType, UploadHandlerReturnType>,
+  options: HandleZodFormOptions<SchemaType, UploadHandlerReturnType>,
   forms: HandleZodFormForms<SchemaType, UploadHandlerReturnType, PayloadTypes>,
   hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>
 ): Promise<
@@ -177,7 +177,7 @@ export async function handleZodForm<
     schema,
     transform,
     uploadHandler,
-  } = props;
+  } = options;
 
   const formData = (
     await parseFormData(

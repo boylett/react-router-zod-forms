@@ -135,10 +135,7 @@ export function useZodForm<
   PayloadType = any,
   IntentSchemaType extends z.ZodInterface<any> = SchemaType[ "def" ][ "shape" ][ Intent ]
 > (
-  {
-    intent,
-    schema,
-  }: useZodFormOptions<SchemaType, Intent>
+  options: useZodFormOptions<SchemaType, Intent>
 ): ZodFormContextType<
   HandleZodFormMessage<
     IntentSchemaType,
@@ -146,6 +143,11 @@ export function useZodForm<
   >,
   IntentSchemaType
 > {
+  const {
+    intent,
+    schema,
+  } = options;
+
   // Get the zod form context
   const { forms } = useContext(ZodFormContext);
 

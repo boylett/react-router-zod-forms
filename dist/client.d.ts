@@ -72,4 +72,4 @@ export interface useZodFormOptions<SchemaType extends z.ZodInterface<any>, Inten
 /**
  * Initialize a new ZodForm instance
  */
-export declare function useZodForm<SchemaType extends z.ZodInterface<any>, Intent extends keyof z.infer<SchemaType>, PayloadType = any, IntentSchemaType extends z.ZodInterface<any> = SchemaType["def"]["shape"][Intent]>({ intent, schema, }: useZodFormOptions<SchemaType, Intent>): ZodFormContextType<HandleZodFormMessage<IntentSchemaType, PayloadType>, IntentSchemaType>;
+export declare function useZodForm<SchemaType extends z.ZodInterface<any>, Intent extends keyof z.infer<SchemaType>, PayloadType = any, IntentSchemaType extends z.ZodInterface<any> = SchemaType["def"]["shape"][Intent]>(options: useZodFormOptions<SchemaType, Intent>): ZodFormContextType<HandleZodFormMessage<IntentSchemaType, PayloadType>, IntentSchemaType>;

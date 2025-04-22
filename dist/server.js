@@ -4,8 +4,8 @@ import { formDataToObject } from "./utils/formDataToObject";
 /**
  * Handle Zod Form submission
  */
-export async function handleZodForm(props, forms, hooks) {
-    const { maxFileSize, maxHeaderSize, request, schema, transform, uploadHandler, } = props;
+export async function handleZodForm(options, forms, hooks) {
+    const { maxFileSize, maxHeaderSize, request, schema, transform, uploadHandler, } = options;
     const formData = (await parseFormData(request, {
         maxFileSize,
         maxHeaderSize,

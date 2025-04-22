@@ -7,7 +7,8 @@ import { Path } from "./utils/path";
 /**
  * Initialize a new ZodForm instance
  */
-export function useZodForm({ intent, schema, }) {
+export function useZodForm(options) {
+    const { intent, schema, } = options;
     // Get the zod form context
     const { forms } = useContext(ZodFormContext);
     // If there is no context

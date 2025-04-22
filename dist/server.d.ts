@@ -4,7 +4,7 @@ import type { Replace } from "./utils/types";
 /**
  * Hook options for a given schema
  */
-type HandleZodFormOptions<SchemaType extends z.ZodInterface<any>, UploadHandlerReturnType extends Blob | File | null | string | void> = {
+type HandleZodFormOptions<SchemaType extends z.ZodInterface<any>, UploadHandlerReturnType extends Blob | null | string | void> = {
     /**
      * Maximum file size for multipart data
      */
@@ -33,7 +33,7 @@ type HandleZodFormOptions<SchemaType extends z.ZodInterface<any>, UploadHandlerR
 /**
  * Form handlers for a given schema
  */
-type HandleZodFormForms<SchemaType extends z.ZodInterface<any>, UploadHandlerReturnType extends Blob | File | null | string | void, PayloadTypes extends {
+type HandleZodFormForms<SchemaType extends z.ZodInterface<any>, UploadHandlerReturnType extends Blob | null | string | void, PayloadTypes extends {
     [key in keyof SchemaType["def"]["shape"]]: any;
 }> = {
     [Intent in "default" | keyof z.infer<SchemaType>]?: (props: Intent extends "default" ? HandleZodFormResponsePayloadType<Replace<SchemaType, File, UploadHandlerReturnType>, PayloadTypes[Intent]> : HandleZodFormResponsePayloadType<Replace<SchemaType["def"]["shape"][Intent], File, UploadHandlerReturnType>, PayloadTypes[Intent]>) => Promise<(Intent extends "default" ? HandleZodFormMessage<Replace<SchemaType, File, UploadHandlerReturnType>, PayloadTypes[Intent]> | any : HandleZodFormMessage<Replace<SchemaType["def"]["shape"][Intent], File, UploadHandlerReturnType>, PayloadTypes[Intent]>) | void>;
@@ -41,8 +41,8 @@ type HandleZodFormForms<SchemaType extends z.ZodInterface<any>, UploadHandlerRet
 /**
  * Event hook handlers for a given schema
  */
-type HandleZodFormHooks<SchemaType extends z.ZodInterface<any>, UploadHandlerReturnType extends Blob | File | null | string | void> = {
-    [key in `${"after" | "before"}${"Upload" | "Validate" | ""}`]?: key extends "after" | "before" ? (data: FormData) => void : key extends "afterUpload" ? (data?: UploadHandlerReturnType) => Promise<UploadHandlerReturnType> | UploadHandlerReturnType : key extends "beforeUpload" ? (data: FileUpload) => Promise<FileUpload | void> | FileUpload | void : key extends "afterValidate" ? (result?: z.ZodSafeParseResult<z.infer<SchemaType>>) => z.ZodSafeParseResult<z.infer<SchemaType>> | void : key extends "beforeValidate" ? (data?: z.infer<SchemaType>) => z.infer<SchemaType> | void : () => void;
+type HandleZodFormHooks<SchemaType extends z.ZodInterface<any>, UploadHandlerReturnType extends Blob | null | string | void> = {
+    [key in `${"after" | "before"}${"Upload" | "Validate" | ""}`]?: key extends "after" | "before" ? (data: FormData) => void : key extends "afterUpload" ? (file?: UploadHandlerReturnType) => Promise<UploadHandlerReturnType> | UploadHandlerReturnType : key extends "beforeUpload" ? (file: FileUpload) => Promise<FileUpload | void> | FileUpload | void : key extends "afterValidate" ? (result?: z.ZodSafeParseResult<z.infer<SchemaType>>) => z.ZodSafeParseResult<z.infer<SchemaType>> | void : key extends "beforeValidate" ? (data?: z.infer<SchemaType>) => z.infer<SchemaType> | void : () => void;
 };
 /**
  * The message relayed back to the browser following a handled form action
@@ -99,5 +99,5 @@ export type HandleZodFormResponsePayloadType<SchemaType extends z.ZodInterface<a
  */
 export declare function handleZodForm<SchemaType extends z.ZodInterface<Record<string, z.ZodInterface<any>>>, PayloadTypes extends {
     [key in keyof SchemaType["def"]["shape"]]: any;
-}, UploadHandlerReturnType extends Blob | File | null | string | void = File>(props: HandleZodFormOptions<SchemaType, UploadHandlerReturnType>, forms: HandleZodFormForms<SchemaType, UploadHandlerReturnType, PayloadTypes>, hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>): Promise<HandleZodFormMessage<SchemaType, PayloadTypes["default"]> | HandleZodFormMessage<SchemaType["def"]["shape"][keyof SchemaType["def"]["shape"]], PayloadTypes[keyof SchemaType["def"]["shape"]]>>;
+}, UploadHandlerReturnType extends Blob | null | string | void = File>(options: HandleZodFormOptions<SchemaType, UploadHandlerReturnType>, forms: HandleZodFormForms<SchemaType, UploadHandlerReturnType, PayloadTypes>, hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>): Promise<HandleZodFormMessage<SchemaType, PayloadTypes["default"]> | HandleZodFormMessage<SchemaType["def"]["shape"][keyof SchemaType["def"]["shape"]], PayloadTypes[keyof SchemaType["def"]["shape"]]>>;
 export {};
