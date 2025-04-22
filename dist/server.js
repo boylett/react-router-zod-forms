@@ -5,10 +5,24 @@ import { formDataToObject } from "./utils/formDataToObject";
  * Handle Zod Form submission
  */
 export async function handleZodForm(props, forms, hooks) {
-    const { parserOptions, request, schema, transform, uploadHandler, } = props;
-    const formData = (parserOptions
-        ? await parseFormData(request, parserOptions, uploadHandler)
-        : await parseFormData(request, uploadHandler));
+    const { maxFileSize, maxHeaderSize, request, schema, transform, uploadHandler, } = props;
+    const formData = (await parseFormData(request, {
+        maxFileSize,
+        maxHeaderSize,
+    }, async (file) => {
+        const hookFile = await hooks?.beforeUpload?.(file);
+        if (hookFile) {
+            file = hookFile;
+        }
+        const handle = await uploadHandler?.(file);
+        const hookHandle = await hooks?.afterUpload?.(handle);
+        if (hookHandle) {
+            return hookHandle;
+        }
+        if (handle) {
+            return handle;
+        }
+    }));
     hooks?.before?.(formData);
     const intent = (formData.get("_intent") ?? "default");
     let data = (formDataToObject(formData, transform));
