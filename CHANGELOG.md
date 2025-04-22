@@ -10,7 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Aria attributes for invalid fields
 - Remaining HTML validation attributes
 
-## [0.0.4-beta] - 2025-04-22
+## [0.0.5] - 2025-04-22
+
+### Added
+
+- Documentation
+- Type safety for root level schema
+
+## [0.0.4] - 2025-04-22
 
 ### Added
 
@@ -20,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `formData` to form handler arguments
 - Added `intent` to form handler arguments
 
-## [0.0.3-beta] - 2025-04-22
+## [0.0.3] - 2025-04-22
 
 ### Added
 
@@ -35,7 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Utilise default file upload handler if none specified
 - Rename exported components `ZodForm` and `ZodField` to `Form` and `Field` respectively
 
-## [0.0.2-beta] - 2025-04-21
+## [0.0.2] - 2025-04-21
 
 ### Added
 
@@ -48,7 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed type bug with intent-bound field names
 - Validation should not be optional in form handler methods
 
-## [0.0.1-beta] - 2025-04-20
+## [0.0.1] - 2025-04-20
 
 ### Added
 
