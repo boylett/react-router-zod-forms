@@ -67,7 +67,7 @@ export interface HandleZodFormMessage<
   /**
    * Form validation result
    */
-  validation: z.ZodSafeParseResult<Exclude<z.infer<SchemaType>, string>>;
+  validation: z.ZodSafeParseResult<z.infer<SchemaType>>;
 }
 
 /**
@@ -154,7 +154,10 @@ export async function handleZodForm<
   props: HandleZodFormRequest<SchemaType, UploadHandlerReturnType>,
   forms: FormsType,
   hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>
-): Promise<Partial<HandleZodFormMessage<SchemaType>>> {
+): Promise<
+  | HandleZodFormMessage<SchemaType>
+  | HandleZodFormMessage<SchemaType[ "def" ][ "shape" ][ keyof SchemaType[ "def" ][ "shape" ] ]>
+> {
   const {
     maxFileSize,
     maxHeaderSize,
@@ -203,14 +206,22 @@ export async function handleZodForm<
 
   formData.delete("_intent");
 
-  let data = (
+  let data: any = (
     formDataToObject(formData, transform)
   );
 
-  let validation: any = {
+  let validation: z.ZodSafeParseResult<z.infer<SchemaType>> = {
     data,
     error: new z.ZodError([]),
     success: false,
+  };
+
+  let response: HandleZodFormMessage<SchemaType> = {
+    intent,
+    message: "ok",
+    payload: null,
+    status: 200,
+    validation,
   };
 
   if (intent !== "default" && intent in schema.def.shape && intent in forms && forms[ intent ]) {
@@ -238,14 +249,6 @@ export async function handleZodForm<
       validation.data ||= data;
     }
 
-    const response: any = {
-      intent,
-      message: "ok",
-      payload: null,
-      status: 200,
-      validation,
-    };
-
     const payload = {
       data,
       formData,
@@ -256,7 +259,7 @@ export async function handleZodForm<
 
     try {
       const action = (
-        await forms[ intent ](payload) || undefined
+        await forms[ intent ](payload as any) || undefined
       );
 
       if (!action) {
@@ -267,12 +270,11 @@ export async function handleZodForm<
     }
 
     catch (e) {
-      return {
-        ...response,
-        message: "error",
-        payload: e,
-        status: 500,
-      } as Partial<HandleZodFormMessage<SchemaType>>;
+      response.message = "error";
+      response.payload = e;
+      response.status = 500;
+
+      return response;
     }
 
     finally {
@@ -281,15 +283,7 @@ export async function handleZodForm<
   }
 
   if ("default" in forms && forms.default) {
-    const response: any = {
-      intent,
-      message: "ok",
-      payload: null,
-      status: 200,
-      validation,
-    };
-
-    const payload = {
+    const payload: HandleZodFormResponsePayloadType<SchemaType> = {
       data,
       formData,
       intent,
@@ -299,7 +293,7 @@ export async function handleZodForm<
 
     try {
       const action = (
-        await forms.default(payload) || undefined
+        await forms.default(payload as any) || undefined
       );
 
       if (!action) {
@@ -310,12 +304,11 @@ export async function handleZodForm<
     }
 
     catch (e) {
-      return {
-        ...response,
-        message: "error",
-        payload: e,
-        status: 500,
-      } as Partial<HandleZodFormMessage<SchemaType>>;
+      response.message = "error";
+      response.payload = e;
+      response.status = 500;
+
+      return response;
     }
 
     finally {
@@ -329,11 +322,14 @@ export async function handleZodForm<
 
   hooks?.after?.(formData);
 
-  return {
-    intent,
-    message: "Not Implemented",
-    payload: null,
-    status: 501,
-    validation: undefined,
-  } as Partial<HandleZodFormMessage<SchemaType>>;
+  response.message = "Not Implemented";
+  response.payload = null;
+  response.status = 501;
+  response.validation = {
+    data,
+    error: new z.ZodError([]),
+    success: false,
+  };
+
+  return response;
 }

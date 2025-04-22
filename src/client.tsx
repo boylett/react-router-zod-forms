@@ -4,6 +4,7 @@ import { useActionData, useFetcher, type FormProps } from "react-router";
 import type { Get, Paths } from "type-fest";
 import { z } from "zod";
 import { ZodFormContext, type ZodFormContextType } from "./context";
+import type { HandleZodFormMessage } from "./server";
 import { formDataToObject } from "./utils/formDataToObject";
 import { Path } from "./utils/path";
 
@@ -129,17 +130,16 @@ export interface useZodFormOptions<
  * Initialize a new ZodForm instance
  */
 export function useZodForm<
-  DataType,
   SchemaType extends z.ZodInterface<any>,
-  Intent extends keyof z.infer<SchemaType> = keyof z.infer<SchemaType>,
-  IntentSchemaType extends z.ZodInterface<any> = SchemaType[ "def" ][ "shape" ][ Intent ],
+  Intent extends keyof z.infer<SchemaType>,
+  IntentSchemaType extends z.ZodInterface<any> = SchemaType[ "def" ][ "shape" ][ Intent ]
 > (
   {
     intent,
     schema,
   }: useZodFormOptions<SchemaType, Intent>
 ): ZodFormContextType<
-  DataType,
+  HandleZodFormMessage<IntentSchemaType>,
   IntentSchemaType
 > {
   // Get the zod form context
@@ -551,7 +551,7 @@ export function useZodForm<
 
   // Create form context
   const form: ZodFormContextType<
-    DataType,
+    HandleZodFormMessage<IntentSchemaType>,
     IntentSchemaType
   > = {
     data: data || actionData,

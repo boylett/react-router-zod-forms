@@ -32,6 +32,13 @@ export async function handleZodForm(props, forms, hooks) {
         error: new z.ZodError([]),
         success: false,
     };
+    let response = {
+        intent,
+        message: "ok",
+        payload: null,
+        status: 200,
+        validation,
+    };
     if (intent !== "default" && intent in schema.def.shape && intent in forms && forms[intent]) {
         const hookData = (hooks?.beforeValidate?.(data));
         if (hookData) {
@@ -45,13 +52,6 @@ export async function handleZodForm(props, forms, hooks) {
         if (validation) {
             validation.data ||= data;
         }
-        const response = {
-            intent,
-            message: "ok",
-            payload: null,
-            status: 200,
-            validation,
-        };
         const payload = {
             data,
             formData,
@@ -67,25 +67,16 @@ export async function handleZodForm(props, forms, hooks) {
             return action;
         }
         catch (e) {
-            return {
-                ...response,
-                message: "error",
-                payload: e,
-                status: 500,
-            };
+            response.message = "error";
+            response.payload = e;
+            response.status = 500;
+            return response;
         }
         finally {
             hooks?.after?.(formData);
         }
     }
     if ("default" in forms && forms.default) {
-        const response = {
-            intent,
-            message: "ok",
-            payload: null,
-            status: 200,
-            validation,
-        };
         const payload = {
             data,
             formData,
@@ -101,12 +92,10 @@ export async function handleZodForm(props, forms, hooks) {
             return action;
         }
         catch (e) {
-            return {
-                ...response,
-                message: "error",
-                payload: e,
-                status: 500,
-            };
+            response.message = "error";
+            response.payload = e;
+            response.status = 500;
+            return response;
         }
         finally {
             hooks?.after?.(formData);
@@ -115,11 +104,13 @@ export async function handleZodForm(props, forms, hooks) {
     console.trace();
     console.error(`Unhandled form submission for intent '${intent}' in ${request.url}`);
     hooks?.after?.(formData);
-    return {
-        intent,
-        message: "Not Implemented",
-        payload: null,
-        status: 501,
-        validation: undefined,
+    response.message = "Not Implemented";
+    response.payload = null;
+    response.status = 501;
+    response.validation = {
+        data,
+        error: new z.ZodError([]),
+        success: false,
     };
+    return response;
 }

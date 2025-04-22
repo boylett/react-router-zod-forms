@@ -3,6 +3,7 @@ import { type FormProps } from "react-router";
 import type { Get, Paths } from "type-fest";
 import { z } from "zod";
 import { type ZodFormContextType } from "./context";
+import type { HandleZodFormMessage } from "./server";
 /**
  * Props for the ZodForm component
  */
@@ -71,4 +72,4 @@ export interface useZodFormOptions<SchemaType extends z.ZodInterface<any>, Inten
 /**
  * Initialize a new ZodForm instance
  */
-export declare function useZodForm<DataType, SchemaType extends z.ZodInterface<any>, Intent extends keyof z.infer<SchemaType> = keyof z.infer<SchemaType>, IntentSchemaType extends z.ZodInterface<any> = SchemaType["def"]["shape"][Intent]>({ intent, schema, }: useZodFormOptions<SchemaType, Intent>): ZodFormContextType<DataType, IntentSchemaType>;
+export declare function useZodForm<SchemaType extends z.ZodInterface<any>, Intent extends keyof z.infer<SchemaType>, IntentSchemaType extends z.ZodInterface<any> = SchemaType["def"]["shape"][Intent]>({ intent, schema, }: useZodFormOptions<SchemaType, Intent>): ZodFormContextType<HandleZodFormMessage<IntentSchemaType>, IntentSchemaType>;

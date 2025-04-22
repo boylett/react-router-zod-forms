@@ -50,7 +50,7 @@ export interface HandleZodFormMessage<SchemaType extends z.ZodInterface<any>> {
     /**
      * Form validation result
      */
-    validation: z.ZodSafeParseResult<Exclude<z.infer<SchemaType>, string>>;
+    validation: z.ZodSafeParseResult<z.infer<SchemaType>>;
 }
 /**
  * The payload delivered to each form action
@@ -92,5 +92,5 @@ type HandleZodFormHooks<SchemaType extends z.ZodInterface<any>, UploadHandlerRet
 /**
  * Handle Zod Form submission
  */
-export declare function handleZodForm<SchemaType extends z.ZodInterface<any>, UploadHandlerReturnType extends Blob | File | null | string | void = File, FormsType extends HandleZodFormForms<SchemaType, UploadHandlerReturnType> = HandleZodFormForms<SchemaType, UploadHandlerReturnType>>(props: HandleZodFormRequest<SchemaType, UploadHandlerReturnType>, forms: FormsType, hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>): Promise<Partial<HandleZodFormMessage<SchemaType>>>;
+export declare function handleZodForm<SchemaType extends z.ZodInterface<any>, UploadHandlerReturnType extends Blob | File | null | string | void = File, FormsType extends HandleZodFormForms<SchemaType, UploadHandlerReturnType> = HandleZodFormForms<SchemaType, UploadHandlerReturnType>>(props: HandleZodFormRequest<SchemaType, UploadHandlerReturnType>, forms: FormsType, hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>): Promise<HandleZodFormMessage<SchemaType> | HandleZodFormMessage<SchemaType["def"]["shape"][keyof SchemaType["def"]["shape"]]>>;
 export {};

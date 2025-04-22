@@ -1,5 +1,5 @@
 import React, { type ReactNode } from "react";
-import type { ActionFunctionArgs, FetcherSubmitFunction } from "react-router";
+import type { FetcherSubmitFunction } from "react-router";
 import type { Paths } from "type-fest";
 import type z from "zod";
 import type { ZodFormFieldProps, ZodFormProps } from "./client";
@@ -11,7 +11,7 @@ export type ZodFormContextType<DataType = any, SchemaType extends z.ZodInterface
     /**
      * Fetcher response data
      */
-    data?: DataType extends (props: ActionFunctionArgs) => Promise<infer ReturnType> ? Awaited<ReturnType> : DataType;
+    data?: DataType;
     /**
      * The form element
      */
