@@ -97,7 +97,7 @@ export type HandleZodFormResponsePayloadType<SchemaType extends z.ZodInterface<a
 /**
  * Handle Zod Form submission
  */
-export declare function handleZodForm<SchemaType extends z.ZodInterface<any>, PayloadTypes extends {
+export declare function handleZodForm<SchemaType extends z.ZodInterface<Record<string, z.ZodInterface<any>>>, PayloadTypes extends {
     [key in keyof SchemaType["def"]["shape"]]: any;
 }, UploadHandlerReturnType extends Blob | File | null | string | void = File>(props: HandleZodFormOptions<SchemaType, UploadHandlerReturnType>, forms: HandleZodFormForms<SchemaType, UploadHandlerReturnType, PayloadTypes>, hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>): Promise<HandleZodFormMessage<SchemaType, PayloadTypes["default"]> | HandleZodFormMessage<SchemaType["def"]["shape"][keyof SchemaType["def"]["shape"]], PayloadTypes[keyof SchemaType["def"]["shape"]]>>;
 export {};
