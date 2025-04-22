@@ -25,6 +25,7 @@ export async function handleZodForm(props, forms, hooks) {
     }));
     hooks?.before?.(formData);
     const intent = (formData.get("_intent") ?? "default");
+    formData.delete("_intent");
     let data = (formDataToObject(formData, transform));
     let validation = {
         data,
@@ -53,6 +54,8 @@ export async function handleZodForm(props, forms, hooks) {
         };
         const payload = {
             data,
+            formData,
+            intent,
             response,
             validation,
         };
@@ -85,6 +88,8 @@ export async function handleZodForm(props, forms, hooks) {
         };
         const payload = {
             data,
+            formData,
+            intent,
             response,
             validation,
         };

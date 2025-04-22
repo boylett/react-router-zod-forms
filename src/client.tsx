@@ -129,15 +129,19 @@ export interface useZodFormOptions<
  * Initialize a new ZodForm instance
  */
 export function useZodForm<
+  DataType,
   SchemaType extends z.ZodInterface<any>,
-  Intent extends keyof z.infer<SchemaType>,
+  Intent extends keyof z.infer<SchemaType> = keyof z.infer<SchemaType>,
   IntentSchemaType extends z.ZodInterface<any> = SchemaType[ "def" ][ "shape" ][ Intent ],
 > (
   {
     intent,
     schema,
   }: useZodFormOptions<SchemaType, Intent>
-): ZodFormContextType<IntentSchemaType> {
+): ZodFormContextType<
+  DataType,
+  IntentSchemaType
+> {
   // Get the zod form context
   const { forms } = useContext(ZodFormContext);
 
@@ -546,7 +550,10 @@ export function useZodForm<
   }
 
   // Create form context
-  const form: ZodFormContextType<IntentSchemaType> = {
+  const form: ZodFormContextType<
+    DataType,
+    IntentSchemaType
+  > = {
     data: data || actionData,
     id: formId,
     intent: String(intent),

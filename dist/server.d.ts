@@ -57,9 +57,17 @@ export interface HandleZodFormMessage<SchemaType extends z.ZodInterface<any>> {
  */
 export type HandleZodFormResponsePayloadType<SchemaType extends z.ZodInterface<any>> = {
     /**
-     * Posted form data
+     * Form data validated and parsed with Zod
      */
     data: z.infer<SchemaType>;
+    /**
+     * Raw, unparsed form data
+     */
+    formData: FormData;
+    /**
+     * The submitted form intent
+     */
+    intent: string;
     /**
      * Form response object
      */
@@ -84,5 +92,5 @@ type HandleZodFormHooks<SchemaType extends z.ZodInterface<any>, UploadHandlerRet
 /**
  * Handle Zod Form submission
  */
-export declare function handleZodForm<SchemaType extends z.ZodInterface<any>, UploadHandlerReturnType extends Blob | File | null | string | void = File, FormsType extends HandleZodFormForms<SchemaType, UploadHandlerReturnType> = HandleZodFormForms<SchemaType, UploadHandlerReturnType>>(props: HandleZodFormRequest<SchemaType, UploadHandlerReturnType>, forms: FormsType, hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>): Promise<HandleZodFormMessage<SchemaType | SchemaType["def"]["shape"][Extract<keyof z.infer<SchemaType>, string>]> | ReturnType<Exclude<FormsType["default"], undefined>> | Partial<HandleZodFormMessage<SchemaType>>>;
+export declare function handleZodForm<SchemaType extends z.ZodInterface<any>, UploadHandlerReturnType extends Blob | File | null | string | void = File, FormsType extends HandleZodFormForms<SchemaType, UploadHandlerReturnType> = HandleZodFormForms<SchemaType, UploadHandlerReturnType>>(props: HandleZodFormRequest<SchemaType, UploadHandlerReturnType>, forms: FormsType, hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>): Promise<Partial<HandleZodFormMessage<SchemaType>>>;
 export {};

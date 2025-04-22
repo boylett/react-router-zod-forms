@@ -77,9 +77,19 @@ export type HandleZodFormResponsePayloadType<
   SchemaType extends z.ZodInterface<any>
 > = {
   /**
-   * Posted form data
+   * Form data validated and parsed with Zod
    */
   data: z.infer<SchemaType>;
+
+  /**
+   * Raw, unparsed form data
+   */
+  formData: FormData;
+
+  /**
+   * The submitted form intent
+   */
+  intent: string;
 
   /**
    * Form response object
@@ -144,11 +154,7 @@ export async function handleZodForm<
   props: HandleZodFormRequest<SchemaType, UploadHandlerReturnType>,
   forms: FormsType,
   hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>
-): Promise<
-  | HandleZodFormMessage<SchemaType | SchemaType[ "def" ][ "shape" ][ Extract<keyof z.infer<SchemaType>, string> ]>
-  | ReturnType<Exclude<FormsType[ "default" ], undefined>>
-  | Partial<HandleZodFormMessage<SchemaType>>
-> {
+): Promise<Partial<HandleZodFormMessage<SchemaType>>> {
   const {
     maxFileSize,
     maxHeaderSize,
@@ -195,6 +201,8 @@ export async function handleZodForm<
       "default" | Extract<keyof z.infer<SchemaType>, string>
     );
 
+  formData.delete("_intent");
+
   let data = (
     formDataToObject(formData, transform)
   );
@@ -240,6 +248,8 @@ export async function handleZodForm<
 
     const payload = {
       data,
+      formData,
+      intent,
       response,
       validation,
     };
@@ -262,7 +272,7 @@ export async function handleZodForm<
         message: "error",
         payload: e,
         status: 500,
-      };
+      } as Partial<HandleZodFormMessage<SchemaType>>;
     }
 
     finally {
@@ -281,6 +291,8 @@ export async function handleZodForm<
 
     const payload = {
       data,
+      formData,
+      intent,
       response,
       validation,
     };
@@ -303,7 +315,7 @@ export async function handleZodForm<
         message: "error",
         payload: e,
         status: 500,
-      };
+      } as Partial<HandleZodFormMessage<SchemaType>>;
     }
 
     finally {
