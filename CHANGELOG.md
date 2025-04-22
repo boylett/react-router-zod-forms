@@ -5,10 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+### To Do
+
+- Aria attributes for invalid fields
+- Remaining HTML validation attributes
+
+## [0.0.4-beta] - 2025-04-22
 
 ### Added
-- Aria attributes for invalid fields
+
+- Better type safety for fetcher data response
+- Better type safety for data response payload
+- Better error handling
+- Added `formData` to form handler arguments
+- Added `intent` to form handler arguments
 
 ## [0.0.3-beta] - 2025-04-22
 

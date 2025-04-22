@@ -3,10 +3,13 @@ import z from "zod";
 import { formDataToObject } from "./utils/formDataToObject";
 import type { Replace } from "./utils/types";
 
-export interface HandleZodFormRequest<
+/**
+ * Hook options for a given schema
+ */
+type HandleZodFormOptions<
   SchemaType extends z.ZodInterface<any>,
-  UploadHandlerReturnType extends Blob | File | null | string | void
-> {
+  UploadHandlerReturnType extends Blob | File | null | string | void,
+> = {
   /**
    * Maximum file size for multipart data
    */
@@ -36,70 +39,6 @@ export interface HandleZodFormRequest<
    * A function to handle file uploads
    */
   uploadHandler?: (file: FileUpload) => Promise<UploadHandlerReturnType> | UploadHandlerReturnType;
-}
-
-/**
- * The message relayed back to the browser following a handled form action
- */
-export interface HandleZodFormMessage<
-  SchemaType extends z.ZodInterface<any>
-> {
-  /**
-   * The submitted form intent
-   */
-  intent: string;
-
-  /**
-   * Success/error message
-   */
-  message: string;
-
-  /**
-   * Action data payload
-   */
-  payload?: any;
-
-  /**
-   * HTTP status code
-   */
-  status: 100 | 101 | 102 | 103 | 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207 | 208 | 226 | 300 | 301 | 302 | 303 | 304 | 307 | 308 | 400 | 401 | 402 | 403 | 404 | 405 | 406 | 407 | 408 | 409 | 410 | 411 | 412 | 413 | 414 | 415 | 416 | 417 | 418 | 421 | 422 | 423 | 424 | 425 | 426 | 428 | 429 | 431 | 451 | 500 | 501 | 502 | 503 | 504 | 505 | 506 | 507 | 508 | 510 | 511;
-
-  /**
-   * Form validation result
-   */
-  validation: z.ZodSafeParseResult<z.infer<SchemaType>>;
-}
-
-/**
- * The payload delivered to each form action
- */
-export type HandleZodFormResponsePayloadType<
-  SchemaType extends z.ZodInterface<any>
-> = {
-  /**
-   * Form data validated and parsed with Zod
-   */
-  data: z.infer<SchemaType>;
-
-  /**
-   * Raw, unparsed form data
-   */
-  formData: FormData;
-
-  /**
-   * The submitted form intent
-   */
-  intent: string;
-
-  /**
-   * Form response object
-   */
-  response: HandleZodFormMessage<SchemaType>;
-
-  /**
-   * Form validation result
-   */
-  validation: z.ZodSafeParseResult<z.infer<SchemaType>>;
 };
 
 /**
@@ -108,16 +47,17 @@ export type HandleZodFormResponsePayloadType<
 type HandleZodFormForms<
   SchemaType extends z.ZodInterface<any>,
   UploadHandlerReturnType extends Blob | File | null | string | void,
+  PayloadTypes extends { [ key in keyof SchemaType[ "def" ][ "shape" ] ]: any; },
 > = {
     [ Intent in "default" | keyof z.infer<SchemaType> ]?: (
       props: Intent extends "default"
-        ? HandleZodFormResponsePayloadType<Replace<SchemaType, File, UploadHandlerReturnType>>
-        : HandleZodFormResponsePayloadType<Replace<SchemaType[ "def" ][ "shape" ][ Intent ], File, UploadHandlerReturnType>>
+        ? HandleZodFormResponsePayloadType<Replace<SchemaType, File, UploadHandlerReturnType>, PayloadTypes[ Intent ]>
+        : HandleZodFormResponsePayloadType<Replace<SchemaType[ "def" ][ "shape" ][ Intent ], File, UploadHandlerReturnType>, PayloadTypes[ Intent ]>
     ) => Promise<
       (
         Intent extends "default"
-        ? HandleZodFormMessage<Replace<SchemaType, File, UploadHandlerReturnType>> | any
-        : HandleZodFormMessage<Replace<SchemaType[ "def" ][ "shape" ][ Intent ], File, UploadHandlerReturnType>>
+        ? HandleZodFormMessage<Replace<SchemaType, File, UploadHandlerReturnType>, PayloadTypes[ Intent ]> | any
+        : HandleZodFormMessage<Replace<SchemaType[ "def" ][ "shape" ][ Intent ], File, UploadHandlerReturnType>, PayloadTypes[ Intent ]>
       ) | void
     >;
   };
@@ -144,19 +84,91 @@ type HandleZodFormHooks<
   };
 
 /**
+ * The message relayed back to the browser following a handled form action
+ */
+export interface HandleZodFormMessage<
+  SchemaType extends z.ZodInterface<any>,
+  PayloadType = any,
+> {
+  /**
+   * The submitted form intent
+   */
+  intent: string;
+
+  /**
+   * Success/error message
+   */
+  message: string;
+
+  /**
+   * Action data payload
+   */
+  payload?: PayloadType;
+
+  /**
+   * HTTP status code
+   */
+  status: 100 | 101 | 102 | 103 | 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207 | 208 | 226 | 300 | 301 | 302 | 303 | 304 | 307 | 308 | 400 | 401 | 402 | 403 | 404 | 405 | 406 | 407 | 408 | 409 | 410 | 411 | 412 | 413 | 414 | 415 | 416 | 417 | 418 | 421 | 422 | 423 | 424 | 425 | 426 | 428 | 429 | 431 | 451 | 500 | 501 | 502 | 503 | 504 | 505 | 506 | 507 | 508 | 510 | 511;
+
+  /**
+   * Form validation result
+   */
+  validation: z.ZodSafeParseResult<z.infer<SchemaType>>;
+}
+
+/**
+ * The payload delivered to each form action
+ */
+export type HandleZodFormResponsePayloadType<
+  SchemaType extends z.ZodInterface<any>,
+  PayloadType = any,
+> = {
+  /**
+   * Form data validated and parsed with Zod
+   */
+  data: z.infer<SchemaType>;
+
+  /**
+   * Raw, unparsed form data
+   */
+  formData: FormData;
+
+  /**
+   * The submitted form intent
+   */
+  intent: string;
+
+  /**
+   * Form response object
+   */
+  response: HandleZodFormMessage<SchemaType, PayloadType>;
+
+  /**
+   * Form validation result
+   */
+  validation: z.ZodSafeParseResult<z.infer<SchemaType>>;
+};
+
+/**
  * Handle Zod Form submission
  */
 export async function handleZodForm<
   SchemaType extends z.ZodInterface<any>,
+  PayloadTypes extends { [ key in keyof SchemaType[ "def" ][ "shape" ] ]: any; },
   UploadHandlerReturnType extends Blob | File | null | string | void = File,
-  FormsType extends HandleZodFormForms<SchemaType, UploadHandlerReturnType> = HandleZodFormForms<SchemaType, UploadHandlerReturnType>
 > (
-  props: HandleZodFormRequest<SchemaType, UploadHandlerReturnType>,
-  forms: FormsType,
+  props: HandleZodFormOptions<SchemaType, UploadHandlerReturnType>,
+  forms: HandleZodFormForms<SchemaType, UploadHandlerReturnType, PayloadTypes>,
   hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>
 ): Promise<
-  | HandleZodFormMessage<SchemaType>
-  | HandleZodFormMessage<SchemaType[ "def" ][ "shape" ][ keyof SchemaType[ "def" ][ "shape" ] ]>
+  | HandleZodFormMessage<
+    SchemaType,
+    PayloadTypes[ "default" ]
+  >
+  | HandleZodFormMessage<
+    SchemaType[ "def" ][ "shape" ][ keyof SchemaType[ "def" ][ "shape" ] ],
+    PayloadTypes[ keyof SchemaType[ "def" ][ "shape" ] ]
+  >
 > {
   const {
     maxFileSize,
@@ -196,7 +208,24 @@ export async function handleZodForm<
     )
   );
 
-  hooks?.before?.(formData);
+  try {
+    hooks?.before?.(formData);
+  }
+
+  catch (error) {
+    if (
+      error &&
+      typeof error === "object" &&
+      (
+        "message" in error ||
+        "status" in error
+      )
+    ) {
+      return error as HandleZodFormMessage<SchemaType>;
+    }
+
+    throw error;
+  }
 
   const intent = (
     formData.get("_intent") as string ?? "default"
@@ -225,24 +254,58 @@ export async function handleZodForm<
   };
 
   if (intent !== "default" && intent in schema.def.shape && intent in forms && forms[ intent ]) {
-    const hookData = (
-      hooks?.beforeValidate?.(data)
-    );
+    try {
+      const hookData = (
+        hooks?.beforeValidate?.(data)
+      );
 
-    if (hookData) {
-      data = hookData;
+      if (hookData) {
+        data = hookData;
+      }
+    }
+
+    catch (error) {
+      if (
+        error &&
+        typeof error === "object" &&
+        (
+          "message" in error ||
+          "status" in error
+        )
+      ) {
+        return error as HandleZodFormMessage<SchemaType>;
+      }
+
+      throw error;
     }
 
     validation = (
       await schema.def.shape[ intent ].safeParseAsync(data)
     );
 
-    const hookResult = (
-      hooks?.afterValidate?.(validation)
-    );
+    try {
+      const hookResult = (
+        hooks?.afterValidate?.(validation)
+      );
 
-    if (hookResult) {
-      validation = hookResult;
+      if (hookResult) {
+        validation = hookResult;
+      }
+    }
+
+    catch (error) {
+      if (
+        error &&
+        typeof error === "object" &&
+        (
+          "message" in error ||
+          "status" in error
+        )
+      ) {
+        return error as HandleZodFormMessage<SchemaType>;
+      }
+
+      throw error;
     }
 
     if (validation) {
@@ -269,9 +332,9 @@ export async function handleZodForm<
       return action;
     }
 
-    catch (e) {
+    catch (error) {
       response.message = "error";
-      response.payload = e;
+      response.payload = error;
       response.status = 500;
 
       return response;
@@ -303,9 +366,9 @@ export async function handleZodForm<
       return action;
     }
 
-    catch (e) {
+    catch (error) {
       response.message = "error";
-      response.payload = e;
+      response.payload = error;
       response.status = 500;
 
       return response;
@@ -320,7 +383,24 @@ export async function handleZodForm<
 
   console.error(`Unhandled form submission for intent '${ intent as string }' in ${ request.url }`);
 
-  hooks?.after?.(formData);
+  try {
+    hooks?.after?.(formData);
+  }
+
+  catch (error) {
+    if (
+      error &&
+      typeof error === "object" &&
+      (
+        "message" in error ||
+        "status" in error
+      )
+    ) {
+      return error as HandleZodFormMessage<SchemaType>;
+    }
+
+    throw error;
+  }
 
   response.message = "Not Implemented";
   response.payload = null;

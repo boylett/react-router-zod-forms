@@ -23,7 +23,18 @@ export async function handleZodForm(props, forms, hooks) {
             return handle;
         }
     }));
-    hooks?.before?.(formData);
+    try {
+        hooks?.before?.(formData);
+    }
+    catch (error) {
+        if (error &&
+            typeof error === "object" &&
+            ("message" in error ||
+                "status" in error)) {
+            return error;
+        }
+        throw error;
+    }
     const intent = (formData.get("_intent") ?? "default");
     formData.delete("_intent");
     let data = (formDataToObject(formData, transform));
@@ -40,14 +51,36 @@ export async function handleZodForm(props, forms, hooks) {
         validation,
     };
     if (intent !== "default" && intent in schema.def.shape && intent in forms && forms[intent]) {
-        const hookData = (hooks?.beforeValidate?.(data));
-        if (hookData) {
-            data = hookData;
+        try {
+            const hookData = (hooks?.beforeValidate?.(data));
+            if (hookData) {
+                data = hookData;
+            }
+        }
+        catch (error) {
+            if (error &&
+                typeof error === "object" &&
+                ("message" in error ||
+                    "status" in error)) {
+                return error;
+            }
+            throw error;
         }
         validation = (await schema.def.shape[intent].safeParseAsync(data));
-        const hookResult = (hooks?.afterValidate?.(validation));
-        if (hookResult) {
-            validation = hookResult;
+        try {
+            const hookResult = (hooks?.afterValidate?.(validation));
+            if (hookResult) {
+                validation = hookResult;
+            }
+        }
+        catch (error) {
+            if (error &&
+                typeof error === "object" &&
+                ("message" in error ||
+                    "status" in error)) {
+                return error;
+            }
+            throw error;
         }
         if (validation) {
             validation.data ||= data;
@@ -66,9 +99,9 @@ export async function handleZodForm(props, forms, hooks) {
             }
             return action;
         }
-        catch (e) {
+        catch (error) {
             response.message = "error";
-            response.payload = e;
+            response.payload = error;
             response.status = 500;
             return response;
         }
@@ -91,9 +124,9 @@ export async function handleZodForm(props, forms, hooks) {
             }
             return action;
         }
-        catch (e) {
+        catch (error) {
             response.message = "error";
-            response.payload = e;
+            response.payload = error;
             response.status = 500;
             return response;
         }
@@ -103,7 +136,18 @@ export async function handleZodForm(props, forms, hooks) {
     }
     console.trace();
     console.error(`Unhandled form submission for intent '${intent}' in ${request.url}`);
-    hooks?.after?.(formData);
+    try {
+        hooks?.after?.(formData);
+    }
+    catch (error) {
+        if (error &&
+            typeof error === "object" &&
+            ("message" in error ||
+                "status" in error)) {
+            return error;
+        }
+        throw error;
+    }
     response.message = "Not Implemented";
     response.payload = null;
     response.status = 501;
