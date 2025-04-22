@@ -5,7 +5,7 @@ import { formDataToObject } from "./utils/formDataToObject";
  * Handle Zod Form submission
  */
 export async function handleZodForm(props, forms, hooks) {
-    const { parserOptions, request, schema, transform, uploadHandler = file => file, } = props;
+    const { parserOptions, request, schema, transform, uploadHandler, } = props;
     const formData = (parserOptions
         ? await parseFormData(request, parserOptions, uploadHandler)
         : await parseFormData(request, uploadHandler));

@@ -141,7 +141,7 @@ export async function handleZodForm<
     request,
     schema,
     transform,
-    uploadHandler = file => file,
+    uploadHandler,
   } = props;
 
   const formData = (
