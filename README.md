@@ -13,7 +13,17 @@
 
 ---
 
+> [!CAUTION]
+> This library is very much not ready for production use yet. I am actively developing it alongside a large-scale real-world project.
+
+---
+
 # Documentation
+
+**React Router Zod Forms** aims to simplify the process of handling form submission and validation with React Router and Zod 4.
+
+> [!NOTE]
+> Requires [React Router 7](https://reactrouter.com) and [zod 4](https://v4.zod.dev)
 
 ## Installation
 
@@ -22,8 +32,6 @@ npm install react-router-zod-forms
 ```
 
 ## Schema Creation
-
-React Router Zod Forms requires [zod 4](https://v4.zod.dev), and utilizes the `interface` type for form schemas.
 
 ```typescript
 import z from "zod";
@@ -91,8 +99,18 @@ export const action = async ({ context, params, request }: Route.ActionArgs) => 
             }
           );
 
-          // The `response` object can be mutated directly, you don't have to return it but you can if you want
+          // The `response` object can be mutated directly, you
+          // don't have to return it but you can if you want
           response.message = `Changes to page '${title}' saved successfully`;
+
+          // If you need to return a Response, ie. a redirect or
+          // cookie header, simply throw it instead
+          throw redirect(...);
+          throw Response(...);
+
+          // Throwing an Error will populate the `response` object
+          // with the error message and return it with status 500
+          throw new Error("Something went wrong!");
         }
       },
     }
