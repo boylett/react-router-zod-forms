@@ -221,7 +221,7 @@ export function useZodForm(options) {
                     if ("format" in check._zod.def && check._zod.def.format === "regex" && "pattern" in check._zod.def && !("pattern" in rest)) {
                         // Set the pattern attribute
                         Object.assign(rest, {
-                            pattern: check._zod.def.pattern,
+                            pattern: String(check._zod.def.pattern).substring(1).replace(/\/([a-z]+)?$/i, ""),
                         });
                     }
                 }
