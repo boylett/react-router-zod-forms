@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed a bug where action data could potentially pollute other forms
 - Fixed a bug with regular expression HTML attribute formatting
+- Fixed a bug where validation attributes were not added for optional types
 
 ## [0.0.5] - 2025-04-22
 

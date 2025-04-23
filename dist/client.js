@@ -136,9 +136,20 @@ export function useZodForm(options) {
                 rest.defaultValue = defaultValue;
             }
             // Get the shape of the field schema
-            const shape = path.toSchema(intentSchema);
+            let shape = path.toSchema(intentSchema);
             // If we found the shape for this field
             if (shape) {
+                // If the field should be required
+                if (!shape.isOptional() && !shape.isNullable() && !("required" in rest)) {
+                    // Set the required attribute
+                    Object.assign(rest, {
+                        required: true,
+                    });
+                }
+                // If the field is optional
+                else if (shape.isOptional() && "innerType" in shape.def) {
+                    shape = shape.def.innerType;
+                }
                 // If the field has a max date
                 if ("maxDate" in shape && !("max" in rest)) {
                     // Set the max date of the field
@@ -208,19 +219,13 @@ export function useZodForm(options) {
                         step: 12,
                     });
                 }
-                // If the field should be required
-                if (!shape.isOptional() && !shape.isNullable() && !("required" in rest)) {
-                    // Set the required attribute
-                    Object.assign(rest, {
-                        required: true,
-                    });
-                }
                 // Look through the field's checks
                 for (const check of shape.def.checks || []) {
                     // If the field has a regex pattern
                     if ("format" in check._zod.def && check._zod.def.format === "regex" && "pattern" in check._zod.def && !("pattern" in rest)) {
                         // Set the pattern attribute
                         Object.assign(rest, {
+                            // Remove the first `/` and trailing `/` and flags as HTML does not allow them
                             pattern: String(check._zod.def.pattern).substring(1).replace(/\/([a-z]+)?$/i, ""),
                         });
                     }
