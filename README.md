@@ -129,7 +129,7 @@ The `handleZodForm` method parses the current request for `FormData`, performs a
 | `options.request` <sup>(required)</sup> | `Request` | The current request |
 | `options.schema` <sup>(required)</sup> | [`ZodInterface`](https://v4.zod.dev/api#objects) | Your zod schema object |
 | `options.maxFileSize` | `number` | Set the maximum file size for file uploads (see [@mjackson/multipart-parser](https://github.com/mjackson/remix-the-web/tree/main/packages/multipart-parser#limiting-file-upload-size)) |
-| `options.maxHeaderSize` | `number` | Sert the maximum header size for multipart payloads (see [@mjackson/multipart-parser](https://github.com/mjackson/remix-the-web/blob/main/packages/multipart-parser/src/lib/multipart.ts#L18)) |
+| `options.maxHeaderSize` | `number` | Set the maximum header size for multipart payloads (see [@mjackson/multipart-parser](https://github.com/mjackson/remix-the-web/blob/main/packages/multipart-parser/src/lib/multipart.ts#L18)) |
 | `options.transform` | `function` | Transforms the value of each formData field before it is parsed by Zod (arguments are `key: string`, `value: FormDataEntryValue` and `path: (number \| string)[]`) |
 | `options.uploadHandler` | `function` | Perform file uploads before the form is validated (see [@mjackson/form-data-parser](https://github.com/mjackson/remix-the-web/tree/main/packages/form-data-parser#usage)) |
 
