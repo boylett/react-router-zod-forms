@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Aria attributes for invalid fields
 - Remaining HTML validation attributes
 
+## [Unreleased]
+
+## [0.0.6] - 2025-04-22
+
+### Fixed
+
+- Fixed a bug where action data could potentially pollute other forms
+
 ## [0.0.5] - 2025-04-22
 
 ### Added

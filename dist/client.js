@@ -125,7 +125,11 @@ export function useZodForm(options) {
             // Create a new path
             const path = new Path(rest.name);
             // Get the default value from the current action data
-            const defaultValue = path.pickFrom(form?.data?.validation?.data || actionData?.validation?.data);
+            const defaultValue = path.pickFrom((form?.data?.validation?.data?.intent === intent
+                ? form.data.validation.data
+                : undefined) || (actionData?.validation?.data?.intent === intent
+                ? actionData.validation.data
+                : undefined));
             // If the default value exists
             if (defaultValue !== undefined) {
                 // Populate it on the field
