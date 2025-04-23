@@ -153,12 +153,11 @@ If you have some custom action functionality that happens outside of React Route
 
 ```typescript
 return await handleZodForm({ request, schema }, {
-  async default ({ data, intent }) {
+  async default ({ formData, intent }) {
     console.log(
-      `Unhandled intent '${ intent }' with data:`, data
+      `Unhandled intent '${ intent }' with data:`, formData.entries()
     );
   },
-
   ...
 });
 ```
