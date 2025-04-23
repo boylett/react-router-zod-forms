@@ -12,8 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.0.6] - 2025-04-22
-
 ### Fixed
 
 - Fixed a bug where action data could potentially pollute other forms
