@@ -164,11 +164,13 @@ export function Message<
         <Element { ...rest }>
           <ul>
             { issues.map(
-              issue => {
+              (issue, key) => {
                 const fieldSchema: z.ZodType<any> | undefined = schema && fieldPath.toSchema(schema);
 
                 return (
-                  <li data-issue-code={ issue.code }>
+                  <li
+                    data-issue-code={ issue.code }
+                    key={ key }>
                     <strong>
                       { fieldSchema?.meta()?.description || fieldPath.toString() }
                     </strong>

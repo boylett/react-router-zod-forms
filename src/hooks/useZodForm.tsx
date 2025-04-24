@@ -21,9 +21,9 @@ export interface useZodFormOptions<
    * Configure which events trigger validation
    * 
    * @remarks
-   * Defaults to `[ "beforeSubmit", "change" ]`
+   * Defaults to `[ "change", "form.submit" ]`
    */
-  events?: ("beforeSubmit" | "blur" | "change" | "input")[];
+  events?: ZodFormsContextType[ "events" ];
 
   /**
    * The current form intent
@@ -78,7 +78,7 @@ export function useZodForm<
   IntentSchemaType
 > {
   const {
-    events = [ "beforeSubmit", "change" ],
+    events = [ "change", "form.submit" ],
     intent,
     schema,
   } = options;
@@ -205,6 +205,7 @@ export function useZodForm<
     IntentSchemaType
   > = {
     data: data || actionData,
+    events,
     id: formId,
     intent: String(intent),
     load,

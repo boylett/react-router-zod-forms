@@ -273,6 +273,16 @@ export default function Component () {
 }
 ```
 
+### Arguments
+
+#### 1. `options` <sup>(required)</sup> – Form context configuration object
+
+| Property | Type | Effect |
+| - | - | - |
+| `options.intent` <sup>(required)</sup> | `string` | The current form intent |
+| `options.schema` <sup>(required)</sup> | [`ZodInterface`](https://v4.zod.dev/api#objects) | Your zod schema object |
+| `options.events` | `string[]` | Names of event handlers that will trigger form validation |
+
 ### `<Form />` component
 
 The `Form` component is an extension of React Router's [`Form`](https://reactrouter.com/api/components/Form) component.

@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import React, { useCallback, useContext, type AllHTMLAttributes, type FocusEventHandler, type FormEventHandler, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
+import React, { useCallback, useContext, type AllHTMLAttributes, type ChangeEventHandler, type FocusEventHandler, type FormEventHandler, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
 import type { Get, Paths } from "type-fest";
 import { z } from "zod";
 import { ZodFormContext } from "../context/FormContext";
@@ -99,6 +99,7 @@ export function Field<
     children,
     form: formId,
     onBlur,
+    onChange,
     onInput,
     type = "text",
     ...rest
@@ -135,6 +136,7 @@ export function Field<
   // Get form data
   const {
     data,
+    events,
     schema,
     validation,
   } = form;
@@ -304,8 +306,13 @@ export function Field<
     event => {
       onBlur?.(event as any);
 
-      if (form?.form) {
-        // If the form exists, trigger a synthetic validation event
+      // If the event has been cancelled, do not validate
+      if (event.isDefaultPrevented()) {
+        return;
+      }
+
+      // If the form exists, trigger a synthetic validation event
+      if (form?.form && events?.includes("blur")) {
         const event = new CustomEvent("$ZodForms.externalFieldValidate");
 
         form.form.current?.dispatchEvent(event);
@@ -315,14 +322,41 @@ export function Field<
   );
 
   /**
+   * Validate the form on change
+   */
+  const handleChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    event => {
+      onChange?.(event as any);
+
+      // If the event has been cancelled, do not validate
+      if (event.isDefaultPrevented()) {
+        return;
+      }
+
+      // If the form exists, trigger a synthetic validation event
+      if (form?.form && events?.includes("change")) {
+        const event = new CustomEvent("$ZodForms.externalFieldValidate");
+
+        form.form.current?.dispatchEvent(event);
+      }
+    },
+    [ onChange ]
+  );
+
+  /**
    * Validate the form on input
    */
   const handleInput = useCallback<FormEventHandler<HTMLInputElement>>(
     event => {
       onInput?.(event as any);
 
-      if (form?.form) {
-        // If the form exists, trigger a synthetic validation event
+      // If the event has been cancelled, do not validate
+      if (event.isDefaultPrevented()) {
+        return;
+      }
+
+      // If the form exists, trigger a synthetic validation event
+      if (form?.form && events?.includes("input")) {
         const event = new CustomEvent("$ZodForms.externalFieldValidate");
 
         form.form.current?.dispatchEvent(event);
@@ -342,6 +376,7 @@ export function Field<
         : (
           <select
             multiple
+            onChange={ handleChange }
             onBlur={ handleBlur }
             onInput={ handleInput }
             { ...rest as any }>
@@ -351,12 +386,14 @@ export function Field<
       : type === "textarea"
         ? (
           <textarea
+            onChange={ handleChange }
             onBlur={ handleBlur }
             onInput={ handleInput }
             { ...rest as any } />
         )
         : (
           <input
+            onChange={ handleChange }
             onBlur={ handleBlur }
             onInput={ handleInput }
             type={ type }

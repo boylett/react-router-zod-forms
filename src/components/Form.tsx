@@ -77,9 +77,11 @@ export function Form<
   }
 
   const {
+    events,
     FetcherForm,
     intent,
     validate,
+    validation,
   } = forms.current[ formId ];
 
   /**
@@ -89,7 +91,14 @@ export function Form<
     event => {
       onBlur?.(event);
 
-      validate?.(onValidate);
+      // If the event has been cancelled, do not validate
+      if (event.isDefaultPrevented()) {
+        return;
+      }
+
+      if (events?.includes("form.blur")) {
+        validate?.(onValidate);
+      }
     },
     [ onBlur, onValidate, validate ]
   );
@@ -101,7 +110,15 @@ export function Form<
     event => {
       onInput?.(event);
 
-      validate?.(onValidate);
+      // If the event has been cancelled, do not validate
+      if (event.isDefaultPrevented()) {
+        return;
+      }
+
+      // Validate the form
+      if (events?.includes("form.input")) {
+        validate?.(onValidate);
+      }
     },
     [ onInput, onValidate, validate ]
   );
@@ -111,11 +128,15 @@ export function Form<
    */
   const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
     event => {
+      let submitValidation = validation;
+
       // Validate the form
-      const validation = validate?.(onValidate);
+      if (events?.includes("form.submit")) {
+        submitValidation = validate?.(onValidate);
+      }
 
       // If validation succeeded
-      if (validation?.success) {
+      if (submitValidation?.success) {
         onSubmit?.(event);
       }
 
