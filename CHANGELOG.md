@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Validation event constraints
+
 ## [0.0.6] - 2025-04-24
 
 ### Changed
@@ -21,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prevent form submission if client-side validation fails
 - Changed default success message from `"ok"` to `"Success"`
 
-## Added
+### Added
 
 - `<Message />` component
 - `aria-invalid` attribute for invalid fields
