@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### To Do
 
-- Aria attributes for invalid fields
 - Remaining HTML validation attributes
 
 ## [Unreleased]
+
+## [0.0.6] - 2025-04-24
 
 ### Changed
 
@@ -18,10 +19,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed `/server` exports
 - Refactored file structure for clarity
 - Prevent form submission if client-side validation fails
+- Changed default success message from `"ok"` to `"Success"`
 
 ## Added
 
-- Current validation result is now accessible from `validation` prop returned by `useZodForm`
+- `<Message />` component
+- `aria-invalid` attribute for invalid fields
+- `meta` prop for custom component children of `<Field />`
+- `validation` prop returned by `useZodForm`
 
 ### Fixed
 

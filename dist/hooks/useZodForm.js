@@ -10,7 +10,7 @@ import { formDataToObject } from "../utils/formDataToObject";
  * Initialize a new Form instance
  */
 export function useZodForm(options) {
-    const { intent, schema, } = options;
+    const { events = ["beforeSubmit", "change"], intent, schema, } = options;
     // Get the zod form context
     const { forms } = useContext(ZodFormsContext);
     // If there is no context

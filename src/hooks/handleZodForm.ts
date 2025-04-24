@@ -247,7 +247,7 @@ export async function handleZodForm<
 
   let response: HandleZodFormMessage<SchemaType> = {
     intent,
-    message: "ok",
+    message: "Success",
     payload: null,
     status: 200,
     validation,

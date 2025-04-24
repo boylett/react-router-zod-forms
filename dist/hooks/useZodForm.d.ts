@@ -7,6 +7,13 @@ import type { HandleZodFormMessage } from "./handleZodForm";
  */
 export interface useZodFormOptions<SchemaType extends z.ZodInterface<any>, Intent extends keyof z.infer<SchemaType["def"]["shape"]>> {
     /**
+     * Configure which events trigger validation
+     *
+     * @remarks
+     * Defaults to `[ "beforeSubmit", "change" ]`
+     */
+    events?: ("beforeSubmit" | "blur" | "change" | "input")[];
+    /**
      * The current form intent
      */
     intent: Intent;

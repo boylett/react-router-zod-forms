@@ -1,10 +1,11 @@
 import React, { type AllHTMLAttributes, type ElementType, type ReactNode } from "react";
 import type { Paths } from "type-fest";
 import { z } from "zod";
+import type { HandleZodFormMessage } from "../hooks/handleZodForm";
 /**
  * Props for the Message component
  */
-export interface ZodFormMessageProps<SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
+export interface ZodFormMessageProps<PayloadType, SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
     bracketNotation: true;
 }>> extends Omit<AllHTMLAttributes<HTMLElement>, "as" | "children" | "name"> {
     /**
@@ -21,6 +22,14 @@ export interface ZodFormMessageProps<SchemaType extends z.ZodInterface<any>, Fie
      */
     children?: (props: AllHTMLAttributes<HTMLElement> & {
         /**
+         * Issues relating to this field
+         */
+        issues?: z.core.$ZodIssue[];
+        /**
+         * The message to display
+         */
+        message?: HandleZodFormMessage<SchemaType, PayloadType>;
+        /**
          * Form validation result
          */
         validation?: z.ZodSafeParseResult<z.infer<SchemaType>>;
@@ -30,6 +39,6 @@ export interface ZodFormMessageProps<SchemaType extends z.ZodInterface<any>, Fie
      */
     name?: FieldPath;
 }
-export declare function Message<SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
+export declare function Message<PayloadType, SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
     bracketNotation: true;
-}>>(props: ZodFormMessageProps<SchemaType, FieldPath>): React.JSX.Element;
+}>>(props: ZodFormMessageProps<PayloadType, SchemaType, FieldPath>): React.JSX.Element | undefined;

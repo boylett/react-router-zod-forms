@@ -1,16 +1,26 @@
 export class Path {
+    /**
+     * The raw path string
+     */
     key;
     /**
      * The current path
      */
     path = [];
-    constructor(
-    /**
-     * The raw path string
-     */
-    key) {
+    constructor(key) {
+        if (Array.isArray(key)) {
+            key = key
+                .map(key => typeof key === "number"
+                ? `[${key}]`
+                : `.${String(key)}`)
+                .join("")
+                .replace(/^\./, "");
+        }
+        if (key instanceof Path) {
+            key = key.key;
+        }
         this.key = key;
-        this.path = Path.split(key);
+        this.path = Path.split(this.key);
     }
     /**
      * Split a path string into an array
@@ -83,6 +93,12 @@ export class Path {
         return result.filter(part => part !== "");
     }
     /**
+     * Compare the equality of two paths
+     */
+    is(path) {
+        return this.key === new Path(path).toString();
+    }
+    /**
      * Pick the property with this key from an object
      *
      * @param schema Zod schema
@@ -92,16 +108,18 @@ export class Path {
             return undefined;
         }
         return this.path
-            .reduce((current, key) => {
-            if (key === "[]") {
-                key = 0;
+            .reduce((current, segment) => {
+            if (current === undefined || current === null) {
+                return undefined;
             }
-            if (current && (Array.isArray(current) ||
-                typeof current === "object") &&
-                key in current) {
-                return current[key];
+            if (segment === "[]") {
+                return Array.isArray(current)
+                    ? current[0]
+                    : undefined;
             }
-            return current;
+            else {
+                return current[segment];
+            }
         }, obj);
     }
     /**

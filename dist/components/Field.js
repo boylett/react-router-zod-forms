@@ -26,6 +26,8 @@ export function Field(props) {
     if (!form?.schema) {
         throw new Error("Could not connect to form context. Check `form` prop or wrap component with a Zod Forms `<Form />` component.");
     }
+    // Get form data
+    const { data, schema, validation, } = form;
     // If the field is not hidden, make it focusable with keyboard shortcuts
     if (type !== "hidden" && !("tabIndex" in rest)) {
         rest.tabIndex ||= 0;
@@ -35,14 +37,14 @@ export function Field(props) {
         // Create a new path
         const path = new Path(rest.name);
         // Get the default value from the current action data
-        const defaultValue = path.pickFrom(form?.data?.validation?.data);
+        const defaultValue = path.pickFrom(data?.validation?.data);
         // If the default value exists
         if (defaultValue !== undefined) {
             // Populate it on the field
             rest.defaultValue = defaultValue;
         }
         // Get the shape of the field schema
-        let shape = path.toSchema(form.schema);
+        let shape = path.toSchema(schema);
         // If we found the shape for this field
         if (shape) {
             // If the field should be required
@@ -133,6 +135,18 @@ export function Field(props) {
                     Object.assign(rest, {
                         // Remove the first `/` and trailing `/` and flags as HTML does not allow them
                         pattern: String(check._zod.def.pattern).substring(1).replace(/\/([a-z]+)?$/i, ""),
+                    });
+                }
+            }
+            // If there are validation issues
+            if (validation?.error?.issues?.length) {
+                // Get the field issues
+                const issues = validation.error.issues
+                    .filter(issue => path.is(issue.path));
+                // If the field has issues
+                if (issues.length > 0) {
+                    Object.assign(rest, {
+                        "aria-invalid": true,
                     });
                 }
             }

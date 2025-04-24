@@ -18,6 +18,14 @@ export interface useZodFormOptions<
   Intent extends keyof z.infer<SchemaType[ "def" ][ "shape" ]>,
 > {
   /**
+   * Configure which events trigger validation
+   * 
+   * @remarks
+   * Defaults to `[ "beforeSubmit", "change" ]`
+   */
+  events?: ("beforeSubmit" | "blur" | "change" | "input")[];
+
+  /**
    * The current form intent
    */
   intent: Intent;
@@ -70,6 +78,7 @@ export function useZodForm<
   IntentSchemaType
 > {
   const {
+    events = [ "beforeSubmit", "change" ],
     intent,
     schema,
   } = options;
@@ -182,7 +191,7 @@ export function useZodForm<
 
   // Create the message component
   const MessageComponent = useCallback(
-    (props: ZodFormMessageProps<IntentSchemaType, Paths<z.infer<IntentSchemaType>, { bracketNotation: true; }>>) => (
+    (props: ZodFormMessageProps<PayloadType, IntentSchemaType, Paths<z.infer<IntentSchemaType>, { bracketNotation: true; }>>) => (
       <ZodFormContext value={ formId }>
         <Message { ...props } />
       </ZodFormContext>

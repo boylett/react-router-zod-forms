@@ -5,6 +5,7 @@ import type z from "zod";
 import type { ZodFormFieldProps } from "../components/Field";
 import type { ZodFormProps } from "../components/Form";
 import type { ZodFormMessageProps } from "../components/Message";
+import type { HandleZodFormMessage } from "../hooks/handleZodForm";
 
 export type ZodFormsContextType<
   DataType = any,
@@ -135,7 +136,15 @@ export type ZodFormsContextType<
   /**
    * Message component
    */
-  Message: (props: ZodFormMessageProps<SchemaType, FieldPath>) => React.JSX.Element;
+  Message: (
+    props: ZodFormMessageProps<
+      DataType extends HandleZodFormMessage<SchemaType>
+      ? DataType[ "payload" ]
+      : DataType,
+      SchemaType,
+      FieldPath
+    >
+  ) => React.JSX.Element;
 };
 
 /**

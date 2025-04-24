@@ -221,6 +221,9 @@ export default function Component () {
     // Method to manually call client-side field validation
     validate,
 
+    // Zod validation result
+    validation,
+
     // Form components – more on these below
     Field,
     Form,
@@ -241,7 +244,6 @@ export default function Component () {
         ) }
         <fieldset>
           <legend>
-            { /* I know this is a bit long winded. I'm workin' on it */ }
             { schema.def.shape.general.def.shape.title.meta()?.description }
           </legend>
           <Field name="title" />

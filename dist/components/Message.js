@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { ZodFormContext } from "../context/FormContext";
 import { ZodFormsContext } from "../context/FormsContext";
+import { Path } from "../utils/Path";
 export function Message(props) {
     let { as: Element = "div", children, form: formId, name, ...rest } = props;
     // Get forms context
@@ -21,8 +22,43 @@ export function Message(props) {
     if (!form) {
         throw new Error("Could not connect to form context. Check `form` prop or wrap component with a Zod Forms `<Form />` component.");
     }
+    // Get validation result from context
+    const { data, schema, validation, } = form;
+    // If a field name is not set, display the data message
+    if (!name) {
+        // If there is not a message
+        if (!data?.message && !data?.status) {
+            return undefined;
+        }
+        return (children
+            ? (React.createElement(React.Fragment, null, children({
+                message: data,
+                ...rest,
+            })))
+            : (React.createElement(Element, { "data-status": data.status, title: data.message, ...rest },
+                React.createElement("p", null, data.message))));
+    }
+    // If validation is not set for this field
+    if (!validation || validation.success || validation.error.issues.length === 0) {
+        return undefined;
+    }
+    // Get the field path
+    const fieldPath = new Path(name);
+    // Get the field issues
+    const issues = validation.error.issues
+        .filter(issue => fieldPath.is(issue.path));
+    // If there are no issues for this field
+    if (issues.length === 0) {
+        return undefined;
+    }
     return (children
-        ? (React.createElement(React.Fragment, null, children({ ...rest })))
+        ? (React.createElement(React.Fragment, null, children({ ...rest, issues, validation })))
         : (React.createElement(Element, { ...rest },
-            React.createElement("p", null, JSON.stringify({})))));
+            React.createElement("ul", null, issues.map(issue => {
+                const fieldSchema = schema && fieldPath.toSchema(schema);
+                return (React.createElement("li", { "data-issue-code": issue.code },
+                    React.createElement("strong", null, fieldSchema?.meta()?.description || fieldPath.toString()),
+                    React.createElement("span", null, issue.message)));
+            })
+                .filter(Boolean)))));
 }

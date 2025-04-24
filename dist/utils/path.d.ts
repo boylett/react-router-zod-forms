@@ -8,11 +8,7 @@ export declare class Path {
      * The current path
      */
     private path;
-    constructor(
-    /**
-     * The raw path string
-     */
-    key: string);
+    constructor(key: Path | string | Array<number | string | symbol>);
     /**
      * Split a path string into an array
      *
@@ -30,6 +26,10 @@ export declare class Path {
      * @param path The path string to split
      */
     static split(path?: string): (string | number)[];
+    /**
+     * Compare the equality of two paths
+     */
+    is(path: Path | string | Array<number | string | symbol>): boolean;
     /**
      * Pick the property with this key from an object
      *

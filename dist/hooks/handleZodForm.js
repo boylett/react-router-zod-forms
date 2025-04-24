@@ -45,7 +45,7 @@ export async function handleZodForm(options, forms, hooks) {
     };
     let response = {
         intent,
-        message: "ok",
+        message: "Success",
         payload: null,
         status: 200,
         validation,
