@@ -310,22 +310,6 @@ To render a `select` field, you can set the `Field`'s `type` to `select` and add
 </Field>
 ```
 
-### `<Message />` component
-
-The `Message` component displays response or validation data depending on its `name` attribute.
-
-```tsx
-<Message name="title" />
-```
-
-If `name` matches a valid field in your schema, the component will display any validation error messages relating to that field. You can end the name attribute with a wildcard (`.*`) to catch all errors nested within a given field.
-
-```tsx
-<Message name="settings.*" />
-```
-
-Omitting `name` will cause the component to display the `message` sent back from [`handleZorm`](#server-handler)'s `response` payload.
-
 #### Objects
 
 Schemas can be nested as deeply as you need. Field keys can reflect nested types using **dot notation**;
@@ -430,6 +414,22 @@ For form messages, use the `message` prop to access the response payload from th
     <Select name={ name } required={ required }>
       ...
 ```
+
+### `<Message />` component
+
+The `Message` component displays response or validation data depending on its `name` attribute.
+
+```tsx
+<Message name="title" />
+```
+
+If `name` matches a valid field in your schema, the component will display any validation error messages relating to that field. You can end the name attribute with a wildcard (`.*`) to catch all errors nested within a given field.
+
+```tsx
+<Message name="settings.*" />
+```
+
+Omitting `name` will cause the component to display the `message` sent back from [`handleZorm`](#server-handler)'s `response` payload.
 
 ## Payload Type Safety
 
