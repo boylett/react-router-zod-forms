@@ -177,7 +177,7 @@ return await handleZodForm({ request, schema }, {
 | `afterValidate` | <sub>`result?: ZodSafeParseResult<z.infer<typeof schema>>`</sub> | <sub>`ZodSafeParseResult<z.infer<typeof schema>>`</sub> | Called after zod validation. May be used to mutate the validation response before action handling |
 
 > [!NOTE]
-> Hooks are not required to return a value
+> Hooks do not have to return a value
 
 ### Type Generics
 
@@ -371,7 +371,40 @@ or, if you prefer;
 >
 ```
 
-The same applies for the `Message` component, which receives additional properties that you should destructure accordingly;
+> [!WARNING]
+> By default, `props` is typed as `AllHTMLAttributes<HTMLElement>`, but this may cause problems with your custom component's property types. If that's the case, utilize destructuring to deliver the properties you need;
+
+```tsx
+  { ({ name, required }) => (
+    <Select name={ name } required={ required }>
+      ...
+```
+
+### `<Message />` component
+
+The `Message` component displays response or validation data depending on its `name` attribute.
+
+```tsx
+<Message name="title" />
+```
+
+If `name` matches a valid field in your schema, the component will display any validation error messages relating to that field. You can end the name attribute with a wildcard (`.*`) to catch all errors nested within a given field;
+
+```tsx
+<Message name="settings.*" />
+```
+
+You can display all validation errors at once by passing in the catchall `*` wildcard;
+
+```tsx
+<Message name="*" />
+```
+
+Omitting `name` will cause the component to display the `message` sent back from [`handleZorm`](#server-handler)'s `response` payload.
+
+#### Custom Components
+
+The `Message` component can also take advantage of custom components via a functional `children` prop. It receives additional properties that you should destructure accordingly;
 
 For field messages, use the `issues` prop to access zod's validation issues list.
 
@@ -405,37 +438,6 @@ For form messages, use the `message` prop to access the response payload from th
   ) }
 </Message>
 ```
-
-> [!WARNING]
-> By default, `props` is typed as `AllHTMLAttributes<HTMLElement>`, but this may cause problems with your custom component's property types. If that's the case, utilize destructuring to deliver the properties you need;
-
-```tsx
-  { ({ name, required }) => (
-    <Select name={ name } required={ required }>
-      ...
-```
-
-### `<Message />` component
-
-The `Message` component displays response or validation data depending on its `name` attribute.
-
-```tsx
-<Message name="title" />
-```
-
-If `name` matches a valid field in your schema, the component will display any validation error messages relating to that field. You can end the name attribute with a wildcard (`.*`) to catch all errors nested within a given field;
-
-```tsx
-<Message name="settings.*" />
-```
-
-You can display all validation errors at once by passing in the catchall `*` wildcard;
-
-```tsx
-<Message name="*" />
-```
-
-Omitting `name` will cause the component to display the `message` sent back from [`handleZorm`](#server-handler)'s `response` payload.
 
 ## Payload Type Safety
 
