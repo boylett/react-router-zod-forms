@@ -13,7 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- React `ref` forwarding for `<Field />`, `<Form />` and `<Message />`
+- React `ref` forwarding for `Field`, `Form` and `Message` components
+
+### Improved
+
+- Stronger typing for `Message` component functional children
 
 ## [0.0.8] - 2025-04-24
 

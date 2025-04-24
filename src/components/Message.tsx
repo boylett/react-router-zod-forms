@@ -9,7 +9,7 @@ import { Path } from "../utils/Path";
 /**
  * Props for the Message component
  */
-export interface ZodFormMessageProps<
+interface ZodFormMessagePropsNamed<
   PayloadType,
   SchemaType extends z.ZodInterface<any>,
   FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }>,
@@ -36,24 +36,77 @@ export interface ZodFormMessageProps<
     /**
      * Issues relating to this field
      */
-    issues?: z.core.$ZodIssue[];
-
-    /**
-     * The message to display
-     */
-    message?: HandleZodFormMessage<SchemaType, PayloadType>;
+    issues: z.core.$ZodIssue[];
   }) => ReactNode;
 
   /**
    * The name of the field in the schema
    */
-  name?: FieldPath | `${ FieldPath }.*` | "*";
+  name: FieldPath | `${ FieldPath }.*` | "*";
 
   /**
    * Message element reference
    */
   ref?: RefObject<HTMLElement | null>;
 }
+
+/**
+ * Props for the Message component
+ */
+interface ZodFormMessagePropsNameless<
+  PayloadType,
+  SchemaType extends z.ZodInterface<any>,
+  FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }>,
+> extends Omit<
+  AllHTMLAttributes<HTMLElement>,
+  | "as"
+  | "children"
+  | "name"
+> {
+  /**
+   * The element type to render
+   * 
+   * @remarks
+   * Ignored if `children` prop is supplied.
+   */
+  as?: ElementType;
+
+  /**
+   * Renders a custom component for the message with passthrough attributes
+   * 
+   * @param props Element attributes passed through to the component
+   */
+  children?: (props: AllHTMLAttributes<HTMLElement> & {
+    /**
+     * The message to display
+     */
+    message: HandleZodFormMessage<SchemaType, PayloadType>;
+  }) => ReactNode;
+
+  /**
+   * The name of the field in the schema
+   */
+  name?: never;
+
+  /**
+   * Message element reference
+   */
+  ref?: RefObject<HTMLElement | null>;
+}
+
+export type ZodFormMessageProps<
+  PayloadType,
+  SchemaType extends z.ZodInterface<any>,
+  FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }>,
+> = ZodFormMessagePropsNamed<
+  PayloadType,
+  SchemaType,
+  FieldPath
+> | ZodFormMessagePropsNameless<
+  PayloadType,
+  SchemaType,
+  FieldPath
+>;
 
 export function Message<
   PayloadType,
@@ -115,7 +168,7 @@ export function Message<
     return (
       children
         ? (
-          children({ ...rest, message: data }) as ReactNode
+          children({ ...rest, message: data } as any) as ReactNode
         )
         : (
           <Element
@@ -161,7 +214,7 @@ export function Message<
   return (
     children
       ? (
-        children({ ...rest, issues }) as ReactNode
+        children({ ...rest, issues } as any) as ReactNode
       )
       : (
         <Element { ...rest }>
