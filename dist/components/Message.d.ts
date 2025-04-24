@@ -29,15 +29,11 @@ export interface ZodFormMessageProps<PayloadType, SchemaType extends z.ZodInterf
          * The message to display
          */
         message?: HandleZodFormMessage<SchemaType, PayloadType>;
-        /**
-         * Form validation result
-         */
-        validation?: z.ZodSafeParseResult<z.infer<SchemaType>>;
     }) => ReactNode;
     /**
      * The name of the field in the schema
      */
-    name?: FieldPath;
+    name?: FieldPath | `${FieldPath}.*`;
 }
 export declare function Message<PayloadType, SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
     bracketNotation: true;

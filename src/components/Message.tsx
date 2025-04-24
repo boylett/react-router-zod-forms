@@ -42,17 +42,12 @@ export interface ZodFormMessageProps<
      * The message to display
      */
     message?: HandleZodFormMessage<SchemaType, PayloadType>;
-
-    /**
-     * Form validation result
-     */
-    validation?: z.ZodSafeParseResult<z.infer<SchemaType>>;
   }) => ReactNode;
 
   /**
    * The name of the field in the schema
    */
-  name?: FieldPath;
+  name?: FieldPath | `${ FieldPath }.*`;
 }
 
 export function Message<
@@ -116,10 +111,7 @@ export function Message<
       children
         ? (
           <>
-            { children({
-              message: data,
-              ...rest,
-            }) }
+            { children({ ...rest, message: data }) }
           </>
         )
         : (
@@ -140,14 +132,20 @@ export function Message<
     return undefined;
   }
 
+  // Whether this field name is a wildcard
+  const wildcard = name.endsWith(".*");
+
   // Get the field path
-  const fieldPath = new Path(name);
+  const fieldPath = new Path(name.replace(/\.\*$/, ""));
 
   // Get the field issues
   const issues = validation.error.issues
     .filter(
       issue =>
-        fieldPath.is(issue.path)
+        fieldPath.is(issue.path) ||
+        (
+          wildcard && fieldPath.startsWith(issue.path)
+        )
     );
 
   // If there are no issues for this field
@@ -159,7 +157,7 @@ export function Message<
     children
       ? (
         <>
-          { children({ ...rest, issues, validation }) }
+          { children({ ...rest, issues }) }
         </>
       )
       : (

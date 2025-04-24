@@ -7,6 +7,10 @@ export class Path {
      * The current path
      */
     path = [];
+    /**
+     * This path's segment length
+     */
+    length;
     constructor(key) {
         if (Array.isArray(key)) {
             key = key
@@ -21,6 +25,7 @@ export class Path {
         }
         this.key = key;
         this.path = Path.split(this.key);
+        this.length = this.path.length;
     }
     /**
      * Split a path string into an array
@@ -93,7 +98,31 @@ export class Path {
         return result.filter(part => part !== "");
     }
     /**
+     * Get the path segment at the specified index
+     *
+     * @param index The index of the path segment to retrieve
+     */
+    at(index) {
+        return this.path[index];
+    }
+    /**
+     * Determine whether this path ends with another path
+     *
+     * @param key The path to compare with
+     */
+    endsWith(key) {
+        const compare = new Path(key);
+        for (let index = this.length - 1; index >= 0; index--) {
+            if (this.path[index] !== compare.at(index)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    /**
      * Compare the equality of two paths
+     *
+     * @param path The path to compare with
      */
     is(path) {
         return this.key === new Path(path).toString();
@@ -121,6 +150,20 @@ export class Path {
                 return current[segment];
             }
         }, obj);
+    }
+    /**
+     * Determine whether this path starts with another path
+     *
+     * @param key The path to compare with
+     */
+    startsWith(key) {
+        const compare = new Path(key);
+        for (let index = 0; index < this.length; index++) {
+            if (this.path[index] !== compare.at(index)) {
+                return false;
+            }
+        }
+        return true;
     }
     /**
      * Get a specific zod schema shape from the current key

@@ -227,6 +227,7 @@ export default function Component () {
     // Form components – more on these below
     Field,
     Form,
+    Message,
   } = useZodForm(
     {
       intent: "general",
@@ -237,22 +238,20 @@ export default function Component () {
   return (
     <>
       <Form action="?index" className="form">
-        { data?.message && (
-          <blockquote>
-            { data.message }
-          </blockquote>
-        ) }
+        <Message />
         <fieldset>
           <legend>
             { schema.def.shape.general.def.shape.title.meta()?.description }
           </legend>
           <Field name="title" />
+          <Message name="title" />
         </fieldset>
         <fieldset>
           <legend>
             { schema.def.shape.general.def.shape.content.meta()?.description }
           </legend>
           <Field name="content" type="textarea" />
+          <Message name="content" />
         </fieldset>
         <fieldset>
           <legend>
@@ -261,6 +260,7 @@ export default function Component () {
           <Field name="settings[0]" />
           <Field name="settings[1]" />
           <Field name="settings[2]" />
+          <Message name="settings.*" />
         </fieldset>
         <button disabled={
           state !== "idle"
@@ -299,6 +299,22 @@ To render a `select` field, you can set the `Field`'s `type` to `select` and add
   ...
 </Field>
 ```
+
+### `<Message />` component
+
+The `Message` component displays response or validation data depending on its `name` attribute.
+
+```tsx
+<Message name="title" />
+```
+
+If `name` matches a valid field in your schema, the component will display any validation error messages relating to that field. You can end the name attribute with a wildcard (`.*`) to catch all errors nested within a given field.
+
+```tsx
+<Message name="settings.*" />
+```
+
+Omitting `name` will cause the component to display the `message` sent back from [`handleZorm`](#server-handler)'s `response` payload.
 
 #### Objects
 
@@ -361,7 +377,40 @@ or, if you prefer;
 >
 ```
 
-Whatever floats your boat, y'know.
+The same applies for the `Message` component, which receives additional properties that you should destructure accordingly;
+
+For field messages, use the `issues` prop to access zod's validation issues list.
+
+```tsx
+<Message name="select_field">
+  { ({ issues }) => (
+    <div>
+      <h4>Field contains <strong>{ issues.length }</strong> errors:</h4>
+      <ul>
+        { issues.map(issue => (
+          <li>{ issue.message }</li>
+        )) }
+      </ul>
+    </div>
+  ) }
+</Message>
+```
+
+For form messages, use the `message` prop to access the response payload from the server.
+
+```tsx
+<Message>
+  { ({ message }) => (
+    <p>
+      <strong>
+        { message.status === 200
+          ? "Success"
+          : "Error" }
+      </strong>: { message.message }
+    </p>
+  ) }
+</Message>
+```
 
 > [!WARNING]
 > By default, `props` is typed as `AllHTMLAttributes<HTMLElement>`, but this may cause problems with your custom component's property types. If that's the case, utilize destructuring to deliver the properties you need;

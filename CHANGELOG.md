@@ -25,7 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `<Message />` component
 - `aria-invalid` attribute for invalid fields
-- `meta` prop for custom component children of `<Field />`
 - `validation` prop returned by `useZodForm`
 
 ### Fixed

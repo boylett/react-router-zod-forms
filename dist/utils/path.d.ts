@@ -3,11 +3,15 @@ export declare class Path {
     /**
      * The raw path string
      */
-    private key;
+    private readonly key;
     /**
      * The current path
      */
-    private path;
+    private readonly path;
+    /**
+     * This path's segment length
+     */
+    readonly length: number;
     constructor(key: Path | string | Array<number | string | symbol>);
     /**
      * Split a path string into an array
@@ -27,7 +31,21 @@ export declare class Path {
      */
     static split(path?: string): (string | number)[];
     /**
+     * Get the path segment at the specified index
+     *
+     * @param index The index of the path segment to retrieve
+     */
+    at(index: number): string | number | undefined;
+    /**
+     * Determine whether this path ends with another path
+     *
+     * @param key The path to compare with
+     */
+    endsWith(key: Path | string | Array<number | string | symbol>): boolean;
+    /**
      * Compare the equality of two paths
+     *
+     * @param path The path to compare with
      */
     is(path: Path | string | Array<number | string | symbol>): boolean;
     /**
@@ -36,6 +54,12 @@ export declare class Path {
      * @param schema Zod schema
      */
     pickFrom<ObjectType = Record<string, any>>(obj: ObjectType): any | undefined;
+    /**
+     * Determine whether this path starts with another path
+     *
+     * @param key The path to compare with
+     */
+    startsWith(key: Path | string | Array<number | string | symbol>): boolean;
     /**
      * Get a specific zod schema shape from the current key
      *

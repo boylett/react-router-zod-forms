@@ -31,10 +31,7 @@ export function Message(props) {
             return undefined;
         }
         return (children
-            ? (React.createElement(React.Fragment, null, children({
-                message: data,
-                ...rest,
-            })))
+            ? (React.createElement(React.Fragment, null, children({ ...rest, message: data })))
             : (React.createElement(Element, { "data-status": data.status, title: data.message, ...rest },
                 React.createElement("p", null, data.message))));
     }
@@ -42,17 +39,20 @@ export function Message(props) {
     if (!validation || validation.success || validation.error.issues.length === 0) {
         return undefined;
     }
+    // Whether this field name is a wildcard
+    const wildcard = name.endsWith(".*");
     // Get the field path
-    const fieldPath = new Path(name);
+    const fieldPath = new Path(name.replace(/\.\*$/, ""));
     // Get the field issues
     const issues = validation.error.issues
-        .filter(issue => fieldPath.is(issue.path));
+        .filter(issue => fieldPath.is(issue.path) ||
+        (wildcard && fieldPath.startsWith(issue.path)));
     // If there are no issues for this field
     if (issues.length === 0) {
         return undefined;
     }
     return (children
-        ? (React.createElement(React.Fragment, null, children({ ...rest, issues, validation })))
+        ? (React.createElement(React.Fragment, null, children({ ...rest, issues })))
         : (React.createElement(Element, { ...rest },
             React.createElement("ul", null, issues.map(issue => {
                 const fieldSchema = schema && fieldPath.toSchema(schema);
