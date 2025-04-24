@@ -474,11 +474,7 @@ export default function Component () {
   return (
     <>
       <primary.Form>
-        { primary.data?.message && (
-          <blockquote>
-            { primary.data.message }
-          </blockquote>
-        ) }
+        <primary.Message />
         <fieldset>
           <legend>
             Primary Title
@@ -493,11 +489,7 @@ export default function Component () {
       </primary.Form>
 
       <secondary.Form>
-        { secondary.data?.message && (
-          <blockquote>
-            { secondary.data.message }
-          </blockquote>
-        ) }
+        <secondary.Message />
         <fieldset>
           <legend>
             Secondary Title
@@ -513,19 +505,6 @@ export default function Component () {
     </>
   );
 }
-```
-
-Or, I mean, if you're really fancy, you could just destructure *differently*. OoOoooOoo~
-
-```tsx
-export default function Component () {
-  const { Form: PrimaryForm } = useZodForm({ intent: "primary", schema });
-  const { Form: SecondaryForm } = useZodForm({ intent: "secondary", schema });
-
-  return (
-    <>
-      <PrimaryForm>
-        ...
 ```
 
 # Contributing
