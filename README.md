@@ -66,7 +66,7 @@ const schema = z.interface({
 To handle form submission in a route action, use the `handleZodForm` method.
 
 ```typescript
-import { handleZodForm } from "react-router-zod-forms/server";
+import { handleZodForm } from "react-router-zod-forms";
 
 export const action = async ({ context, params, request }: Route.ActionArgs) => {
   return await handleZodForm(

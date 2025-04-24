@@ -2,7 +2,7 @@ import React, { createContext, useRef } from "react";
 /**
  * Context for ZodForms
  */
-export const ZodFormContext = createContext({});
+export const ZodFormsContext = createContext({});
 /**
  * ZodForm context provider
  *
@@ -12,5 +12,5 @@ export const ZodFormContext = createContext({});
 export function ZodFormProvider({ children }) {
     // Create forms state
     const forms = useRef({});
-    return (React.createElement(ZodFormContext, { value: { forms } }, children));
+    return (React.createElement(ZodFormsContext, { value: { forms } }, children));
 }

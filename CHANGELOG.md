@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Restructured exports
+- Refactored file structure for clarity
+
+## Added
+
+- Current validation result is now accessible from `validation` prop returned by `useZodForm`
+
 ### Fixed
 
 - Fixed a bug where action data could potentially pollute other forms

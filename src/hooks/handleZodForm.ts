@@ -1,7 +1,7 @@
 import { parseFormData, type FileUpload } from "@mjackson/form-data-parser";
 import z from "zod";
-import { formDataToObject } from "./utils/formDataToObject";
-import type { Replace } from "./utils/types";
+import { formDataToObject } from "../utils/formDataToObject";
+import type { Replace } from "../utils/types";
 
 /**
  * Hook options for a given schema

@@ -1,4 +1,4 @@
-import { Path } from "./path";
+import { Path } from "./Path";
 /**
  * Parse form data to a POJO
  *

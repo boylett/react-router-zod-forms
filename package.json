@@ -19,14 +19,6 @@
       },
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    },
-    "./server": {
-      "import": {
-        "types": "./dist/server.d.ts",
-        "default": "./dist/server.js"
-      },
-      "types": "./dist/server.d.ts",
-      "default": "./dist/server.js"
     }
   },
   "scripts": {

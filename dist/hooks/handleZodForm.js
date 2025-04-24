@@ -1,6 +1,6 @@
 import { parseFormData } from "@mjackson/form-data-parser";
 import z from "zod";
-import { formDataToObject } from "./utils/formDataToObject";
+import { formDataToObject } from "../utils/formDataToObject";
 /**
  * Handle Zod Form submission
  */

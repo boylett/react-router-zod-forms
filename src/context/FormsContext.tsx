@@ -1,10 +1,12 @@
-import React, { createContext, useRef, type ReactNode } from "react";
-import type { FetcherSubmitFunction } from "react-router";
+import React, { createContext, useRef, type ForwardRefExoticComponent, type ReactNode, type RefAttributes } from "react";
+import type { FetcherFormProps, FetcherSubmitFunction } from "react-router";
 import type { Paths } from "type-fest";
 import type z from "zod";
-import type { ZodFormFieldProps, ZodFormProps } from "./client";
+import type { ZodFormFieldProps } from "../components/Field";
+import type { ZodFormProps } from "../components/Form";
+import type { ZodFormMessageProps } from "../components/Message";
 
-export type ZodFormContextType<
+export type ZodFormsContextType<
   DataType = any,
   SchemaType extends z.ZodInterface<any> = z.ZodInterface<any>,
   FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }> = Paths<z.infer<SchemaType>, { bracketNotation: true; }>
@@ -116,6 +118,11 @@ export type ZodFormContextType<
   validation?: z.ZodSafeParseResult<z.core.output<SchemaType>>;
 
   /**
+   * Pure fetcher form component
+   */
+  FetcherForm?: ForwardRefExoticComponent<FetcherFormProps & RefAttributes<HTMLFormElement>>;
+
+  /**
    * Field component
    */
   Field: (props: ZodFormFieldProps<SchemaType, FieldPath>) => React.JSX.Element;
@@ -124,17 +131,22 @@ export type ZodFormContextType<
    * Form component
    */
   Form: (props: ZodFormProps<SchemaType>) => React.JSX.Element;
+
+  /**
+   * Message component
+   */
+  Message: (props: ZodFormMessageProps<SchemaType, FieldPath>) => React.JSX.Element;
 };
 
 /**
  * Context for ZodForms
  */
-export const ZodFormContext = createContext<
+export const ZodFormsContext = createContext<
   {
     /**
      * The current forums in the document
      */
-    forms?: React.RefObject<Record<string, Partial<ZodFormContextType>>>;
+    forms?: React.RefObject<Record<string, Partial<ZodFormsContextType>>>;
   }
 >({});
 
@@ -146,11 +158,11 @@ export const ZodFormContext = createContext<
  */
 export function ZodFormProvider ({ children }: { children: ReactNode; }) {
   // Create forms state
-  const forms = useRef<Record<string, Partial<ZodFormContextType>>>({});
+  const forms = useRef<Record<string, Partial<ZodFormsContextType>>>({});
 
   return (
-    <ZodFormContext value={ { forms } }>
+    <ZodFormsContext value={ { forms } }>
       { children }
-    </ZodFormContext>
+    </ZodFormsContext>
   );
 }

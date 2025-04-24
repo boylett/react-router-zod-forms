@@ -1,9 +1,11 @@
-import React, { type ReactNode } from "react";
-import type { FetcherSubmitFunction } from "react-router";
+import React, { type ForwardRefExoticComponent, type ReactNode, type RefAttributes } from "react";
+import type { FetcherFormProps, FetcherSubmitFunction } from "react-router";
 import type { Paths } from "type-fest";
 import type z from "zod";
-import type { ZodFormFieldProps, ZodFormProps } from "./client";
-export type ZodFormContextType<DataType = any, SchemaType extends z.ZodInterface<any> = z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
+import type { ZodFormFieldProps } from "../components/Field";
+import type { ZodFormProps } from "../components/Form";
+import type { ZodFormMessageProps } from "../components/Message";
+export type ZodFormsContextType<DataType = any, SchemaType extends z.ZodInterface<any> = z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
     bracketNotation: true;
 }> = Paths<z.infer<SchemaType>, {
     bracketNotation: true;
@@ -105,6 +107,10 @@ export type ZodFormContextType<DataType = any, SchemaType extends z.ZodInterface
      */
     validation?: z.ZodSafeParseResult<z.core.output<SchemaType>>;
     /**
+     * Pure fetcher form component
+     */
+    FetcherForm?: ForwardRefExoticComponent<FetcherFormProps & RefAttributes<HTMLFormElement>>;
+    /**
      * Field component
      */
     Field: (props: ZodFormFieldProps<SchemaType, FieldPath>) => React.JSX.Element;
@@ -112,15 +118,19 @@ export type ZodFormContextType<DataType = any, SchemaType extends z.ZodInterface
      * Form component
      */
     Form: (props: ZodFormProps<SchemaType>) => React.JSX.Element;
+    /**
+     * Message component
+     */
+    Message: (props: ZodFormMessageProps<SchemaType, FieldPath>) => React.JSX.Element;
 };
 /**
  * Context for ZodForms
  */
-export declare const ZodFormContext: React.Context<{
+export declare const ZodFormsContext: React.Context<{
     /**
      * The current forums in the document
      */
-    forms?: React.RefObject<Record<string, Partial<ZodFormContextType>>>;
+    forms?: React.RefObject<Record<string, Partial<ZodFormsContextType>>>;
 }>;
 /**
  * ZodForm context provider

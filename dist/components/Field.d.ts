@@ -1,24 +1,8 @@
-import { type AllHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
-import { type FormProps } from "react-router";
+import React, { type AllHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
 import type { Get, Paths } from "type-fest";
 import { z } from "zod";
-import { type ZodFormContextType } from "./context";
-import type { HandleZodFormMessage } from "./server";
 /**
- * Props for the ZodForm component
- */
-export interface ZodFormProps<SchemaType extends z.ZodInterface<any>> extends Omit<FormProps, "id"> {
-    /**
-     * Called when data returns from the action
-     */
-    onResponse?: (data: any) => void;
-    /**
-     * Called during form data validation
-     */
-    onValidate?: (data: z.infer<SchemaType>, validation: z.ZodSafeParseResult<z.infer<SchemaType>>) => void;
-}
-/**
- * Props for the ZodFormField component
+ * Props for the Field component
  */
 export type ZodFormFieldProps<SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
     bracketNotation: true;
@@ -57,19 +41,8 @@ export type ZodFormFieldProps<SchemaType extends z.ZodInterface<any>, FieldPath 
     value?: FieldValue;
 };
 /**
- * Options for the useZodForms hook
+ * Field component
  */
-export interface useZodFormOptions<SchemaType extends z.ZodInterface<any>, Intent extends keyof z.infer<SchemaType["def"]["shape"]>> {
-    /**
-     * The current form intent
-     */
-    intent: Intent;
-    /**
-     * The Zod schema used to validate form data
-     */
-    schema: SchemaType;
-}
-/**
- * Initialize a new ZodForm instance
- */
-export declare function useZodForm<SchemaType extends z.ZodInterface<any>, Intent extends keyof z.infer<SchemaType>, PayloadType = any, IntentSchemaType extends z.ZodInterface<any> = SchemaType["def"]["shape"][Intent]>(options: useZodFormOptions<SchemaType, Intent>): ZodFormContextType<HandleZodFormMessage<IntentSchemaType, PayloadType>, IntentSchemaType>;
+export declare function Field<SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
+    bracketNotation: true;
+}>>(props: ZodFormFieldProps<SchemaType, FieldPath>): React.JSX.Element;
