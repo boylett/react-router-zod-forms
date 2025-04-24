@@ -1,4 +1,4 @@
-import React, { type AllHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
+import React, { type AllHTMLAttributes, type InputHTMLAttributes, type ReactNode, type RefObject, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
 import type { Get, Paths } from "type-fest";
 import { z } from "zod";
 /**
@@ -31,6 +31,10 @@ export type ZodFormFieldProps<SchemaType extends z.ZodInterface<any>, FieldPath 
      * Whether the field should be read only
      */
     readOnly?: boolean;
+    /**
+     * Field element reference
+     */
+    ref?: RefObject<(FieldType extends "select" ? HTMLSelectElement : FieldType extends "textarea" ? HTMLTextAreaElement : HTMLInputElement) | null>;
     /**
      * The type of the field
      */

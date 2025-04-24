@@ -1,4 +1,4 @@
-import React, { type ForwardRefExoticComponent, type ReactNode, type RefAttributes } from "react";
+import React, { type ForwardRefExoticComponent, type ReactNode, type RefAttributes, type RefObject } from "react";
 import type { FetcherFormProps, FetcherSubmitFunction } from "react-router";
 import type { Paths } from "type-fest";
 import type z from "zod";
@@ -25,7 +25,7 @@ export type ZodFormsContextType<DataType = any, SchemaType extends z.ZodInterfac
     /**
      * The form element
      */
-    form?: React.RefObject<HTMLFormElement | null>;
+    form?: RefObject<HTMLFormElement | null>;
     /**
      * The form's unique identifier
      */

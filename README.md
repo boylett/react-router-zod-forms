@@ -23,7 +23,7 @@
 **React Router Zod Forms** aims to simplify the process of handling form submission and validation with React Router and Zod 4.
 
 > [!NOTE]
-> Requires [React Router 7](https://reactrouter.com) and [zod 4](https://v4.zod.dev)
+> Requires [React 19](https://react.dev/blog/2024/12/05/react-19), [React Router 7](https://reactrouter.com) and [zod 4](https://v4.zod.dev)
 
 ## Installation
 

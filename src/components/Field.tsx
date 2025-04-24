@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import React, { useCallback, useContext, type AllHTMLAttributes, type ChangeEventHandler, type FocusEventHandler, type FormEventHandler, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
+import React, { useCallback, useContext, type AllHTMLAttributes, type ChangeEventHandler, type FocusEventHandler, type FormEventHandler, type InputHTMLAttributes, type ReactNode, type RefObject, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
 import type { Get, Paths } from "type-fest";
 import { z } from "zod";
 import { ZodFormContext } from "../context/FormContext";
@@ -74,6 +74,19 @@ export type ZodFormFieldProps<
    * Whether the field should be read only
    */
   readOnly?: boolean;
+
+  /**
+   * Field element reference
+   */
+  ref?: RefObject<
+    (
+      FieldType extends "select"
+      ? HTMLSelectElement
+      : FieldType extends "textarea"
+      ? HTMLTextAreaElement
+      : HTMLInputElement
+    ) | null
+  >;
 
   /**
    * The type of the field

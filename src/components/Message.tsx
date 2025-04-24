@@ -1,4 +1,4 @@
-import React, { useContext, type AllHTMLAttributes, type ElementType, type ReactNode } from "react";
+import React, { useContext, type AllHTMLAttributes, type ElementType, type ReactNode, type RefObject } from "react";
 import type { Paths } from "type-fest";
 import { z } from "zod";
 import { ZodFormContext } from "../context/FormContext";
@@ -48,6 +48,11 @@ export interface ZodFormMessageProps<
    * The name of the field in the schema
    */
   name?: FieldPath | `${ FieldPath }.*` | "*";
+
+  /**
+   * Message element reference
+   */
+  ref?: RefObject<HTMLElement | null>;
 }
 
 export function Message<

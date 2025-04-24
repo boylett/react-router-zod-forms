@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type RefObject } from "react";
 import { type FormProps } from "react-router";
 import { z } from "zod";
 /**
@@ -13,6 +13,10 @@ export interface ZodFormProps<SchemaType extends z.ZodInterface<any>> extends Fo
      * Called during form data validation
      */
     onValidate?: (data: z.infer<SchemaType>, validation: z.ZodSafeParseResult<z.infer<SchemaType>>) => void;
+    /**
+     * Form element reference
+     */
+    ref?: RefObject<HTMLFormElement | null>;
 }
 /**
  * Form component

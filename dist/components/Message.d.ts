@@ -1,4 +1,4 @@
-import React, { type AllHTMLAttributes, type ElementType, type ReactNode } from "react";
+import React, { type AllHTMLAttributes, type ElementType, type ReactNode, type RefObject } from "react";
 import type { Paths } from "type-fest";
 import { z } from "zod";
 import type { HandleZodFormMessage } from "../hooks/handleZodForm";
@@ -34,6 +34,10 @@ export interface ZodFormMessageProps<PayloadType, SchemaType extends z.ZodInterf
      * The name of the field in the schema
      */
     name?: FieldPath | `${FieldPath}.*` | "*";
+    /**
+     * Message element reference
+     */
+    ref?: RefObject<HTMLElement | null>;
 }
 export declare function Message<PayloadType, SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
     bracketNotation: true;

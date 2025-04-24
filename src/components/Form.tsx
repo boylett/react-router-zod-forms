@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef, type FocusEventHandler, type FormEventHandler } from "react";
+import React, { useCallback, useContext, useEffect, useRef, type FocusEventHandler, type FormEventHandler, type RefObject } from "react";
 import { type FormProps } from "react-router";
 import { z } from "zod";
 import { ZodFormContext } from "../context/FormContext";
@@ -19,6 +19,11 @@ export interface ZodFormProps<
    * Called during form data validation
    */
   onValidate?: (data: z.infer<SchemaType>, validation: z.ZodSafeParseResult<z.infer<SchemaType>>) => void;
+
+  /**
+   * Form element reference
+   */
+  ref?: RefObject<HTMLFormElement | null>;
 }
 
 /**
@@ -37,6 +42,7 @@ export function Form<
     onResponse,
     onSubmit,
     onValidate,
+    ref,
     ...rest
   } = props;
 
@@ -69,11 +75,11 @@ export function Form<
   }
 
   // Create a new form element reference
-  const formRef = useRef<HTMLFormElement>(null);
+  ref ||= useRef<HTMLFormElement>(null);
 
   // Assign the reference and validation result to context
   if (form) {
-    forms.current[ formId ].form = formRef;
+    forms.current[ formId ].form = ref;
   }
 
   const {
@@ -153,14 +159,14 @@ export function Form<
   useEffect(() => {
     const listener = () => validate?.(onValidate);
 
-    formRef.current?.addEventListener("$ZodForms.externalFieldValidate", listener);
+    ref.current?.addEventListener("$ZodForms.externalFieldValidate", listener);
 
     return () => {
-      formRef.current?.removeEventListener("$ZodForms.externalFieldValidate", listener);
+      ref.current?.removeEventListener("$ZodForms.externalFieldValidate", listener);
 
       delete forms?.current[ formId ];
     };
-  }, [ formRef.current ]);
+  }, [ ref.current ]);
 
   // Watch fetcher data to trigger response handler
   useEffect(() => {
@@ -178,7 +184,7 @@ export function Form<
       onInput={ handleInput }
       onSubmit={ handleSubmit }
       { ...rest }
-      ref={ formRef }>
+      ref={ ref }>
       <input
         name="_intent"
         type="hidden"

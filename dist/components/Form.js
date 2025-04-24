@@ -5,7 +5,7 @@ import { ZodFormsContext } from "../context/FormsContext";
  * Form component
  */
 export function Form(props) {
-    let { children, id: formId, onBlur, onInput, onResponse, onSubmit, onValidate, ...rest } = props;
+    let { children, id: formId, onBlur, onInput, onResponse, onSubmit, onValidate, ref, ...rest } = props;
     // Get form context
     const { forms } = (useContext(ZodFormsContext));
     // If there is no context
@@ -25,10 +25,10 @@ export function Form(props) {
         throw new Error("Could not connect to form context. Check `id` prop or wrap component with a Zod Forms `<Form />` component.");
     }
     // Create a new form element reference
-    const formRef = useRef(null);
+    ref ||= useRef(null);
     // Assign the reference and validation result to context
     if (form) {
-        forms.current[formId].form = formRef;
+        forms.current[formId].form = ref;
     }
     const { events, FetcherForm, intent, validate, validation, } = forms.current[formId];
     /**
@@ -80,19 +80,19 @@ export function Form(props) {
     // Custom event listener to enable external field validation
     useEffect(() => {
         const listener = () => validate?.(onValidate);
-        formRef.current?.addEventListener("$ZodForms.externalFieldValidate", listener);
+        ref.current?.addEventListener("$ZodForms.externalFieldValidate", listener);
         return () => {
-            formRef.current?.removeEventListener("$ZodForms.externalFieldValidate", listener);
+            ref.current?.removeEventListener("$ZodForms.externalFieldValidate", listener);
             delete forms?.current[formId];
         };
-    }, [formRef.current]);
+    }, [ref.current]);
     // Watch fetcher data to trigger response handler
     useEffect(() => {
         if (form?.data && form?.state === "idle") {
             onResponse?.(form?.data);
         }
     }, [form?.data, form?.state, onResponse]);
-    return FetcherForm && (React.createElement(FetcherForm, { id: formId, method: "post", navigate: false, onBlur: handleBlur, onInput: handleInput, onSubmit: handleSubmit, ...rest, ref: formRef },
+    return FetcherForm && (React.createElement(FetcherForm, { id: formId, method: "post", navigate: false, onBlur: handleBlur, onInput: handleInput, onSubmit: handleSubmit, ...rest, ref: ref },
         React.createElement("input", { name: "_intent", type: "hidden", value: String(intent) }),
         children));
 }
