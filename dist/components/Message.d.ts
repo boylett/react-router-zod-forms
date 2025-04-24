@@ -5,7 +5,7 @@ import type { HandleZodFormMessage } from "../hooks/handleZodForm";
 /**
  * Props for the Message component
  */
-interface ZodFormMessagePropsNamed<PayloadType, SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
+interface ZodFormMessagePropsNamed<SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
     bracketNotation: true;
 }>> extends Omit<AllHTMLAttributes<HTMLElement>, "as" | "children" | "name"> {
     /**
@@ -38,9 +38,7 @@ interface ZodFormMessagePropsNamed<PayloadType, SchemaType extends z.ZodInterfac
 /**
  * Props for the Message component
  */
-interface ZodFormMessagePropsNameless<PayloadType, SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
-    bracketNotation: true;
-}>> extends Omit<AllHTMLAttributes<HTMLElement>, "as" | "children" | "name"> {
+interface ZodFormMessagePropsNameless<PayloadType, SchemaType extends z.ZodInterface<any>> extends Omit<AllHTMLAttributes<HTMLElement>, "as" | "children" | "name"> {
     /**
      * The element type to render
      *
@@ -68,9 +66,12 @@ interface ZodFormMessagePropsNameless<PayloadType, SchemaType extends z.ZodInter
      */
     ref?: RefObject<HTMLElement | null>;
 }
+/**
+ * Props for the Message component
+ */
 export type ZodFormMessageProps<PayloadType, SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
     bracketNotation: true;
-}>> = ZodFormMessagePropsNamed<PayloadType, SchemaType, FieldPath> | ZodFormMessagePropsNameless<PayloadType, SchemaType, FieldPath>;
+}>> = ZodFormMessagePropsNamed<SchemaType, FieldPath> | ZodFormMessagePropsNameless<PayloadType, SchemaType>;
 export declare function Message<PayloadType, SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
     bracketNotation: true;
 }>>(props: ZodFormMessageProps<PayloadType, SchemaType, FieldPath>): string | number | bigint | boolean | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | React.JSX.Element | null | undefined;

@@ -10,7 +10,6 @@ import { Path } from "../utils/Path";
  * Props for the Message component
  */
 interface ZodFormMessagePropsNamed<
-  PayloadType,
   SchemaType extends z.ZodInterface<any>,
   FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }>,
 > extends Omit<
@@ -56,7 +55,6 @@ interface ZodFormMessagePropsNamed<
 interface ZodFormMessagePropsNameless<
   PayloadType,
   SchemaType extends z.ZodInterface<any>,
-  FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }>,
 > extends Omit<
   AllHTMLAttributes<HTMLElement>,
   | "as"
@@ -94,18 +92,19 @@ interface ZodFormMessagePropsNameless<
   ref?: RefObject<HTMLElement | null>;
 }
 
+/**
+ * Props for the Message component
+ */
 export type ZodFormMessageProps<
   PayloadType,
   SchemaType extends z.ZodInterface<any>,
   FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }>,
 > = ZodFormMessagePropsNamed<
-  PayloadType,
   SchemaType,
   FieldPath
 > | ZodFormMessagePropsNameless<
   PayloadType,
-  SchemaType,
-  FieldPath
+  SchemaType
 >;
 
 export function Message<
