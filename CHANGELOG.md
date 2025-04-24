@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.8] - 2025-04-24
+
+### Added
+
+- Catchall wildcard to display all validation messages with `<Message name="*" />`
+
 ## [0.0.7] - 2025-04-24
 
 ### Added

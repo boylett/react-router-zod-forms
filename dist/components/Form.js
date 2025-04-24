@@ -30,29 +30,45 @@ export function Form(props) {
     if (form) {
         forms.current[formId].form = formRef;
     }
-    const { FetcherForm, intent, validate, } = forms.current[formId];
+    const { events, FetcherForm, intent, validate, validation, } = forms.current[formId];
     /**
      * Validate the form on blur
      */
     const handleBlur = useCallback(event => {
         onBlur?.(event);
-        validate?.(onValidate);
+        // If the event has been cancelled, do not validate
+        if (event.isDefaultPrevented()) {
+            return;
+        }
+        if (events?.includes("form.blur")) {
+            validate?.(onValidate);
+        }
     }, [onBlur, onValidate, validate]);
     /**
      * Validate the form on input
      */
     const handleInput = useCallback(event => {
         onInput?.(event);
-        validate?.(onValidate);
+        // If the event has been cancelled, do not validate
+        if (event.isDefaultPrevented()) {
+            return;
+        }
+        // Validate the form
+        if (events?.includes("form.input")) {
+            validate?.(onValidate);
+        }
     }, [onInput, onValidate, validate]);
     /**
      * Handle form submission
      */
     const handleSubmit = useCallback(event => {
+        let submitValidation = validation;
         // Validate the form
-        const validation = validate?.(onValidate);
+        if (events?.includes("form.submit")) {
+            submitValidation = validate?.(onValidate);
+        }
         // If validation succeeded
-        if (validation?.success) {
+        if (submitValidation?.success) {
             onSubmit?.(event);
         }
         // If validation failed

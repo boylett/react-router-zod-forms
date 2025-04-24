@@ -31,7 +31,7 @@ export function Message(props) {
             return undefined;
         }
         return (children
-            ? (React.createElement(React.Fragment, null, children({ ...rest, message: data })))
+            ? children({ ...rest, message: data })
             : (React.createElement(Element, { "data-status": data.status, title: data.message, ...rest },
                 React.createElement("p", null, data.message))));
     }
@@ -40,25 +40,31 @@ export function Message(props) {
         return undefined;
     }
     // Whether this field name is a wildcard
-    const wildcard = name.endsWith(".*");
+    const wildcard = name.endsWith(".*") || name === "*";
     // Get the field path
     const fieldPath = new Path(name.replace(/\.\*$/, ""));
     // Get the field issues
-    const issues = validation.error.issues
-        .filter(issue => fieldPath.is(issue.path) ||
-        (wildcard && fieldPath.startsWith(issue.path)));
+    const issues = name === "*"
+        ? validation.error.issues
+        : validation.error.issues
+            .filter(issue => fieldPath.is(issue.path) ||
+            (wildcard && fieldPath.startsWith(issue.path)));
     // If there are no issues for this field
     if (issues.length === 0) {
         return undefined;
     }
     return (children
-        ? (React.createElement(React.Fragment, null, children({ ...rest, issues })))
+        ? children({ ...rest, issues })
         : (React.createElement(Element, { ...rest },
-            React.createElement("ul", null, issues.map(issue => {
+            React.createElement("ul", null, issues
+                .filter(Boolean)
+                .map(issue => {
+                // Get the field path
+                const fieldPath = new Path(issue.path);
+                // Get the field schema
                 const fieldSchema = schema && fieldPath.toSchema(schema);
-                return (React.createElement("li", { "data-issue-code": issue.code },
-                    React.createElement("strong", null, fieldSchema?.meta()?.description || fieldPath.toString()),
+                return (React.createElement("li", { "data-issue-code": issue.code, key: `${issue.path}${issue.code}` },
+                    React.createElement("strong", null, fieldSchema?.meta()?.description || fieldPath.toPrettyString()),
                     React.createElement("span", null, issue.message)));
-            })
-                .filter(Boolean)))));
+            })))));
 }

@@ -369,9 +369,7 @@ export function Field<
     children
       ? typeof children === "function"
         ? (
-          <>
-            { children(rest as any) }
-          </>
+          children(rest as any) as ReactNode
         )
         : (
           <select

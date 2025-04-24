@@ -423,10 +423,16 @@ The `Message` component displays response or validation data depending on its `n
 <Message name="title" />
 ```
 
-If `name` matches a valid field in your schema, the component will display any validation error messages relating to that field. You can end the name attribute with a wildcard (`.*`) to catch all errors nested within a given field.
+If `name` matches a valid field in your schema, the component will display any validation error messages relating to that field. You can end the name attribute with a wildcard (`.*`) to catch all errors nested within a given field;
 
 ```tsx
 <Message name="settings.*" />
+```
+
+You can display all validation errors at once by passing in the catchall `*` wildcard;
+
+```tsx
+<Message name="*" />
 ```
 
 Omitting `name` will cause the component to display the `message` sent back from [`handleZorm`](#server-handler)'s `response` payload.

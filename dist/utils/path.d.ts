@@ -61,6 +61,18 @@ export declare class Path {
      */
     startsWith(key: Path | string | Array<number | string | symbol>): boolean;
     /**
+     * Prettify this key
+     *
+     * @param delimiter (optional) Delimiter string – defaults to an ASCII space
+     * @param format (optional) A function to format each key
+     *
+     * @remarks
+     * - Increases each numeric array index by 1
+     * - Capitalizes the first letter of each string key
+     * - Separates keys with a delimiter
+     */
+    toPrettyString(delimiter?: string, format?: (key: number | string) => string): string;
+    /**
      * Get a specific zod schema shape from the current key
      *
      * @param schema Zod schema

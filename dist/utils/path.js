@@ -166,6 +166,24 @@ export class Path {
         return true;
     }
     /**
+     * Prettify this key
+     *
+     * @param delimiter (optional) Delimiter string – defaults to an ASCII space
+     * @param format (optional) A function to format each key
+     *
+     * @remarks
+     * - Increases each numeric array index by 1
+     * - Capitalizes the first letter of each string key
+     * - Separates keys with a delimiter
+     */
+    toPrettyString(delimiter = " ", format) {
+        return this.path
+            .map(format || (key => (typeof key === "number"
+            ? key + 1
+            : String(key).substring(0, 1).toUpperCase() + String(key).substring(1))))
+            .join(delimiter);
+    }
+    /**
      * Get a specific zod schema shape from the current key
      *
      * @param schema Zod schema

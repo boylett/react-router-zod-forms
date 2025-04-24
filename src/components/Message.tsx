@@ -47,7 +47,7 @@ export interface ZodFormMessageProps<
   /**
    * The name of the field in the schema
    */
-  name?: FieldPath | `${ FieldPath }.*`;
+  name?: FieldPath | `${ FieldPath }.*` | "*";
 }
 
 export function Message<
@@ -110,9 +110,7 @@ export function Message<
     return (
       children
         ? (
-          <>
-            { children({ ...rest, message: data }) }
-          </>
+          children({ ...rest, message: data }) as ReactNode
         )
         : (
           <Element
@@ -133,20 +131,22 @@ export function Message<
   }
 
   // Whether this field name is a wildcard
-  const wildcard = name.endsWith(".*");
+  const wildcard = name.endsWith(".*") || name === "*";
 
   // Get the field path
   const fieldPath = new Path(name.replace(/\.\*$/, ""));
 
   // Get the field issues
-  const issues = validation.error.issues
-    .filter(
-      issue =>
-        fieldPath.is(issue.path) ||
-        (
-          wildcard && fieldPath.startsWith(issue.path)
-        )
-    );
+  const issues = name === "*"
+    ? validation.error.issues
+    : validation.error.issues
+      .filter(
+        issue =>
+          fieldPath.is(issue.path) ||
+          (
+            wildcard && fieldPath.startsWith(issue.path)
+          )
+      );
 
   // If there are no issues for this field
   if (issues.length === 0) {
@@ -156,32 +156,35 @@ export function Message<
   return (
     children
       ? (
-        <>
-          { children({ ...rest, issues }) }
-        </>
+        children({ ...rest, issues }) as ReactNode
       )
       : (
         <Element { ...rest }>
           <ul>
-            { issues.map(
-              (issue, key) => {
-                const fieldSchema: z.ZodType<any> | undefined = schema && fieldPath.toSchema(schema);
+            { issues
+              .filter(Boolean)
+              .map(
+                issue => {
+                  // Get the field path
+                  const fieldPath = new Path(issue.path);
 
-                return (
-                  <li
-                    data-issue-code={ issue.code }
-                    key={ key }>
-                    <strong>
-                      { fieldSchema?.meta()?.description || fieldPath.toString() }
-                    </strong>
-                    <span>
-                      { issue.message }
-                    </span>
-                  </li>
-                );
-              }
-            )
-              .filter(Boolean) }
+                  // Get the field schema
+                  const fieldSchema: z.ZodType<any> | undefined = schema && fieldPath.toSchema(schema);
+
+                  return (
+                    <li
+                      data-issue-code={ issue.code }
+                      key={ `${ issue.path }${ issue.code }` }>
+                      <strong>
+                        { fieldSchema?.meta()?.description || fieldPath.toPrettyString() }
+                      </strong>
+                      <span>
+                        { issue.message }
+                      </span>
+                    </li>
+                  );
+                }
+              ) }
           </ul>
         </Element>
       )

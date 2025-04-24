@@ -7,7 +7,7 @@ import { Path } from "../utils/Path";
  * Field component
  */
 export function Field(props) {
-    let { children, form: formId, onBlur, onInput, type = "text", ...rest } = props;
+    let { children, form: formId, onBlur, onChange, onInput, type = "text", ...rest } = props;
     // Get forms context
     const { forms } = (useContext(ZodFormsContext));
     // If there is no context
@@ -27,7 +27,7 @@ export function Field(props) {
         throw new Error("Could not connect to form context. Check `form` prop or wrap component with a Zod Forms `<Form />` component.");
     }
     // Get form data
-    const { data, schema, validation, } = form;
+    const { data, events, schema, validation, } = form;
     // If the field is not hidden, make it focusable with keyboard shortcuts
     if (type !== "hidden" && !("tabIndex" in rest)) {
         rest.tabIndex ||= 0;
@@ -157,28 +157,51 @@ export function Field(props) {
      */
     const handleBlur = useCallback(event => {
         onBlur?.(event);
-        if (form?.form) {
-            // If the form exists, trigger a synthetic validation event
+        // If the event has been cancelled, do not validate
+        if (event.isDefaultPrevented()) {
+            return;
+        }
+        // If the form exists, trigger a synthetic validation event
+        if (form?.form && events?.includes("blur")) {
             const event = new CustomEvent("$ZodForms.externalFieldValidate");
             form.form.current?.dispatchEvent(event);
         }
     }, [onBlur]);
     /**
+     * Validate the form on change
+     */
+    const handleChange = useCallback(event => {
+        onChange?.(event);
+        // If the event has been cancelled, do not validate
+        if (event.isDefaultPrevented()) {
+            return;
+        }
+        // If the form exists, trigger a synthetic validation event
+        if (form?.form && events?.includes("change")) {
+            const event = new CustomEvent("$ZodForms.externalFieldValidate");
+            form.form.current?.dispatchEvent(event);
+        }
+    }, [onChange]);
+    /**
      * Validate the form on input
      */
     const handleInput = useCallback(event => {
         onInput?.(event);
-        if (form?.form) {
-            // If the form exists, trigger a synthetic validation event
+        // If the event has been cancelled, do not validate
+        if (event.isDefaultPrevented()) {
+            return;
+        }
+        // If the form exists, trigger a synthetic validation event
+        if (form?.form && events?.includes("input")) {
             const event = new CustomEvent("$ZodForms.externalFieldValidate");
             form.form.current?.dispatchEvent(event);
         }
     }, [onInput]);
     return (children
         ? typeof children === "function"
-            ? (React.createElement(React.Fragment, null, children(rest)))
-            : (React.createElement("select", { multiple: true, onBlur: handleBlur, onInput: handleInput, ...rest }, children))
+            ? children(rest)
+            : (React.createElement("select", { multiple: true, onChange: handleChange, onBlur: handleBlur, onInput: handleInput, ...rest }, children))
         : type === "textarea"
-            ? (React.createElement("textarea", { onBlur: handleBlur, onInput: handleInput, ...rest }))
-            : (React.createElement("input", { onBlur: handleBlur, onInput: handleInput, type: type, ...rest })));
+            ? (React.createElement("textarea", { onChange: handleChange, onBlur: handleBlur, onInput: handleInput, ...rest }))
+            : (React.createElement("input", { onChange: handleChange, onBlur: handleBlur, onInput: handleInput, type: type, ...rest })));
 }

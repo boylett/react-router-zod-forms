@@ -16,6 +16,13 @@ export type ZodFormsContextType<DataType = any, SchemaType extends z.ZodInterfac
      */
     data?: DataType;
     /**
+     * Configure which events trigger validation
+     *
+     * @remarks
+     * Defaults to `[ "change", "form.submit" ]`
+     */
+    events: ("blur" | "change" | "form.blur" | "form.input" | "form.submit" | "input")[];
+    /**
      * The form element
      */
     form?: React.RefObject<HTMLFormElement | null>;

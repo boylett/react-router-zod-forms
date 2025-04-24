@@ -33,8 +33,8 @@ export interface ZodFormMessageProps<PayloadType, SchemaType extends z.ZodInterf
     /**
      * The name of the field in the schema
      */
-    name?: FieldPath | `${FieldPath}.*`;
+    name?: FieldPath | `${FieldPath}.*` | "*";
 }
 export declare function Message<PayloadType, SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
     bracketNotation: true;
-}>>(props: ZodFormMessageProps<PayloadType, SchemaType, FieldPath>): React.JSX.Element | undefined;
+}>>(props: ZodFormMessageProps<PayloadType, SchemaType, FieldPath>): string | number | bigint | boolean | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | React.JSX.Element | null | undefined;
