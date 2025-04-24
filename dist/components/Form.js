@@ -5,7 +5,7 @@ import { ZodFormsContext } from "../context/FormsContext";
  * Form component
  */
 export function Form(props) {
-    let { children, id: formId, onBlur, onInput, onResponse, onValidate, ...rest } = props;
+    let { children, id: formId, onBlur, onInput, onResponse, onSubmit, onValidate, ...rest } = props;
     // Get form context
     const { forms } = (useContext(ZodFormsContext));
     // If there is no context
@@ -45,6 +45,22 @@ export function Form(props) {
         onInput?.(event);
         validate?.(onValidate);
     }, [onInput, onValidate, validate]);
+    /**
+     * Handle form submission
+     */
+    const handleSubmit = useCallback(event => {
+        // Validate the form
+        const validation = validate?.(onValidate);
+        // If validation succeeded
+        if (validation?.success) {
+            onSubmit?.(event);
+        }
+        // If validation failed
+        else {
+            // Prevent form submission
+            event.preventDefault();
+        }
+    }, [onSubmit, onValidate, validate]);
     // Custom event listener to enable external field validation
     useEffect(() => {
         const listener = () => validate?.(onValidate);
@@ -60,7 +76,7 @@ export function Form(props) {
             onResponse?.(form?.data);
         }
     }, [form?.data, form?.state, onResponse]);
-    return FetcherForm && (React.createElement(FetcherForm, { id: formId, method: "post", navigate: false, onBlur: handleBlur, onInput: handleInput, ...rest, ref: formRef },
+    return FetcherForm && (React.createElement(FetcherForm, { id: formId, method: "post", navigate: false, onBlur: handleBlur, onInput: handleInput, onSubmit: handleSubmit, ...rest, ref: formRef },
         React.createElement("input", { name: "_intent", type: "hidden", value: String(intent) }),
         children));
 }

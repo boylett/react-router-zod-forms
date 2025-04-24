@@ -15,7 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Restructured exports
+- Removed `/server` exports
 - Refactored file structure for clarity
+- Prevent form submission if client-side validation fails
 
 ## Added
 

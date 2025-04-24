@@ -35,6 +35,7 @@ export function Form<
     onBlur,
     onInput,
     onResponse,
+    onSubmit,
     onValidate,
     ...rest
   } = props;
@@ -105,6 +106,28 @@ export function Form<
     [ onInput, onValidate, validate ]
   );
 
+  /**
+   * Handle form submission
+   */
+  const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
+    event => {
+      // Validate the form
+      const validation = validate?.(onValidate);
+
+      // If validation succeeded
+      if (validation?.success) {
+        onSubmit?.(event);
+      }
+
+      // If validation failed
+      else {
+        // Prevent form submission
+        event.preventDefault();
+      }
+    },
+    [ onSubmit, onValidate, validate ]
+  );
+
   // Custom event listener to enable external field validation
   useEffect(() => {
     const listener = () => validate?.(onValidate);
@@ -132,6 +155,7 @@ export function Form<
       navigate={ false }
       onBlur={ handleBlur }
       onInput={ handleInput }
+      onSubmit={ handleSubmit }
       { ...rest }
       ref={ formRef }>
       <input
