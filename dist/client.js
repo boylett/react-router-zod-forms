@@ -26,7 +26,11 @@ export function useZodForm(options) {
     // Get action data
     const actionData = (useActionData());
     // Create the React Router fetcher for this form
-    const { data, Form: FetcherForm, load, state, submit } = (useFetcher());
+    let { data, Form: FetcherForm, load, state, submit } = (useFetcher());
+    // Use action data if fetcher data is not available
+    if (!data && actionData?.intent === intent) {
+        data = actionData;
+    }
     /**
      * Validate the form data against the schema
      */
@@ -125,11 +129,7 @@ export function useZodForm(options) {
             // Create a new path
             const path = new Path(rest.name);
             // Get the default value from the current action data
-            const defaultValue = path.pickFrom((form?.data?.validation?.data?.intent === intent
-                ? form.data.validation.data
-                : undefined) || (actionData?.validation?.data?.intent === intent
-                ? actionData.validation.data
-                : undefined));
+            const defaultValue = path.pickFrom(form?.data?.validation?.data);
             // If the default value exists
             if (defaultValue !== undefined) {
                 // Populate it on the field
