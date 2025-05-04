@@ -10,7 +10,7 @@ export interface useZodFormOptions<SchemaType extends z.ZodInterface<any>, Inten
      * Configure which events trigger validation
      *
      * @remarks
-     * Defaults to `[ "change", "form.submit" ]`
+     * Defaults to `[ "blur", "form.submit" ]`
      */
     events?: ZodFormsContextType["events"];
     /**
