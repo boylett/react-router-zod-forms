@@ -355,22 +355,6 @@ As custom components are commonplace in forms, `Field` components also accept a 
 </Field>
 ```
 
-or, if you prefer;
-
-```tsx
-<Field
-  name="select_field"
-  children={
-    (props: SelectProps) => (
-      <Select { ...props }>
-        <SelectItem>Option 1</SelectItem>
-        ...
-      </Select>
-    )
-  }
->
-```
-
 > [!WARNING]
 > By default, `props` is typed as `AllHTMLAttributes<HTMLElement>`, but this may cause problems with your custom component's property types. If that's the case, utilize destructuring to deliver the properties you need;
 
@@ -378,6 +362,26 @@ or, if you prefer;
   { ({ name, required }) => (
     <Select name={ name } required={ required }>
       ...
+```
+
+The `children` functional property receives two arguments; the first is input props, and the second is the zod schema (or "shape") for that specific field. You can use this second argument to retrieve a field's metadata from your schema. For example;
+
+```tsx
+const schema = z.interface({
+  form: z.interface({
+    field: z.string().meta({ description: "Field Name" })
+  }),
+});
+
+<Field name="field">
+  { (props: SelectProps, { meta }) => (
+    <input
+      { ...props }
+      placeholder={
+        meta?.()?.description // "Field Name" | undefined
+      } />
+  ) }
+</Field>
 ```
 
 ### `<Message />` component
