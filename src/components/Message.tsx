@@ -30,13 +30,17 @@ interface ZodFormMessagePropsNamed<
    * Renders a custom component for the message with passthrough attributes
    * 
    * @param props Element attributes passed through to the component
+   * @param shape (optional) The schema for this field
    */
-  children?: (props: AllHTMLAttributes<HTMLElement> & {
-    /**
-     * Issues relating to this field
-     */
-    issues: z.core.$ZodIssue[];
-  }) => ReactNode;
+  children?: (
+    props: AllHTMLAttributes<HTMLElement> & {
+      /**
+       * Issues relating to this field
+       */
+      issues: z.core.$ZodIssue[];
+    },
+    shape: z.ZodType<any> | Record<string, undefined>
+  ) => ReactNode;
 
   /**
    * The name of the field in the schema
@@ -157,7 +161,19 @@ export function Message<
     validation,
   } = form;
 
-  // If a field name is not set, display the data message
+  // The schema for this field
+  let shape: z.ZodType<unknown, unknown> | undefined = undefined;
+
+  // If a field name is set
+  if (name && schema) {
+    // Create a new path
+    const path = new Path(name);
+
+    // Get the field schema
+    shape = path.toSchema(schema);
+  }
+
+  // If a field name is not set
   if (!name) {
     // If there is not a message
     if (!data?.message && !data?.status) {
@@ -167,7 +183,10 @@ export function Message<
     return (
       children
         ? (
-          children({ ...rest, message: data } as any) as ReactNode
+          children(
+            { ...rest, message: data } as any,
+            shape || {}
+          ) as ReactNode
         )
         : (
           <Element
@@ -213,7 +232,10 @@ export function Message<
   return (
     children
       ? (
-        children({ ...rest, issues } as any) as ReactNode
+        children(
+          { ...rest, issues } as any,
+          shape || {}
+        ) as ReactNode
       )
       : (
         <Element { ...rest }>

@@ -34,32 +34,32 @@ export type ZodFormFieldProps<
   : FieldValue extends Array<any>
   ? Omit<
     SelectHTMLAttributes<HTMLSelectElement>,
-    | "children"
     | "defaultValue"
     | "multiple"
     | "value"
-  > & {
-    /**
-     * The multiple select element requires at least one child node
-     */
-    children: Exclude<SelectHTMLAttributes<HTMLSelectElement>[ "children" ], null | undefined>;
-  }
+  >
   : Omit<
     InputHTMLAttributes<HTMLInputElement> & TextareaHTMLAttributes<HTMLTextAreaElement>,
-    | "children"
     | "defaultValue"
     | "value"
-  > & {
-    /**
-     * Renders a custom component for the field with passthrough attributes
-     * 
-     * @param props Element attributes passed through to the component
-     */
-    children?: (props: AllHTMLAttributes<HTMLElement>) => ReactNode;
-  },
+  >,
+  | "children"
   | "name"
   | "type"
 > & {
+  /**
+   * Renders a custom component for the field with passthrough attributes
+   * 
+   * @param props Element attributes passed through to the component
+   * @param shape (optional) The schema for this field
+   */
+  children?: ReactNode | (
+    (
+      props: AllHTMLAttributes<HTMLElement>,
+      shape: z.ZodType<any> | Record<string, undefined>
+    ) => ReactNode
+  );
+
   /**
    * The default value of this input
    */
@@ -154,6 +154,9 @@ export function Field<
     validation,
   } = form;
 
+  // The schema for this field
+  let shape: z.ZodType<any> | undefined = undefined;
+
   // If the field is not hidden, make it focusable with keyboard shortcuts
   if (type !== "hidden" && !("tabIndex" in rest)) {
     rest.tabIndex ||= 0;
@@ -175,8 +178,8 @@ export function Field<
       rest.defaultValue = defaultValue;
     }
 
-    // Get the shape of the field schema
-    let shape = path.toSchema(schema);
+    // Get the field schema
+    shape = path.toSchema(schema);
 
     // If we found the shape for this field
     if (shape) {
@@ -382,13 +385,22 @@ export function Field<
     children
       ? typeof children === "function"
         ? (
-          children(rest as any) as ReactNode
+          children(
+            {
+              ...rest as any,
+              onBlur: handleBlur,
+              onChange: handleChange,
+              onInput: handleInput,
+              type,
+            },
+            shape || {}
+          )
         )
         : (
           <select
             multiple
-            onChange={ handleChange }
             onBlur={ handleBlur }
+            onChange={ handleChange }
             onInput={ handleInput }
             { ...rest as any }>
             { children }
@@ -397,15 +409,15 @@ export function Field<
       : type === "textarea"
         ? (
           <textarea
-            onChange={ handleChange }
             onBlur={ handleBlur }
+            onChange={ handleChange }
             onInput={ handleInput }
             { ...rest as any } />
         )
         : (
           <input
-            onChange={ handleChange }
             onBlur={ handleBlur }
+            onChange={ handleChange }
             onInput={ handleInput }
             type={ type }
             { ...rest as any } />

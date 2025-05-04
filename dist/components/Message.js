@@ -24,14 +24,23 @@ export function Message(props) {
     }
     // Get validation result from context
     const { data, schema, validation, } = form;
-    // If a field name is not set, display the data message
+    // The schema for this field
+    let shape = undefined;
+    // If a field name is set
+    if (name && schema) {
+        // Create a new path
+        const path = new Path(name);
+        // Get the field schema
+        shape = path.toSchema(schema);
+    }
+    // If a field name is not set
     if (!name) {
         // If there is not a message
         if (!data?.message && !data?.status) {
             return undefined;
         }
         return (children
-            ? children({ ...rest, message: data })
+            ? children({ ...rest, message: data }, shape || {})
             : (React.createElement(Element, { "data-status": data.status, title: data.message, ...rest },
                 React.createElement("p", null, data.message))));
     }
@@ -54,7 +63,7 @@ export function Message(props) {
         return undefined;
     }
     return (children
-        ? children({ ...rest, issues })
+        ? children({ ...rest, issues }, shape || {})
         : (React.createElement(Element, { ...rest },
             React.createElement("ul", null, issues
                 .filter(Boolean)

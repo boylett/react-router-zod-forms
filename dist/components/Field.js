@@ -28,6 +28,8 @@ export function Field(props) {
     }
     // Get form data
     const { data, events, schema, validation, } = form;
+    // The schema for this field
+    let shape = undefined;
     // If the field is not hidden, make it focusable with keyboard shortcuts
     if (type !== "hidden" && !("tabIndex" in rest)) {
         rest.tabIndex ||= 0;
@@ -43,8 +45,8 @@ export function Field(props) {
             // Populate it on the field
             rest.defaultValue = defaultValue;
         }
-        // Get the shape of the field schema
-        let shape = path.toSchema(schema);
+        // Get the field schema
+        shape = path.toSchema(schema);
         // If we found the shape for this field
         if (shape) {
             // If the field should be required
@@ -199,9 +201,15 @@ export function Field(props) {
     }, [onInput]);
     return (children
         ? typeof children === "function"
-            ? children(rest)
-            : (React.createElement("select", { multiple: true, onChange: handleChange, onBlur: handleBlur, onInput: handleInput, ...rest }, children))
+            ? (children({
+                ...rest,
+                onBlur: handleBlur,
+                onChange: handleChange,
+                onInput: handleInput,
+                type,
+            }, shape || {}))
+            : (React.createElement("select", { multiple: true, onBlur: handleBlur, onChange: handleChange, onInput: handleInput, ...rest }, children))
         : type === "textarea"
-            ? (React.createElement("textarea", { onChange: handleChange, onBlur: handleBlur, onInput: handleInput, ...rest }))
-            : (React.createElement("input", { onChange: handleChange, onBlur: handleBlur, onInput: handleInput, type: type, ...rest })));
+            ? (React.createElement("textarea", { onBlur: handleBlur, onChange: handleChange, onInput: handleInput, ...rest }))
+            : (React.createElement("input", { onBlur: handleBlur, onChange: handleChange, onInput: handleInput, type: type, ...rest })));
 }

@@ -19,13 +19,14 @@ interface ZodFormMessagePropsNamed<SchemaType extends z.ZodInterface<any>, Field
      * Renders a custom component for the message with passthrough attributes
      *
      * @param props Element attributes passed through to the component
+     * @param shape (optional) The schema for this field
      */
     children?: (props: AllHTMLAttributes<HTMLElement> & {
         /**
          * Issues relating to this field
          */
         issues: z.core.$ZodIssue[];
-    }) => ReactNode;
+    }, shape: z.ZodType<any> | Record<string, undefined>) => ReactNode;
     /**
      * The name of the field in the schema
      */

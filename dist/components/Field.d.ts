@@ -6,19 +6,14 @@ import { z } from "zod";
  */
 export type ZodFormFieldProps<SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
     bracketNotation: true;
-}>, FieldValue = Get<z.infer<SchemaType>, FieldPath>, FieldType = (FieldValue extends boolean ? "hidden" | "image" | "checkbox" | "radio" : FieldValue extends Date ? "hidden" | "image" | "date" | "datetime" | "datetime-local" | "month" | "time" | "week" : FieldValue extends File ? "hidden" | "image" | "file" : FieldValue extends number ? "hidden" | "image" | "number" | "range" : FieldValue extends Array<any> ? "select" : FieldValue extends object ? never : InputHTMLAttributes<HTMLInputElement>["type"] | "select" | "textarea")> = Omit<FieldType extends never ? never : FieldValue extends Array<any> ? Omit<SelectHTMLAttributes<HTMLSelectElement>, "children" | "defaultValue" | "multiple" | "value"> & {
-    /**
-     * The multiple select element requires at least one child node
-     */
-    children: Exclude<SelectHTMLAttributes<HTMLSelectElement>["children"], null | undefined>;
-} : Omit<InputHTMLAttributes<HTMLInputElement> & TextareaHTMLAttributes<HTMLTextAreaElement>, "children" | "defaultValue" | "value"> & {
+}>, FieldValue = Get<z.infer<SchemaType>, FieldPath>, FieldType = (FieldValue extends boolean ? "hidden" | "image" | "checkbox" | "radio" : FieldValue extends Date ? "hidden" | "image" | "date" | "datetime" | "datetime-local" | "month" | "time" | "week" : FieldValue extends File ? "hidden" | "image" | "file" : FieldValue extends number ? "hidden" | "image" | "number" | "range" : FieldValue extends Array<any> ? "select" : FieldValue extends object ? never : InputHTMLAttributes<HTMLInputElement>["type"] | "select" | "textarea")> = Omit<FieldType extends never ? never : FieldValue extends Array<any> ? Omit<SelectHTMLAttributes<HTMLSelectElement>, "defaultValue" | "multiple" | "value"> : Omit<InputHTMLAttributes<HTMLInputElement> & TextareaHTMLAttributes<HTMLTextAreaElement>, "defaultValue" | "value">, "children" | "name" | "type"> & {
     /**
      * Renders a custom component for the field with passthrough attributes
      *
      * @param props Element attributes passed through to the component
+     * @param shape (optional) The schema for this field
      */
-    children?: (props: AllHTMLAttributes<HTMLElement>) => ReactNode;
-}, "name" | "type"> & {
+    children?: ReactNode | ((props: AllHTMLAttributes<HTMLElement>, shape: z.ZodType<any> | Record<string, undefined>) => ReactNode);
     /**
      * The default value of this input
      */
