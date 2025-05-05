@@ -10,7 +10,7 @@ import { formDataToObject } from "../utils/formDataToObject";
  * Initialize a new Form instance
  */
 export function useZodForm(options) {
-    const { events = ["blur", "form.submit"], intent, schema, } = options;
+    const { events = ["blur", "form.submit"], intent, schema, useFetcher: fetcher = true, } = options;
     // Get the zod form context
     const { forms } = useContext(ZodFormsContext);
     // If there is no context
@@ -79,7 +79,7 @@ export function useZodForm(options) {
         submit,
         validate,
         validation,
-        FetcherForm,
+        FetcherForm: fetcher ? FetcherForm : undefined,
         Field: FieldComponent,
         Form: FormComponent,
         Message: MessageComponent,

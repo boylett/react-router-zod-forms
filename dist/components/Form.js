@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useEffect, useRef } from "react";
+import { Form as ReactRouterForm } from "react-router";
 import { ZodFormContext } from "../context/FormContext";
 import { ZodFormsContext } from "../context/FormsContext";
 /**
@@ -31,6 +32,7 @@ export function Form(props) {
         forms.current[formId].form = ref;
     }
     const { events, FetcherForm, intent, validate, validation, } = forms.current[formId];
+    const FormElement = FetcherForm || ReactRouterForm;
     /**
      * Validate the form on blur
      */
@@ -92,7 +94,7 @@ export function Form(props) {
             onResponse?.(form?.data);
         }
     }, [form?.data, form?.state, onResponse]);
-    return FetcherForm && (React.createElement(FetcherForm, { id: formId, method: "post", navigate: false, onBlur: handleBlur, onInput: handleInput, onSubmit: handleSubmit, ...rest, ref: ref },
+    return (React.createElement(FormElement, { id: formId, method: "post", onBlur: handleBlur, onInput: handleInput, onSubmit: handleSubmit, ...rest, ref: ref },
         React.createElement("input", { name: "_intent", type: "hidden", value: String(intent) }),
         children));
 }

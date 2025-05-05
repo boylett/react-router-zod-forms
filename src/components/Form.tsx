@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useEffect, useRef, type FocusEventHandler, type FormEventHandler, type RefObject } from "react";
-import { type FormProps } from "react-router";
+import React, { useCallback, useContext, useEffect, useRef, type ElementType, type FocusEventHandler, type FormEventHandler, type RefObject } from "react";
+import { Form as ReactRouterForm, type FormProps } from "react-router";
 import { z } from "zod";
 import { ZodFormContext } from "../context/FormContext";
 import { ZodFormsContext } from "../context/FormsContext";
@@ -90,6 +90,8 @@ export function Form<
     validation,
   } = forms.current[ formId ];
 
+  const FormElement: ElementType = FetcherForm || ReactRouterForm;
+
   /**
    * Validate the form on blur
    */
@@ -175,11 +177,10 @@ export function Form<
     }
   }, [ form?.data, form?.state, onResponse ]);
 
-  return FetcherForm && (
-    <FetcherForm
+  return (
+    <FormElement
       id={ formId }
       method="post"
-      navigate={ false }
       onBlur={ handleBlur }
       onInput={ handleInput }
       onSubmit={ handleSubmit }
@@ -190,6 +191,6 @@ export function Form<
         type="hidden"
         value={ String(intent) } />
       { children }
-    </FetcherForm>
+    </FormElement>
   );
 }

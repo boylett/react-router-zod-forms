@@ -21,6 +21,13 @@ export interface useZodFormOptions<SchemaType extends z.ZodInterface<any>, Inten
      * The Zod schema used to validate form data
      */
     schema: SchemaType;
+    /**
+     * Whether to use a fetcher for this form
+     *
+     * @remarks
+     * Defaults to `true`.
+     */
+    useFetcher?: boolean;
 }
 export type useZodFormsReturnType<DataType = any, SchemaType extends z.ZodInterface<any> = z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
     bracketNotation: true;

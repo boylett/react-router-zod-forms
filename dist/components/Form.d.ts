@@ -21,4 +21,4 @@ export interface ZodFormProps<SchemaType extends z.ZodInterface<any>> extends Fo
 /**
  * Form component
  */
-export declare function Form<SchemaType extends z.ZodInterface<any>>(props: ZodFormProps<SchemaType>): React.JSX.Element | undefined;
+export declare function Form<SchemaType extends z.ZodInterface<any>>(props: ZodFormProps<SchemaType>): React.JSX.Element;

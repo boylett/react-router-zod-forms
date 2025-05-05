@@ -34,6 +34,14 @@ export interface useZodFormOptions<
    * The Zod schema used to validate form data
    */
   schema: SchemaType;
+
+  /**
+   * Whether to use a fetcher for this form
+   * 
+   * @remarks
+   * Defaults to `true`.
+   */
+  useFetcher?: boolean;
 }
 
 export type useZodFormsReturnType<
@@ -81,6 +89,7 @@ export function useZodForm<
     events = [ "blur", "form.submit" ],
     intent,
     schema,
+    useFetcher: fetcher = true,
   } = options;
 
   // Get the zod form context
@@ -214,7 +223,7 @@ export function useZodForm<
     submit,
     validate,
     validation,
-    FetcherForm,
+    FetcherForm: fetcher ? FetcherForm : undefined,
     Field: FieldComponent,
     Form: FormComponent,
     Message: MessageComponent,
