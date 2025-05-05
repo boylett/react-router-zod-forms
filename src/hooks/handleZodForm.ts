@@ -161,6 +161,7 @@ export async function handleZodForm<
   forms: HandleZodFormForms<SchemaType, UploadHandlerReturnType, PayloadTypes>,
   hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>
 ): Promise<
+  | Response
   | HandleZodFormMessage<
     SchemaType,
     PayloadTypes[ "default" ]
@@ -212,19 +213,23 @@ export async function handleZodForm<
     hooks?.before?.(formData);
   }
 
-  catch (error) {
-    if (
-      error &&
-      typeof error === "object" &&
-      (
-        "message" in error ||
-        "status" in error
-      )
-    ) {
-      return error as HandleZodFormMessage<SchemaType>;
+  catch (thrown) {
+    if (thrown instanceof Response) {
+      return thrown;
     }
 
-    throw error;
+    else if (
+      thrown &&
+      typeof thrown === "object" &&
+      (
+        "message" in thrown ||
+        "status" in thrown
+      )
+    ) {
+      return thrown as HandleZodFormMessage<SchemaType>;
+    }
+
+    throw thrown;
   }
 
   const intent = (
@@ -264,19 +269,23 @@ export async function handleZodForm<
       }
     }
 
-    catch (error) {
-      if (
-        error &&
-        typeof error === "object" &&
-        (
-          "message" in error ||
-          "status" in error
-        )
-      ) {
-        return error as HandleZodFormMessage<SchemaType>;
+    catch (thrown) {
+      if (thrown instanceof Response) {
+        return thrown;
       }
 
-      throw error;
+      else if (
+        thrown &&
+        typeof thrown === "object" &&
+        (
+          "message" in thrown ||
+          "status" in thrown
+        )
+      ) {
+        return thrown as HandleZodFormMessage<SchemaType>;
+      }
+
+      throw thrown;
     }
 
     validation = (
@@ -293,19 +302,23 @@ export async function handleZodForm<
       }
     }
 
-    catch (error) {
-      if (
-        error &&
-        typeof error === "object" &&
-        (
-          "message" in error ||
-          "status" in error
-        )
-      ) {
-        return error as HandleZodFormMessage<SchemaType>;
+    catch (thrown) {
+      if (thrown instanceof Response) {
+        return thrown;
       }
 
-      throw error;
+      else if (
+        thrown &&
+        typeof thrown === "object" &&
+        (
+          "message" in thrown ||
+          "status" in thrown
+        )
+      ) {
+        return thrown as HandleZodFormMessage<SchemaType>;
+      }
+
+      throw thrown;
     }
 
     if (validation) {
@@ -332,16 +345,41 @@ export async function handleZodForm<
       return action;
     }
 
-    catch (error) {
+    catch (thrown) {
+      if (thrown instanceof Response) {
+        return thrown;
+      }
+
       response.message = "error";
-      response.payload = error;
+      response.payload = thrown;
       response.status = 500;
 
       return response;
     }
 
     finally {
-      hooks?.after?.(formData);
+      try {
+        hooks?.after?.(formData);
+      }
+
+      catch (thrown) {
+        if (thrown instanceof Response) {
+          return thrown;
+        }
+
+        else if (
+          thrown &&
+          typeof thrown === "object" &&
+          (
+            "message" in thrown ||
+            "status" in thrown
+          )
+        ) {
+          return thrown as HandleZodFormMessage<SchemaType>;
+        }
+
+        throw thrown;
+      }
     }
   }
 
@@ -366,41 +404,47 @@ export async function handleZodForm<
       return action;
     }
 
-    catch (error) {
+    catch (thrown) {
+      if (thrown instanceof Response) {
+        return thrown;
+      }
+
       response.message = "error";
-      response.payload = error;
+      response.payload = thrown;
       response.status = 500;
 
       return response;
     }
 
     finally {
-      hooks?.after?.(formData);
+      try {
+        hooks?.after?.(formData);
+      }
+
+      catch (thrown) {
+        if (thrown instanceof Response) {
+          return thrown;
+        }
+
+        else if (
+          thrown &&
+          typeof thrown === "object" &&
+          (
+            "message" in thrown ||
+            "status" in thrown
+          )
+        ) {
+          return thrown as HandleZodFormMessage<SchemaType>;
+        }
+
+        throw thrown;
+      }
     }
   }
 
   console.trace();
 
   console.error(`Unhandled form submission for intent '${ intent as string }' in ${ request.url }`);
-
-  try {
-    hooks?.after?.(formData);
-  }
-
-  catch (error) {
-    if (
-      error &&
-      typeof error === "object" &&
-      (
-        "message" in error ||
-        "status" in error
-      )
-    ) {
-      return error as HandleZodFormMessage<SchemaType>;
-    }
-
-    throw error;
-  }
 
   response.message = "Not Implemented";
   response.payload = null;

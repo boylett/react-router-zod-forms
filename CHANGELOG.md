@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.10] - 2025-05-05
+
+### Changed
+
+- Changed `handleZodForm` return type to include `Response`
+- When a `Response` is `throw`n inside a form handler, it is now caught and returned automatically
+
+### Added
+
+- Use of a fetcher for form submission can now be disabled via the `useFetcher` option on `useZodForm`
+
 ## [0.0.9] - 2025-05-04
 
 ### Changed

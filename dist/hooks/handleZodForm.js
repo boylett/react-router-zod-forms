@@ -26,14 +26,17 @@ export async function handleZodForm(options, forms, hooks) {
     try {
         hooks?.before?.(formData);
     }
-    catch (error) {
-        if (error &&
-            typeof error === "object" &&
-            ("message" in error ||
-                "status" in error)) {
-            return error;
+    catch (thrown) {
+        if (thrown instanceof Response) {
+            return thrown;
         }
-        throw error;
+        else if (thrown &&
+            typeof thrown === "object" &&
+            ("message" in thrown ||
+                "status" in thrown)) {
+            return thrown;
+        }
+        throw thrown;
     }
     const intent = (formData.get("_intent") ?? "default");
     formData.delete("_intent");
@@ -57,14 +60,17 @@ export async function handleZodForm(options, forms, hooks) {
                 data = hookData;
             }
         }
-        catch (error) {
-            if (error &&
-                typeof error === "object" &&
-                ("message" in error ||
-                    "status" in error)) {
-                return error;
+        catch (thrown) {
+            if (thrown instanceof Response) {
+                return thrown;
             }
-            throw error;
+            else if (thrown &&
+                typeof thrown === "object" &&
+                ("message" in thrown ||
+                    "status" in thrown)) {
+                return thrown;
+            }
+            throw thrown;
         }
         validation = (await schema.def.shape[intent].safeParseAsync(data));
         try {
@@ -73,14 +79,17 @@ export async function handleZodForm(options, forms, hooks) {
                 validation = hookResult;
             }
         }
-        catch (error) {
-            if (error &&
-                typeof error === "object" &&
-                ("message" in error ||
-                    "status" in error)) {
-                return error;
+        catch (thrown) {
+            if (thrown instanceof Response) {
+                return thrown;
             }
-            throw error;
+            else if (thrown &&
+                typeof thrown === "object" &&
+                ("message" in thrown ||
+                    "status" in thrown)) {
+                return thrown;
+            }
+            throw thrown;
         }
         if (validation) {
             validation.data ||= data;
@@ -99,14 +108,31 @@ export async function handleZodForm(options, forms, hooks) {
             }
             return action;
         }
-        catch (error) {
+        catch (thrown) {
+            if (thrown instanceof Response) {
+                return thrown;
+            }
             response.message = "error";
-            response.payload = error;
+            response.payload = thrown;
             response.status = 500;
             return response;
         }
         finally {
-            hooks?.after?.(formData);
+            try {
+                hooks?.after?.(formData);
+            }
+            catch (thrown) {
+                if (thrown instanceof Response) {
+                    return thrown;
+                }
+                else if (thrown &&
+                    typeof thrown === "object" &&
+                    ("message" in thrown ||
+                        "status" in thrown)) {
+                    return thrown;
+                }
+                throw thrown;
+            }
         }
     }
     if ("default" in forms && forms.default) {
@@ -124,30 +150,35 @@ export async function handleZodForm(options, forms, hooks) {
             }
             return action;
         }
-        catch (error) {
+        catch (thrown) {
+            if (thrown instanceof Response) {
+                return thrown;
+            }
             response.message = "error";
-            response.payload = error;
+            response.payload = thrown;
             response.status = 500;
             return response;
         }
         finally {
-            hooks?.after?.(formData);
+            try {
+                hooks?.after?.(formData);
+            }
+            catch (thrown) {
+                if (thrown instanceof Response) {
+                    return thrown;
+                }
+                else if (thrown &&
+                    typeof thrown === "object" &&
+                    ("message" in thrown ||
+                        "status" in thrown)) {
+                    return thrown;
+                }
+                throw thrown;
+            }
         }
     }
     console.trace();
     console.error(`Unhandled form submission for intent '${intent}' in ${request.url}`);
-    try {
-        hooks?.after?.(formData);
-    }
-    catch (error) {
-        if (error &&
-            typeof error === "object" &&
-            ("message" in error ||
-                "status" in error)) {
-            return error;
-        }
-        throw error;
-    }
     response.message = "Not Implemented";
     response.payload = null;
     response.status = 501;
