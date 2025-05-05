@@ -31,8 +31,7 @@ export function Form(props) {
     if (form) {
         forms.current[formId].form = ref;
     }
-    const { events, FetcherForm, intent, validate, validation, } = forms.current[formId];
-    const FormElement = FetcherForm || ReactRouterForm;
+    const { events, FormElement = ReactRouterForm, intent, validate, validation, } = forms.current[formId];
     /**
      * Validate the form on blur
      */

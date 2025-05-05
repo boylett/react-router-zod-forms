@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useId, useState } from "react";
-import { useActionData, useFetcher } from "react-router";
+import { useActionData, useFetcher, useNavigation } from "react-router";
 import { Field } from "../components/Field";
 import { Form } from "../components/Form";
 import { Message } from "../components/Message";
@@ -10,7 +10,7 @@ import { formDataToObject } from "../utils/formDataToObject";
  * Initialize a new Form instance
  */
 export function useZodForm(options) {
-    const { events = ["blur", "form.submit"], intent, schema, useFetcher: fetcher = true, } = options;
+    const { events = ["blur", "form.submit"], intent, schema, useFetcher: fetcher = false, } = options;
     // Get the zod form context
     const { forms } = useContext(ZodFormsContext);
     // If there is no context
@@ -27,12 +27,18 @@ export function useZodForm(options) {
     const formId = useId();
     // Get action data
     const actionData = (useActionData());
+    // Get global navigation state
+    const { state: navState } = (useNavigation());
     // Create a React Router fetcher for this form
     const { 
     // Use action data if fetcher data is not available
     data = (actionData?.intent === intent
         ? actionData
-        : undefined), load, state, submit, Form: FetcherForm, } = (useFetcher());
+        : undefined), 
+    // Use navigation state if fetcher is not enabled
+    state = navState, Form: FormElement, load, submit, } = (fetcher
+        ? useFetcher()
+        : {});
     // Current validation state
     const [validation, setValidation] = (useState(undefined));
     /**
@@ -67,20 +73,54 @@ export function useZodForm(options) {
     // Create the message component
     const MessageComponent = useCallback((props) => (React.createElement(ZodFormContext, { value: formId },
         React.createElement(Message, { ...props }))), [formId]);
+    // If fetcher is enabled
+    if (fetcher) {
+        // Create the form object
+        const form = {
+            data: data || actionData,
+            events,
+            id: formId,
+            intent: String(intent),
+            load: load,
+            schema: intentSchema,
+            state,
+            submit: submit,
+            validate,
+            validation,
+            Field: FieldComponent,
+            FormElement,
+            Form: FormComponent,
+            Message: MessageComponent,
+        };
+        // Add this form to the list
+        forms.current[formId] = form;
+        return {
+            data: form.data,
+            id: form.id,
+            intent: form.intent,
+            load: form.load,
+            schema: form.schema,
+            state: form.state,
+            submit: form.submit,
+            validate: form.validate,
+            validation: form.validation,
+            Field: form.Field,
+            Form: form.Form,
+            Message: form.Message,
+        };
+    }
     // Create the form object
     const form = {
         data: data || actionData,
         events,
         id: formId,
         intent: String(intent),
-        load,
         schema: intentSchema,
         state,
-        submit,
         validate,
         validation,
-        FetcherForm: fetcher ? FetcherForm : undefined,
         Field: FieldComponent,
+        FormElement,
         Form: FormComponent,
         Message: MessageComponent,
     };
@@ -90,10 +130,8 @@ export function useZodForm(options) {
         data: form.data,
         id: form.id,
         intent: form.intent,
-        load: form.load,
         schema: form.schema,
         state: form.state,
-        submit: form.submit,
         validate: form.validate,
         validation: form.validation,
         Field: form.Field,

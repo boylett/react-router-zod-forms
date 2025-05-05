@@ -6,7 +6,7 @@ import type { ZodFormFieldProps } from "../components/Field";
 import type { ZodFormProps } from "../components/Form";
 import type { ZodFormMessageProps } from "../components/Message";
 import type { HandleZodFormMessage } from "../hooks/handleZodForm";
-export type ZodFormsContextType<DataType = any, SchemaType extends z.ZodInterface<any> = z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
+export type ZodFormsContextTypeFetcher<DataType = any, SchemaType extends z.ZodInterface<any> = z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
     bracketNotation: true;
 }> = Paths<z.infer<SchemaType>, {
     bracketNotation: true;
@@ -115,9 +115,66 @@ export type ZodFormsContextType<DataType = any, SchemaType extends z.ZodInterfac
      */
     validation?: z.ZodSafeParseResult<z.core.output<SchemaType>>;
     /**
+     * Field component
+     */
+    Field: (props: ZodFormFieldProps<SchemaType, FieldPath>) => React.JSX.Element;
+    /**
+     * Form component
+     */
+    Form: (props: ZodFormProps<SchemaType>) => React.JSX.Element;
+    /**
      * Pure fetcher form component
      */
-    FetcherForm?: ForwardRefExoticComponent<FetcherFormProps & RefAttributes<HTMLFormElement>>;
+    FormElement?: ForwardRefExoticComponent<FetcherFormProps & RefAttributes<HTMLFormElement>>;
+    /**
+     * Message component
+     */
+    Message: (props: ZodFormMessageProps<DataType extends HandleZodFormMessage<SchemaType> ? DataType["payload"] : DataType, SchemaType, FieldPath>) => React.JSX.Element;
+};
+export type ZodFormsContextTypeForm<DataType = any, SchemaType extends z.ZodInterface<any> = z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
+    bracketNotation: true;
+}> = Paths<z.infer<SchemaType>, {
+    bracketNotation: true;
+}>> = {
+    /**
+     * Action data
+     */
+    data?: DataType;
+    /**
+     * Configure which events trigger validation
+     *
+     * @remarks
+     * Defaults to `[ "change", "form.submit" ]`
+     */
+    events: ("blur" | "change" | "form.blur" | "form.input" | "form.submit" | "input")[];
+    /**
+     * The form element
+     */
+    form?: RefObject<HTMLFormElement | null>;
+    /**
+     * The form's unique identifier
+     */
+    id: string;
+    /**
+     * The form's schema intent
+     */
+    intent: string;
+    /**
+     * Zod schema for the form
+     */
+    schema: SchemaType;
+    /**
+     * Navigation state
+     */
+    state: "idle" | "loading" | "submitting";
+    /**
+     * Validate the form
+     */
+    validate: (callback?: (data: z.infer<SchemaType>, validation: z.ZodSafeParseResult<z.core.output<SchemaType>>) => void) => z.ZodSafeParseResult<z.core.output<SchemaType>> | undefined;
+    /**
+     * Zod validation response
+     */
+    validation?: z.ZodSafeParseResult<z.core.output<SchemaType>>;
     /**
      * Field component
      */
@@ -127,10 +184,19 @@ export type ZodFormsContextType<DataType = any, SchemaType extends z.ZodInterfac
      */
     Form: (props: ZodFormProps<SchemaType>) => React.JSX.Element;
     /**
+     * Pure form component
+     */
+    FormElement?: ForwardRefExoticComponent<FetcherFormProps & RefAttributes<HTMLFormElement>>;
+    /**
      * Message component
      */
     Message: (props: ZodFormMessageProps<DataType extends HandleZodFormMessage<SchemaType> ? DataType["payload"] : DataType, SchemaType, FieldPath>) => React.JSX.Element;
 };
+export type ZodFormsContextType<DataType = any, SchemaType extends z.ZodInterface<any> = z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
+    bracketNotation: true;
+}> = Paths<z.infer<SchemaType>, {
+    bracketNotation: true;
+}>> = ZodFormsContextTypeFetcher<DataType, SchemaType, FieldPath> | ZodFormsContextTypeForm<DataType, SchemaType, FieldPath>;
 /**
  * Context for ZodForms
  */

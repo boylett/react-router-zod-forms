@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef, type ElementType, type FocusEventHandler, type FormEventHandler, type RefObject } from "react";
+import React, { useCallback, useContext, useEffect, useRef, type FocusEventHandler, type FormEventHandler, type RefObject } from "react";
 import { Form as ReactRouterForm, type FormProps } from "react-router";
 import { z } from "zod";
 import { ZodFormContext } from "../context/FormContext";
@@ -84,13 +84,11 @@ export function Form<
 
   const {
     events,
-    FetcherForm,
+    FormElement = ReactRouterForm,
     intent,
     validate,
     validation,
   } = forms.current[ formId ];
-
-  const FormElement: ElementType = FetcherForm || ReactRouterForm;
 
   /**
    * Validate the form on blur
