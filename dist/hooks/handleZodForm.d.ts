@@ -34,9 +34,9 @@ type HandleZodFormOptions<SchemaType extends z.ZodInterface<any>, UploadHandlerR
  * Form handlers for a given schema
  */
 type HandleZodFormForms<SchemaType extends z.ZodInterface<any>, UploadHandlerReturnType extends Blob | null | string | void, PayloadTypes extends {
-    [key in keyof SchemaType["def"]["shape"]]: any;
+    [key in "default" | keyof SchemaType["def"]["shape"]]: any;
 }> = {
-    [Intent in "default" | keyof z.infer<SchemaType>]?: (props: Intent extends "default" ? HandleZodFormResponsePayloadType<Replace<SchemaType, File, UploadHandlerReturnType>, PayloadTypes[Intent]> : HandleZodFormResponsePayloadType<Replace<SchemaType["def"]["shape"][Intent], File, UploadHandlerReturnType>, PayloadTypes[Intent]>) => Promise<(Intent extends "default" ? HandleZodFormMessage<Replace<SchemaType, File, UploadHandlerReturnType>, PayloadTypes[Intent]> | any : HandleZodFormMessage<Replace<SchemaType["def"]["shape"][Intent], File, UploadHandlerReturnType>, PayloadTypes[Intent]>) | void>;
+    [Intent in "default" | keyof z.infer<SchemaType>]?: (props: Intent extends "default" ? HandleZodFormResponsePayloadType<any, PayloadTypes["default"]> : HandleZodFormResponsePayloadType<Replace<SchemaType["def"]["shape"][Intent], File, UploadHandlerReturnType>, PayloadTypes[Intent]>) => Promise<(Intent extends "default" ? HandleZodFormMessage<any, PayloadTypes["default"]> | any : HandleZodFormMessage<Replace<SchemaType["def"]["shape"][Intent], File, UploadHandlerReturnType>, PayloadTypes[Intent]>) | void>;
 };
 /**
  * Event hook handlers for a given schema
@@ -98,6 +98,6 @@ export type HandleZodFormResponsePayloadType<SchemaType extends z.ZodInterface<a
  * Handle Zod Form submission
  */
 export declare function handleZodForm<SchemaType extends z.ZodInterface<Record<string, z.ZodInterface<any>>>, PayloadTypes extends {
-    [key in keyof SchemaType["def"]["shape"]]: any;
-}, UploadHandlerReturnType extends Blob | null | string | void = File>(options: HandleZodFormOptions<SchemaType, UploadHandlerReturnType>, forms: HandleZodFormForms<SchemaType, UploadHandlerReturnType, PayloadTypes>, hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>): Promise<Response | HandleZodFormMessage<SchemaType, PayloadTypes["default"]> | HandleZodFormMessage<SchemaType["def"]["shape"][keyof SchemaType["def"]["shape"]], PayloadTypes[keyof SchemaType["def"]["shape"]]>>;
+    [key in "default" | keyof SchemaType["def"]["shape"]]: any;
+}, UploadHandlerReturnType extends Blob | null | string | void = File>(options: HandleZodFormOptions<SchemaType, UploadHandlerReturnType>, forms: HandleZodFormForms<SchemaType, UploadHandlerReturnType, PayloadTypes>, hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>): Promise<Response | HandleZodFormMessage<any, PayloadTypes["default"]> | HandleZodFormMessage<SchemaType["def"]["shape"][keyof SchemaType["def"]["shape"]], PayloadTypes[keyof SchemaType["def"]["shape"]]>>;
 export {};

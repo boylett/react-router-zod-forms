@@ -75,5 +75,5 @@ export type ZodFormMessageProps<PayloadType, SchemaType extends z.ZodInterface<a
 }>> = ZodFormMessagePropsNamed<SchemaType, FieldPath> | ZodFormMessagePropsNameless<PayloadType, SchemaType>;
 export declare function Message<PayloadType, SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
     bracketNotation: true;
-}>>(props: ZodFormMessageProps<PayloadType, SchemaType, FieldPath>): string | number | bigint | boolean | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | React.JSX.Element | null | undefined;
+}>>(props: ZodFormMessageProps<PayloadType, SchemaType, FieldPath>): string | number | bigint | boolean | React.JSX.Element | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined;
 export {};
