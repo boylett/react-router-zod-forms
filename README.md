@@ -31,7 +31,11 @@
 npm install react-router-zod-forms
 ```
 
-## Schema Creation
+## Schema Definition
+
+Form schemas are zod interface objects where the top-level key is the "intent" of the form, and the value is the actual form schema. This simplifies the process of creating multiple forms on the same page.
+
+In the example below, the `general` intent indicates a schema with keys `title`, `content` and `settings`.
 
 ```typescript
 import z from "zod";
@@ -293,6 +297,32 @@ It handles validation with zod and automatically inserts a hidden `intent` field
 
 ```tsx
 <Form method="get">
+```
+
+The `Form` component accepts a custom property called `intent` that allows you to enable or disable the automatic intent field. This is useful if you want to utilize multiple handlers from the same form by specifying your own `_intent` field.
+
+In the below example, clicking the `Save` button will submit the form to the `api` handler, whereas clicking the `Clear` or `Test` buttons will submit the same information to the `clear` or `test` handlers, respectively. If a handler does not exist for `clear` or `test` (i.e. the schema does not contain a key for them), then the `default` handler will be used instead.
+
+```tsx
+const { intent, Field, Form } = useZodForm({
+  intent: "api",
+  schema,
+});
+
+return (
+  <Form intent={ false }>
+    <Field name="endpoint" />
+    <button name="_intent" value={ intent }>
+      Save
+    </button>
+    <button name="_intent" value="clear">
+      Clear
+    </button>
+    <button name="_intent" value="test">
+      Test
+    </button>
+  </Form>
+);
 ```
 
 ### `<Field />` component

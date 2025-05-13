@@ -5,12 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.0.11] - 2025-05-13
 
 ### Changed
 
 - `useFetcher` is now `false` by default
 - Stronger typing for `useZodForm` return type based on `useFetcher` option
+
+### Added
+
+- `intent` prop for `Form` component to enable or disable automatic intent field
 
 ## [0.0.10] - 2025-05-05
 

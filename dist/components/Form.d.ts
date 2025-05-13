@@ -6,6 +6,13 @@ import { z } from "zod";
  */
 export interface ZodFormProps<SchemaType extends z.ZodInterface<any>> extends FormProps {
     /**
+     * Whether to embed the current intent as a hidden field
+     *
+     * @remarks
+     * Defaults to `true`
+     */
+    intent?: boolean;
+    /**
      * Called when data returns from the action
      */
     onResponse?: (data: any) => void;

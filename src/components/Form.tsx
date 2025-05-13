@@ -11,6 +11,14 @@ export interface ZodFormProps<
   SchemaType extends z.ZodInterface<any>
 > extends FormProps {
   /**
+   * Whether to embed the current intent as a hidden field
+   * 
+   * @remarks
+   * Defaults to `true`
+   */
+  intent?: boolean;
+
+  /**
    * Called when data returns from the action
    */
   onResponse?: (data: any) => void;
@@ -37,6 +45,7 @@ export function Form<
   let {
     children,
     id: formId,
+    intent: embedIntent = true,
     onBlur,
     onInput,
     onResponse,
@@ -184,10 +193,12 @@ export function Form<
       onSubmit={ handleSubmit }
       { ...rest }
       ref={ ref }>
-      <input
-        name="_intent"
-        type="hidden"
-        value={ String(intent) } />
+      { embedIntent && (
+        <input
+          name="_intent"
+          type="hidden"
+          value={ String(intent) } />
+      ) }
       { children }
     </FormElement>
   );
