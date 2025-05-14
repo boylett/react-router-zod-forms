@@ -199,10 +199,18 @@ export function Message<
               `react-router-zod-forms__form-message ${ className || "" }`.trim()
             }
             data-status={ data.status }
-            title={ data.message }
+            title={
+              data.message === "error" && data.payload && "message" in data.payload
+                ? data.payload.message
+                : data.message
+            }
             { ...rest }>
             <p>
-              { data.message }
+              {
+                data.message === "error" && data.payload && "message" in data.payload
+                  ? data.payload.message
+                  : data.message
+              }
             </p>
           </Element>
         )

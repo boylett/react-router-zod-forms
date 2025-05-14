@@ -32,8 +32,10 @@ export async function handleZodForm(options, forms, hooks) {
         }
         else if (thrown &&
             typeof thrown === "object" &&
-            ("message" in thrown ||
-                "status" in thrown)) {
+            ("intent" in thrown &&
+                "message" in thrown &&
+                "status" in thrown &&
+                "validation" in thrown)) {
             return thrown;
         }
         throw thrown;
@@ -66,8 +68,10 @@ export async function handleZodForm(options, forms, hooks) {
             }
             else if (thrown &&
                 typeof thrown === "object" &&
-                ("message" in thrown ||
-                    "status" in thrown)) {
+                ("intent" in thrown &&
+                    "message" in thrown &&
+                    "status" in thrown &&
+                    "validation" in thrown)) {
                 return thrown;
             }
             throw thrown;
@@ -85,8 +89,10 @@ export async function handleZodForm(options, forms, hooks) {
             }
             else if (thrown &&
                 typeof thrown === "object" &&
-                ("message" in thrown ||
-                    "status" in thrown)) {
+                ("intent" in thrown &&
+                    "message" in thrown &&
+                    "status" in thrown &&
+                    "validation" in thrown)) {
                 return thrown;
             }
             throw thrown;
@@ -112,10 +118,13 @@ export async function handleZodForm(options, forms, hooks) {
             if (thrown instanceof Response) {
                 return thrown;
             }
-            response.message = "error";
-            response.payload = thrown;
-            response.status = 500;
-            return response;
+            if (thrown instanceof Error) {
+                response.message = "error";
+                response.payload = thrown;
+                response.status = 500;
+                return response;
+            }
+            throw thrown;
         }
         finally {
             try {
@@ -127,8 +136,10 @@ export async function handleZodForm(options, forms, hooks) {
                 }
                 else if (thrown &&
                     typeof thrown === "object" &&
-                    ("message" in thrown ||
-                        "status" in thrown)) {
+                    ("intent" in thrown &&
+                        "message" in thrown &&
+                        "status" in thrown &&
+                        "validation" in thrown)) {
                     return thrown;
                 }
                 throw thrown;
@@ -154,10 +165,13 @@ export async function handleZodForm(options, forms, hooks) {
             if (thrown instanceof Response) {
                 return thrown;
             }
-            response.message = "error";
-            response.payload = thrown;
-            response.status = 500;
-            return response;
+            if (thrown instanceof Error) {
+                response.message = "error";
+                response.payload = thrown;
+                response.status = 500;
+                return response;
+            }
+            throw thrown;
         }
         finally {
             try {
@@ -169,8 +183,10 @@ export async function handleZodForm(options, forms, hooks) {
                 }
                 else if (thrown &&
                     typeof thrown === "object" &&
-                    ("message" in thrown ||
-                        "status" in thrown)) {
+                    ("intent" in thrown &&
+                        "message" in thrown &&
+                        "status" in thrown &&
+                        "validation" in thrown)) {
                     return thrown;
                 }
                 throw thrown;

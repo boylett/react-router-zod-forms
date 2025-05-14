@@ -45,8 +45,12 @@ export function Message(props) {
                 className: `react-router-zod-forms__form-message ${className || ""}`.trim(),
                 message: data,
             }, shape || {})
-            : (React.createElement(Element, { className: `react-router-zod-forms__form-message ${className || ""}`.trim(), "data-status": data.status, title: data.message, ...rest },
-                React.createElement("p", null, data.message))));
+            : (React.createElement(Element, { className: `react-router-zod-forms__form-message ${className || ""}`.trim(), "data-status": data.status, title: data.message === "error" && data.payload && "message" in data.payload
+                    ? data.payload.message
+                    : data.message, ...rest },
+                React.createElement("p", null, data.message === "error" && data.payload && "message" in data.payload
+                    ? data.payload.message
+                    : data.message))));
     }
     // If validation is not set for this field
     if (!validation || validation.success || validation.error.issues.length === 0) {

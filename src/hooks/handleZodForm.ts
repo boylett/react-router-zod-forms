@@ -222,8 +222,10 @@ export async function handleZodForm<
       thrown &&
       typeof thrown === "object" &&
       (
-        "message" in thrown ||
-        "status" in thrown
+        "intent" in thrown &&
+        "message" in thrown &&
+        "status" in thrown &&
+        "validation" in thrown
       )
     ) {
       return thrown as HandleZodFormMessage<SchemaType>;
@@ -278,8 +280,10 @@ export async function handleZodForm<
         thrown &&
         typeof thrown === "object" &&
         (
-          "message" in thrown ||
-          "status" in thrown
+          "intent" in thrown &&
+          "message" in thrown &&
+          "status" in thrown &&
+          "validation" in thrown
         )
       ) {
         return thrown as HandleZodFormMessage<SchemaType>;
@@ -311,8 +315,10 @@ export async function handleZodForm<
         thrown &&
         typeof thrown === "object" &&
         (
-          "message" in thrown ||
-          "status" in thrown
+          "intent" in thrown &&
+          "message" in thrown &&
+          "status" in thrown &&
+          "validation" in thrown
         )
       ) {
         return thrown as HandleZodFormMessage<SchemaType>;
@@ -350,11 +356,15 @@ export async function handleZodForm<
         return thrown;
       }
 
-      response.message = "error";
-      response.payload = thrown;
-      response.status = 500;
+      if (thrown instanceof Error) {
+        response.message = "error";
+        response.payload = thrown;
+        response.status = 500;
 
-      return response;
+        return response;
+      }
+
+      throw thrown;
     }
 
     finally {
@@ -371,8 +381,10 @@ export async function handleZodForm<
           thrown &&
           typeof thrown === "object" &&
           (
-            "message" in thrown ||
-            "status" in thrown
+            "intent" in thrown &&
+            "message" in thrown &&
+            "status" in thrown &&
+            "validation" in thrown
           )
         ) {
           return thrown as HandleZodFormMessage<SchemaType>;
@@ -409,11 +421,15 @@ export async function handleZodForm<
         return thrown;
       }
 
-      response.message = "error";
-      response.payload = thrown;
-      response.status = 500;
+      if (thrown instanceof Error) {
+        response.message = "error";
+        response.payload = thrown;
+        response.status = 500;
 
-      return response;
+        return response;
+      }
+
+      throw thrown;
     }
 
     finally {
@@ -430,8 +446,10 @@ export async function handleZodForm<
           thrown &&
           typeof thrown === "object" &&
           (
-            "message" in thrown ||
-            "status" in thrown
+            "intent" in thrown &&
+            "message" in thrown &&
+            "status" in thrown &&
+            "validation" in thrown
           )
         ) {
           return thrown as HandleZodFormMessage<SchemaType>;
