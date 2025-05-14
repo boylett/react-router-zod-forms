@@ -236,7 +236,7 @@ export default function Component () {
     {
       intent: "general",
       schema,
-      
+
       // Fetcher is disabled by default
       useFetcher: true,
     }
@@ -488,12 +488,14 @@ type SchemaPayloads = {
   };
 };
 
-               // Note the second type parameter ↴
-return await handleZodForm<typeof schema, SchemaPayloads>({ request, schema }, {
-  async primary ({ response }) {
-    response.payload.enabled = true;
-  },
-});
+export const action = async ({ context, params, request }: Route.ActionArgs) => {
+                // Note the second type parameter ↴
+  return await handleZodForm<typeof schema, SchemaPayloads>({ request, schema }, {
+    async primary ({ response }) {
+      response.payload.enabled = true;
+    },
+  });
+}
 
 export default function Component () {
                   // Note the second type parameter ↴
