@@ -1,6 +1,6 @@
 {
   "name": "react-router-zod-forms",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Forms management for React Router 7 applications using Zod 4 for validation and schemas",
   "author": "boylett <ryan@boylett.dev>",
   "repository": {
@@ -30,8 +30,8 @@
   },
   "devDependencies": {
     "@types/luxon": "^3.6.2",
-    "@types/react": "^19.1.2",
-    "type-fest": "^4.40.1",
+    "@types/react": "^19.1.4",
+    "type-fest": "^4.41.0",
     "typescript": "^5.8.3"
   },
   "dependencies": {
@@ -39,7 +39,7 @@
     "luxon": "^3.6.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router": "^7.5.3",
-    "zod": "^4.0.0-beta.20250503T014749"
+    "react-router": "^7.6.0",
+    "zod": "^4.0.0-beta.20250505T195954"
   }
 }

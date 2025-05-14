@@ -33,18 +33,18 @@ npm install react-router-zod-forms
 
 ## Schema Definition
 
-Form schemas are zod interface objects where the top-level key is the "intent" of the form, and the value is the actual form schema. This simplifies the process of creating multiple forms on the same page.
+Form schemas are zod objects where the top-level key is the "intent" of the form, and the value is the actual form schema. This simplifies the process of creating multiple forms on the same page.
 
 In the example below, the `general` intent indicates a schema with keys `title`, `content` and `settings`.
 
 ```typescript
 import z from "zod";
 
-const schema = z.interface({
+const schema = z.object({
   /**
    * General settings
    */
-  general: z.interface({
+  general: z.object({
     title: z
       .string()
       .meta({ description: "Page Title" }),
@@ -63,7 +63,7 @@ const schema = z.interface({
 ```
 
 > [!IMPORTANT]
-> The root-level schema must consist of `interface` types only. Polluting the schema with non-`interface` types will cause a type error in `handleZodForm`.
+> The root-level schema must consist of `object` types only. Polluting the schema with non-`object` types will cause a type error in `handleZodForm`.
 
 ## Server Handler
 
@@ -131,7 +131,7 @@ The `handleZodForm` method parses the current request for `FormData`, performs a
 | Property | Type | Effect |
 | - | - | - |
 | `options.request` <sup>(required)</sup> | `Request` | The current request |
-| `options.schema` <sup>(required)</sup> | [`ZodInterface`](https://v4.zod.dev/api#objects) | Your zod schema object |
+| `options.schema` <sup>(required)</sup> | [`ZodObject`](https://v4.zod.dev/api#objects) | Your zod schema object |
 | `options.maxFileSize` | `number` | Set the maximum file size for file uploads (see [@mjackson/multipart-parser](https://github.com/mjackson/remix-the-web/tree/main/packages/multipart-parser#limiting-file-upload-size)) |
 | `options.maxHeaderSize` | `number` | Set the maximum header size for multipart payloads (see [@mjackson/multipart-parser](https://github.com/mjackson/remix-the-web/blob/main/packages/multipart-parser/src/lib/multipart.ts#L18)) |
 | `options.transform` | `function` | Transforms the value of each formData field before it is parsed by Zod (arguments are `key: string`, `value: FormDataEntryValue` and `path: (number \| string)[]`) |
@@ -139,12 +139,12 @@ The `handleZodForm` method parses the current request for `FormData`, performs a
 
 #### 2. `forms` <sup>(required)</sup> – Form handlers corresponding to schema entries
 
-For every `ZodInterface` within your schema, you can define a namesake form handler function inside the `forms` object. For instance;
+For every `ZodObject` within your schema, you can define a namesake form handler function inside the `forms` object. For instance;
 
 ```typescript
-const schema = z.interface({
-  primary: z.interface({ primary_title: z.string() }),
-  secondary: z.interface({ secondary_title: z.string() }),
+const schema = z.object({
+  primary: z.object({ primary_title: z.string() }),
+  secondary: z.object({ secondary_title: z.string() }),
 });
 
 return await handleZodForm({ request, schema }, {
@@ -177,8 +177,8 @@ return await handleZodForm({ request, schema }, {
 | `after` | `data: FormData` | | Called after all relevant handlers have executed |
 | `beforeUpload` | `file: `[`FileUpload`](https://github.com/mjackson/remix-the-web/blob/main/packages/form-data-parser/src/lib/form-data.ts#L19) | <sub>[`FileUpload`](https://github.com/mjackson/remix-the-web/blob/main/packages/form-data-parser/src/lib/form-data.ts#L19)</sub> | Called before `options.uploadHandler`. May be used to mutate the file before upload |
 | `afterUpload` | <sub>`file?: Blob \| null \| string`</sub> | <sub>`Blob \| null \| string`</sub> | Called before `options.uploadHandler`. May be used to mutate the file before upload |
-| `beforeValidate` | <sub>`data?: z.infer<typeof schema>`</sub> | <sub>`z.infer<typeof schema>`</sub> | Called before zod validation. May be used to mutate the form data before validation |
-| `afterValidate` | <sub>`result?: ZodSafeParseResult<z.infer<typeof schema>>`</sub> | <sub>`ZodSafeParseResult<z.infer<typeof schema>>`</sub> | Called after zod validation. May be used to mutate the validation response before action handling |
+| `beforeValidate` | <sub>`data?: z.output<typeof schema>`</sub> | <sub>`z.output<typeof schema>`</sub> | Called before zod validation. May be used to mutate the form data before validation |
+| `afterValidate` | <sub>`result?: ZodSafeParseResult<z.output<typeof schema>>`</sub> | <sub>`ZodSafeParseResult<z.output<typeof schema>>`</sub> | Called after zod validation. May be used to mutate the validation response before action handling |
 
 > [!NOTE]
 > Hooks do not have to return a value
@@ -189,8 +189,8 @@ The `handleZodForm` method accepts up to three type parameters;
 
 | Generic | Type | Effect |
 | - | - | - |
-| `SchemaType` | `z.ZodInterface<Record<string, z.ZodInterface<any>>>` | Input schema type. Should be `typeof schema` in almost every case |
-| `PayloadTypes` | `Record<keyof SchemaType[ "def" ][ "shape" ], any>` | Fetcher data payload type map |
+| `SchemaType` | `z.ZodObject<Record<string, z.ZodObject<any>>>` | Input schema type. Should be `typeof schema` in almost every case |
+| `PayloadTypes` | `Record<keyof SchemaType[ "_zod" ][ "def" ][ "shape" ], any>` | Fetcher data payload type map |
 | `UploadHandlerReturnType` | `Blob \| null \| string \| void` | Type constraint for the result of `uploadHandler` |
 
 These type parameters are particularly useful when you need type safety for your form action's `data` payload (see [**Payload Type Safety**](#payload-type-safety)).
@@ -199,7 +199,7 @@ These type parameters are particularly useful when you need type safety for your
 
 Use the `useZodForm` hook to create a [fetcher](https://reactrouter.com/api/hooks/useFetcher#usefetcher) and form components for use on your page or in components.
 
-It accepts a single argument – `options` – which requires `intent` <sup>(`string`)</sup> and `schema` <sup>(`ZodInterface`)</sup>.
+It accepts a single argument – `options` – which requires `intent` <sup>(`string`)</sup> and `schema` <sup>(`ZodObject`)</sup>.
 
 ```tsx
 import { useZodForm } from "react-router-zod-forms";
@@ -284,7 +284,7 @@ export default function Component () {
 | Property | Type | Effect |
 | - | - | - |
 | `options.intent` <sup>(required)</sup> | `string` | The current form intent |
-| `options.schema` <sup>(required)</sup> | [`ZodInterface`](https://v4.zod.dev/api#objects) | Your zod schema object |
+| `options.schema` <sup>(required)</sup> | [`ZodObject`](https://v4.zod.dev/api#objects) | Your zod schema object |
 | `options.events` | `string[]` | Names of event handlers that will trigger form validation |
 
 ### `<Form />` component
@@ -397,8 +397,8 @@ As custom components are commonplace in forms, `Field` components also accept a 
 The `children` functional property receives two arguments; the first is input props, and the second is the zod schema (or "shape") for that specific field. You can use this second argument to retrieve a field's metadata from your schema. For example;
 
 ```tsx
-const schema = z.interface({
-  form: z.interface({
+const schema = z.object({
+  form: z.object({
     field: z.string().meta({ description: "Field Name" })
   }),
 });
@@ -504,9 +504,9 @@ export default function Component () {
 You can create multiple forms on the same page by initializing each form as a variable rather than destructuring;
 
 ```tsx
-const schema = z.interface({
-  primary: z.interface({ primary_title: z.string() }),
-  secondary: z.interface({ secondary_title: z.string() }),
+const schema = z.object({
+  primary: z.object({ primary_title: z.string() }),
+  secondary: z.object({ secondary_title: z.string() }),
 });
 
 export default function Component () {

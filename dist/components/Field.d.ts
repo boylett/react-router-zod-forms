@@ -1,19 +1,19 @@
-import React, { type AllHTMLAttributes, type InputHTMLAttributes, type ReactNode, type RefObject, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
+import React, { type AllHTMLAttributes, type HTMLInputTypeAttribute, type InputHTMLAttributes, type ReactNode, type RefObject, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
 import type { Get, Paths } from "type-fest";
 import { z } from "zod";
 /**
  * Props for the Field component
  */
-export type ZodFormFieldProps<SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
+export type ZodFormFieldProps<SchemaType extends z.ZodObject<any>, FieldPath extends Paths<z.output<SchemaType>, {
     bracketNotation: true;
-}>, FieldValue = Get<z.infer<SchemaType>, FieldPath>, FieldType = (FieldValue extends boolean ? "hidden" | "image" | "checkbox" | "radio" : FieldValue extends Date ? "hidden" | "image" | "date" | "datetime" | "datetime-local" | "month" | "time" | "week" : FieldValue extends File ? "hidden" | "image" | "file" : FieldValue extends number ? "hidden" | "image" | "number" | "range" : FieldValue extends Array<any> ? "select" : FieldValue extends object ? never : InputHTMLAttributes<HTMLInputElement>["type"] | "select" | "textarea")> = Omit<FieldType extends never ? never : FieldValue extends Array<any> ? Omit<SelectHTMLAttributes<HTMLSelectElement>, "defaultValue" | "multiple" | "value"> : Omit<InputHTMLAttributes<HTMLInputElement> & TextareaHTMLAttributes<HTMLTextAreaElement>, "defaultValue" | "value">, "children" | "name" | "type"> & {
+}>, FieldValue = Get<z.output<SchemaType>, FieldPath>, FieldType = (FieldValue extends boolean ? "hidden" | "image" | "checkbox" | "radio" : FieldValue extends Date ? "hidden" | "image" | "date" | "datetime" | "datetime-local" | "month" | "time" | "week" : FieldValue extends File ? "hidden" | "image" | "file" : FieldValue extends number ? "hidden" | "image" | "number" | "range" : FieldValue extends Array<any> ? "select" : HTMLInputTypeAttribute | "select" | "textarea")> = Omit<FieldValue extends Array<any> ? Omit<SelectHTMLAttributes<HTMLSelectElement>, "defaultValue" | "multiple" | "value"> : Omit<InputHTMLAttributes<HTMLInputElement> & TextareaHTMLAttributes<HTMLTextAreaElement>, "defaultValue" | "value">, "children" | "name" | "type"> & {
     /**
      * Renders a custom component for the field with passthrough attributes
      *
      * @param props Element attributes passed through to the component
      * @param shape (optional) The schema for this field
      */
-    children?: ReactNode | ((props: AllHTMLAttributes<HTMLElement>, shape: z.ZodType<any> | Record<string, undefined>) => ReactNode);
+    children?: ReactNode | ((props: AllHTMLAttributes<HTMLElement>, shape: z.ZodType | Record<string, undefined>) => ReactNode);
     /**
      * The default value of this input
      */
@@ -42,6 +42,6 @@ export type ZodFormFieldProps<SchemaType extends z.ZodInterface<any>, FieldPath 
 /**
  * Field component
  */
-export declare function Field<SchemaType extends z.ZodInterface<any>, FieldPath extends Paths<z.infer<SchemaType>, {
+export declare function Field<SchemaType extends z.ZodObject<any>, FieldPath extends Paths<z.output<SchemaType>, {
     bracketNotation: true;
 }>>(props: ZodFormFieldProps<SchemaType, FieldPath>): string | number | bigint | boolean | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | React.JSX.Element | null | undefined;

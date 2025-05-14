@@ -8,7 +8,7 @@ import { ZodFormsContext } from "../context/FormsContext";
  * Props for the Form component
  */
 export interface ZodFormProps<
-  SchemaType extends z.ZodInterface<any>
+  SchemaType extends z.ZodObject<any>
 > extends FormProps {
   /**
    * Whether to embed the current intent as a hidden field
@@ -26,7 +26,7 @@ export interface ZodFormProps<
   /**
    * Called during form data validation
    */
-  onValidate?: (data: z.infer<SchemaType>, validation: z.ZodSafeParseResult<z.infer<SchemaType>>) => void;
+  onValidate?: (data: z.output<SchemaType>, validation: z.ZodSafeParseResult<z.output<SchemaType>>) => void;
 
   /**
    * Form element reference
@@ -38,7 +38,7 @@ export interface ZodFormProps<
  * Form component
  */
 export function Form<
-  SchemaType extends z.ZodInterface<any>
+  SchemaType extends z.ZodObject<any>
 > (
   props: ZodFormProps<SchemaType>
 ) {

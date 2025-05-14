@@ -77,6 +77,6 @@ export declare class Path {
      *
      * @param schema Zod schema
      */
-    toSchema<SchemaType = z.ZodType>(schema: z.ZodInterface<any>): SchemaType | undefined;
+    toSchema<SchemaType = z.ZodType>(schema: z.ZodObject<any>): SchemaType | undefined;
     toString(): string;
 }

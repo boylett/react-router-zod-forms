@@ -268,7 +268,7 @@ export class Path {
   toSchema<
     SchemaType = z.ZodType
   > (
-    schema: z.ZodInterface<any>,
+    schema: z.ZodObject<any>,
   ): SchemaType | undefined {
     if (!this.key) {
       return undefined;

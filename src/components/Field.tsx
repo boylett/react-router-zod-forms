@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import React, { useCallback, useContext, type AllHTMLAttributes, type ChangeEventHandler, type FocusEventHandler, type FormEventHandler, type InputHTMLAttributes, type ReactNode, type RefObject, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
+import React, { useCallback, useContext, type AllHTMLAttributes, type ChangeEventHandler, type FocusEventHandler, type FormEventHandler, type HTMLInputTypeAttribute, type InputHTMLAttributes, type ReactNode, type RefObject, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
 import type { Get, Paths } from "type-fest";
 import { z } from "zod";
 import { ZodFormContext } from "../context/FormContext";
@@ -10,9 +10,9 @@ import { Path } from "../utils/Path";
  * Props for the Field component
  */
 export type ZodFormFieldProps<
-  SchemaType extends z.ZodInterface<any>,
-  FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }>,
-  FieldValue = Get<z.infer<SchemaType>, FieldPath>,
+  SchemaType extends z.ZodObject<any>,
+  FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }>,
+  FieldValue = Get<z.output<SchemaType>, FieldPath>,
   FieldType = (
     FieldValue extends boolean
     ? "hidden" | "image" | "checkbox" | "radio"
@@ -24,14 +24,10 @@ export type ZodFormFieldProps<
     ? "hidden" | "image" | "number" | "range"
     : FieldValue extends Array<any>
     ? "select"
-    : FieldValue extends object
-    ? never
-    : InputHTMLAttributes<HTMLInputElement>[ "type" ] | "select" | "textarea"
+    : HTMLInputTypeAttribute | "select" | "textarea"
   )
 > = Omit<
-  FieldType extends never
-  ? never
-  : FieldValue extends Array<any>
+  FieldValue extends Array<any>
   ? Omit<
     SelectHTMLAttributes<HTMLSelectElement>,
     | "defaultValue"
@@ -56,7 +52,7 @@ export type ZodFormFieldProps<
   children?: ReactNode | (
     (
       props: AllHTMLAttributes<HTMLElement>,
-      shape: z.ZodType<any> | Record<string, undefined>
+      shape: z.ZodType | Record<string, undefined>
     ) => ReactNode
   );
 
@@ -103,8 +99,8 @@ export type ZodFormFieldProps<
  * Field component
  */
 export function Field<
-  SchemaType extends z.ZodInterface<any>,
-  FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }>,
+  SchemaType extends z.ZodObject<any>,
+  FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }>,
 > (
   props: ZodFormFieldProps<SchemaType, FieldPath>
 ) {
@@ -156,7 +152,7 @@ export function Field<
   } = form;
 
   // The schema for this field
-  let shape: z.ZodType<any> | undefined = undefined;
+  let shape: z.ZodType | undefined = undefined;
 
   // If the field is not hidden, make it focusable with keyboard shortcuts
   if (type !== "hidden" && !("tabIndex" in rest)) {

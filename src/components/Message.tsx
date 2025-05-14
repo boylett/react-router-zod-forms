@@ -10,8 +10,8 @@ import { Path } from "../utils/Path";
  * Props for the Message component
  */
 interface ZodFormMessagePropsNamed<
-  SchemaType extends z.ZodInterface<any>,
-  FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }>,
+  SchemaType extends z.ZodObject<any>,
+  FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }>,
 > extends Omit<
   AllHTMLAttributes<HTMLElement>,
   | "as"
@@ -39,7 +39,7 @@ interface ZodFormMessagePropsNamed<
        */
       issues: z.core.$ZodIssue[];
     },
-    shape: z.ZodType<any> | Record<string, undefined>
+    shape: z.ZodType | Record<string, undefined>
   ) => ReactNode;
 
   /**
@@ -58,7 +58,7 @@ interface ZodFormMessagePropsNamed<
  */
 interface ZodFormMessagePropsNameless<
   PayloadType,
-  SchemaType extends z.ZodInterface<any>,
+  SchemaType extends z.ZodObject<any>,
 > extends Omit<
   AllHTMLAttributes<HTMLElement>,
   | "as"
@@ -101,8 +101,8 @@ interface ZodFormMessagePropsNameless<
  */
 export type ZodFormMessageProps<
   PayloadType,
-  SchemaType extends z.ZodInterface<any>,
-  FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }>,
+  SchemaType extends z.ZodObject<any>,
+  FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }>,
 > = ZodFormMessagePropsNamed<
   SchemaType,
   FieldPath
@@ -113,8 +113,8 @@ export type ZodFormMessageProps<
 
 export function Message<
   PayloadType,
-  SchemaType extends z.ZodInterface<any>,
-  FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }>,
+  SchemaType extends z.ZodObject<any>,
+  FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }>,
 > (
   props: ZodFormMessageProps<PayloadType, SchemaType, FieldPath>
 ) {
@@ -264,7 +264,7 @@ export function Message<
                   const fieldPath = new Path(issue.path);
 
                   // Get the field schema
-                  const fieldSchema: z.ZodType<any> | undefined = schema && fieldPath.toSchema(schema);
+                  const fieldSchema: z.ZodType | undefined = schema && fieldPath.toSchema(schema);
 
                   return (
                     <li

@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.0.12] - 2025-05-14
 
 ### Changed
 
@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed error in `Field` component when checking for `defaultPrevented`
+
+### Improved
+
+- Updated dependencies
 
 ## [0.0.11] - 2025-05-13
 
@@ -124,7 +128,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Schemas should be a standard `ZodInterface` rather than a custom structure
+- Schemas should be a standard `ZodObject` rather than a custom structure
 - Handling multiple forms now means calling `useZodForm` multiple times rather than picking from the schema
 - Utilise default file upload handler if none specified
 - Rename exported components `ZodForm` and `ZodField` to `Form` and `Field` respectively

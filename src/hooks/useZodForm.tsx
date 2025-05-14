@@ -14,8 +14,8 @@ import type { HandleZodFormMessage } from "./handleZodForm";
  * Options for the useZodForms hook
  */
 interface useZodFormOptionsFetcher<
-  SchemaType extends z.ZodInterface<any>,
-  Intent extends keyof z.infer<SchemaType[ "def" ][ "shape" ]>,
+  SchemaType extends z.ZodObject<any>,
+  Intent extends keyof z.output<SchemaType[ "_zod" ][ "def" ][ "shape" ]>,
 > {
   /**
    * Configure which events trigger validation
@@ -48,8 +48,8 @@ interface useZodFormOptionsFetcher<
  * Options for the useZodForms hook
  */
 interface useZodFormOptionsForm<
-  SchemaType extends z.ZodInterface<any>,
-  Intent extends keyof z.infer<SchemaType[ "def" ][ "shape" ]>,
+  SchemaType extends z.ZodObject<any>,
+  Intent extends keyof z.output<SchemaType[ "_zod" ][ "def" ][ "shape" ]>,
 > {
   /**
    * Configure which events trigger validation
@@ -82,8 +82,8 @@ interface useZodFormOptionsForm<
  * Options for the useZodForms hook
  */
 export type useZodFormOptions<
-  SchemaType extends z.ZodInterface<any>,
-  Intent extends keyof z.infer<SchemaType[ "def" ][ "shape" ]>,
+  SchemaType extends z.ZodObject<any>,
+  Intent extends keyof z.output<SchemaType[ "_zod" ][ "def" ][ "shape" ]>,
 > =
   | useZodFormOptionsFetcher<SchemaType, Intent>
   | useZodFormOptionsForm<SchemaType, Intent>;
@@ -93,8 +93,8 @@ export type useZodFormOptions<
  */
 type useZodFormsReturnTypeFetcher<
   DataType = any,
-  SchemaType extends z.ZodInterface<any> = z.ZodInterface<any>,
-  FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }> = Paths<z.infer<SchemaType>, { bracketNotation: true; }>
+  SchemaType extends z.ZodObject<any> = z.ZodObject<any>,
+  FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }> = Paths<z.output<SchemaType>, { bracketNotation: true; }>
 > = Pick<
   ZodFormsContextTypeFetcher<
     DataType,
@@ -120,8 +120,8 @@ type useZodFormsReturnTypeFetcher<
  */
 type useZodFormsReturnTypeForm<
   DataType = any,
-  SchemaType extends z.ZodInterface<any> = z.ZodInterface<any>,
-  FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }> = Paths<z.infer<SchemaType>, { bracketNotation: true; }>
+  SchemaType extends z.ZodObject<any> = z.ZodObject<any>,
+  FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }> = Paths<z.output<SchemaType>, { bracketNotation: true; }>
 > = Pick<
   ZodFormsContextTypeForm<
     DataType,
@@ -145,8 +145,8 @@ type useZodFormsReturnTypeForm<
  */
 export type useZodFormsReturnType<
   DataType = any,
-  SchemaType extends z.ZodInterface<any> = z.ZodInterface<any>,
-  FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }> = Paths<z.infer<SchemaType>, { bracketNotation: true; }>
+  SchemaType extends z.ZodObject<any> = z.ZodObject<any>,
+  FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }> = Paths<z.output<SchemaType>, { bracketNotation: true; }>
 > =
   | useZodFormsReturnTypeFetcher<DataType, SchemaType, FieldPath>
   | useZodFormsReturnTypeForm<DataType, SchemaType, FieldPath>;
@@ -155,10 +155,10 @@ export type useZodFormsReturnType<
  * Initialize a new Form instance
  */
 export function useZodForm<
-  SchemaType extends z.ZodInterface<any>,
-  Intent extends keyof z.infer<SchemaType>,
+  SchemaType extends z.ZodObject<any>,
+  Intent extends keyof z.output<SchemaType>,
   PayloadType = any,
-  IntentSchemaType extends z.ZodInterface<any> = SchemaType[ "def" ][ "shape" ][ Intent ]
+  IntentSchemaType extends z.ZodObject<any> = SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ]
 > (
   options: useZodFormOptionsFetcher<SchemaType, Intent>
 ): useZodFormsReturnTypeFetcher<
@@ -173,10 +173,10 @@ export function useZodForm<
  * Initialize a new Form instance
  */
 export function useZodForm<
-  SchemaType extends z.ZodInterface<any>,
-  Intent extends keyof z.infer<SchemaType>,
+  SchemaType extends z.ZodObject<any>,
+  Intent extends keyof z.output<SchemaType>,
   PayloadType = any,
-  IntentSchemaType extends z.ZodInterface<any> = SchemaType[ "def" ][ "shape" ][ Intent ]
+  IntentSchemaType extends z.ZodObject<any> = SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ]
 > (
   options: useZodFormOptionsForm<SchemaType, Intent>
 ): useZodFormsReturnTypeForm<
@@ -191,10 +191,10 @@ export function useZodForm<
  * Initialize a new Form instance
  */
 export function useZodForm<
-  SchemaType extends z.ZodInterface<any>,
-  Intent extends keyof z.infer<SchemaType>,
+  SchemaType extends z.ZodObject<any>,
+  Intent extends keyof z.output<SchemaType>,
   PayloadType = any,
-  IntentSchemaType extends z.ZodInterface<any> = SchemaType[ "def" ][ "shape" ][ Intent ]
+  IntentSchemaType extends z.ZodObject<any> = SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ]
 > (
   options: useZodFormOptions<SchemaType, Intent>
 ): useZodFormsReturnType<
@@ -261,14 +261,14 @@ export function useZodForm<
 
   // Current validation state
   const [ validation, setValidation ] = (
-    useState<z.ZodSafeParseResult<z.infer<IntentSchemaType>> | undefined>(undefined)
+    useState<z.ZodSafeParseResult<z.output<IntentSchemaType>> | undefined>(undefined)
   );
 
   /**
    * Validate the form data against the schema
    */
   const validate = useCallback(
-    (callback?: (data: z.infer<IntentSchemaType>, validation: z.ZodSafeParseResult<z.infer<IntentSchemaType>>) => void) => {
+    (callback?: (data: z.output<IntentSchemaType>, validation: z.ZodSafeParseResult<z.output<IntentSchemaType>>) => void) => {
       // Get the form element by ID
       const form: HTMLFormElement | null = document.querySelector(`form[id="${ formId.replace(/\"/g, "\\\"") }"]`);
 
@@ -307,7 +307,7 @@ export function useZodForm<
 
   // Create the field component
   const FieldComponent = useCallback(
-    (props: ZodFormFieldProps<IntentSchemaType, Paths<z.infer<IntentSchemaType>, { bracketNotation: true; }>>) => (
+    (props: ZodFormFieldProps<IntentSchemaType, Paths<z.output<IntentSchemaType>, { bracketNotation: true; }>>) => (
       <ZodFormContext value={ formId }>
         <Field { ...props } />
       </ZodFormContext>
@@ -327,7 +327,7 @@ export function useZodForm<
 
   // Create the message component
   const MessageComponent = useCallback(
-    (props: ZodFormMessageProps<PayloadType, IntentSchemaType, Paths<z.infer<IntentSchemaType>, { bracketNotation: true; }>>) => (
+    (props: ZodFormMessageProps<PayloadType, IntentSchemaType, Paths<z.output<IntentSchemaType>, { bracketNotation: true; }>>) => (
       <ZodFormContext value={ formId }>
         <Message { ...props } />
       </ZodFormContext>

@@ -9,8 +9,8 @@ import type { HandleZodFormMessage } from "../hooks/handleZodForm";
 
 export type ZodFormsContextTypeFetcher<
   DataType = any,
-  SchemaType extends z.ZodInterface<any> = z.ZodInterface<any>,
-  FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }> = Paths<z.infer<SchemaType>, { bracketNotation: true; }>
+  SchemaType extends z.ZodObject<any> = z.ZodObject<any>,
+  FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }> = Paths<z.output<SchemaType>, { bracketNotation: true; }>
 > = {
   /**
    * Fetcher response data
@@ -119,7 +119,7 @@ export type ZodFormsContextTypeFetcher<
   /**
    * Validate the form
    */
-  validate: (callback?: (data: z.infer<SchemaType>, validation: z.ZodSafeParseResult<z.core.output<SchemaType>>) => void) => z.ZodSafeParseResult<z.core.output<SchemaType>> | undefined;
+  validate: (callback?: (data: z.output<SchemaType>, validation: z.ZodSafeParseResult<z.core.output<SchemaType>>) => void) => z.ZodSafeParseResult<z.core.output<SchemaType>> | undefined;
 
   /**
    * Zod validation response
@@ -157,8 +157,8 @@ export type ZodFormsContextTypeFetcher<
 
 export type ZodFormsContextTypeForm<
   DataType = any,
-  SchemaType extends z.ZodInterface<any> = z.ZodInterface<any>,
-  FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }> = Paths<z.infer<SchemaType>, { bracketNotation: true; }>
+  SchemaType extends z.ZodObject<any> = z.ZodObject<any>,
+  FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }> = Paths<z.output<SchemaType>, { bracketNotation: true; }>
 > = {
   /**
    * Action data
@@ -201,7 +201,7 @@ export type ZodFormsContextTypeForm<
   /**
    * Validate the form
    */
-  validate: (callback?: (data: z.infer<SchemaType>, validation: z.ZodSafeParseResult<z.core.output<SchemaType>>) => void) => z.ZodSafeParseResult<z.core.output<SchemaType>> | undefined;
+  validate: (callback?: (data: z.output<SchemaType>, validation: z.ZodSafeParseResult<z.core.output<SchemaType>>) => void) => z.ZodSafeParseResult<z.core.output<SchemaType>> | undefined;
 
   /**
    * Zod validation response
@@ -239,8 +239,8 @@ export type ZodFormsContextTypeForm<
 
 export type ZodFormsContextType<
   DataType = any,
-  SchemaType extends z.ZodInterface<any> = z.ZodInterface<any>,
-  FieldPath extends Paths<z.infer<SchemaType>, { bracketNotation: true; }> = Paths<z.infer<SchemaType>, { bracketNotation: true; }>
+  SchemaType extends z.ZodObject<any> = z.ZodObject<any>,
+  FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }> = Paths<z.output<SchemaType>, { bracketNotation: true; }>
 > =
   | ZodFormsContextTypeFetcher<DataType, SchemaType, FieldPath>
   | ZodFormsContextTypeForm<DataType, SchemaType, FieldPath>;
