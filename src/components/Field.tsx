@@ -323,7 +323,7 @@ export function Field<
       onBlur?.(event as any);
 
       // If the event has been cancelled, do not validate
-      if (event.isDefaultPrevented()) {
+      if (event.defaultPrevented) {
         return;
       }
 
@@ -345,7 +345,7 @@ export function Field<
       onChange?.(event as any);
 
       // If the event has been cancelled, do not validate
-      if (event.isDefaultPrevented()) {
+      if (event.defaultPrevented) {
         return;
       }
 
@@ -367,7 +367,7 @@ export function Field<
       onInput?.(event as any);
 
       // If the event has been cancelled, do not validate
-      if (event.isDefaultPrevented()) {
+      if (event.defaultPrevented) {
         return;
       }
 

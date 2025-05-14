@@ -160,7 +160,7 @@ export function Field(props) {
     const handleBlur = useCallback(event => {
         onBlur?.(event);
         // If the event has been cancelled, do not validate
-        if (event.isDefaultPrevented()) {
+        if (event.defaultPrevented) {
             return;
         }
         // If the form exists, trigger a synthetic validation event
@@ -175,7 +175,7 @@ export function Field(props) {
     const handleChange = useCallback(event => {
         onChange?.(event);
         // If the event has been cancelled, do not validate
-        if (event.isDefaultPrevented()) {
+        if (event.defaultPrevented) {
             return;
         }
         // If the form exists, trigger a synthetic validation event
@@ -190,7 +190,7 @@ export function Field(props) {
     const handleInput = useCallback(event => {
         onInput?.(event);
         // If the event has been cancelled, do not validate
-        if (event.isDefaultPrevented()) {
+        if (event.defaultPrevented) {
             return;
         }
         // If the form exists, trigger a synthetic validation event
