@@ -189,9 +189,9 @@ The `handleZodForm` method accepts up to three type parameters;
 
 | Generic | Type | Effect |
 | - | - | - |
-| `SchemaType` | `z.ZodObject<Record<string, z.ZodObject<any>>>` | Input schema type. Should be `typeof schema` in almost every case |
-| `PayloadTypes` | `Record<keyof SchemaType[ "_zod" ][ "def" ][ "shape" ], any>` | Fetcher data payload type map |
-| `UploadHandlerReturnType` | `Blob \| null \| string \| void` | Type constraint for the result of `uploadHandler` |
+| `SchemaType` | <sub>`z.ZodObject<Record<string, z.ZodObject<any>>>`</sub> | Input schema type. Should be `typeof schema` in almost every case |
+| `PayloadTypes` | <sub>`Record<keyof SchemaType[ "_zod" ][ "def" ][ "shape" ], any>`</sub> | Fetcher data payload type map |
+| `UploadHandlerReturnType` | <sub>`Blob \| null \| string \| void`</sub> | Type constraint for the result of `uploadHandler` |
 
 These type parameters are particularly useful when you need type safety for your form action's `data` payload (see [**Payload Type Safety**](#payload-type-safety)).
 
