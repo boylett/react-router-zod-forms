@@ -130,12 +130,12 @@ The `handleZodForm` method parses the current request for `FormData`, performs a
 
 | Property | Type | Effect |
 | - | - | - |
-| `options.request` <sup>(required)</sup> | `Request` | The current request |
-| `options.schema` <sup>(required)</sup> | [`ZodObject`](https://v4.zod.dev/api#objects) | Your zod schema object |
-| `options.maxFileSize` | `number` | Set the maximum file size for file uploads (see [@mjackson/multipart-parser](https://github.com/mjackson/remix-the-web/tree/main/packages/multipart-parser#limiting-file-upload-size)) |
-| `options.maxHeaderSize` | `number` | Set the maximum header size for multipart payloads (see [@mjackson/multipart-parser](https://github.com/mjackson/remix-the-web/blob/main/packages/multipart-parser/src/lib/multipart.ts#L18)) |
-| `options.transform` | `function` | Transforms the value of each formData field before it is parsed by Zod (arguments are `key: string`, `value: FormDataEntryValue` and `path: (number \| string)[]`) |
-| `options.uploadHandler` | `function` | Perform file uploads before the form is validated (see [@mjackson/form-data-parser](https://github.com/mjackson/remix-the-web/tree/main/packages/form-data-parser#usage)) |
+| `request` <sup>(required)</sup> | `Request` | The current request |
+| `schema` <sup>(required)</sup> | [`ZodObject`](https://v4.zod.dev/api#objects) | Your zod schema object |
+| `maxFileSize` | `number` | Set the maximum file size for file uploads (see [@mjackson/multipart-parser](https://github.com/mjackson/remix-the-web/tree/main/packages/multipart-parser#limiting-file-upload-size)) |
+| `maxHeaderSize` | `number` | Set the maximum header size for multipart payloads (see [@mjackson/multipart-parser](https://github.com/mjackson/remix-the-web/blob/main/packages/multipart-parser/src/lib/multipart.ts#L18)) |
+| `transform` | `function` | Transforms the value of each formData field before it is parsed by Zod (arguments are `key: string`, `value: FormDataEntryValue` and `path: (number \| string)[]`) |
+| `uploadHandler` | `function` | Perform file uploads before the form is validated (see [@mjackson/form-data-parser](https://github.com/mjackson/remix-the-web/tree/main/packages/form-data-parser#usage)) |
 
 #### 2. `forms` <sup>(required)</sup> – Form handlers corresponding to schema entries
 
@@ -173,9 +173,9 @@ return await handleZodForm({ request, schema }, {
 
 | Hook | Properties | Returns | Effect |
 | - | - | - | - |
-| `before` | `data: FormData` | | Called before form data is cast to a POJO and before validation occurs |
-| `after` | `data: FormData` | | Called after all relevant handlers have executed |
-| `beforeUpload` | `file: `[`FileUpload`](https://github.com/mjackson/remix-the-web/blob/main/packages/form-data-parser/src/lib/form-data.ts#L19) | <sub>[`FileUpload`](https://github.com/mjackson/remix-the-web/blob/main/packages/form-data-parser/src/lib/form-data.ts#L19)</sub> | Called before `options.uploadHandler`. May be used to mutate the file before upload |
+| `before` | <sub>`data: FormData`</sub> | | Called before form data is cast to a POJO and before validation occurs |
+| `after` | <sub>`data: FormData`</sub> | | Called after all relevant handlers have executed |
+| `beforeUpload` | <sub>`file: `[`FileUpload`](https://github.com/mjackson/remix-the-web/blob/main/packages/form-data-parser/src/lib/form-data.ts#L19)</sub> | <sub>[`FileUpload`](https://github.com/mjackson/remix-the-web/blob/main/packages/form-data-parser/src/lib/form-data.ts#L19)</sub> | Called before `options.uploadHandler`. May be used to mutate the file before upload |
 | `afterUpload` | <sub>`file?: Blob \| null \| string`</sub> | <sub>`Blob \| null \| string`</sub> | Called before `options.uploadHandler`. May be used to mutate the file before upload |
 | `beforeValidate` | <sub>`data?: z.output<typeof schema>`</sub> | <sub>`z.output<typeof schema>`</sub> | Called before zod validation. May be used to mutate the form data before validation |
 | `afterValidate` | <sub>`result?: ZodSafeParseResult<z.output<typeof schema>>`</sub> | <sub>`ZodSafeParseResult<z.output<typeof schema>>`</sub> | Called after zod validation. May be used to mutate the validation response before action handling |
