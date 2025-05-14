@@ -283,10 +283,10 @@ export default function Component () {
 
 | Property | Type | Effect |
 | - | - | - |
-| `options.intent` <sup>(required)</sup> | `string` | The current form intent |
-| `options.schema` <sup>(required)</sup> | [`ZodObject`](https://v4.zod.dev/api#objects) | Your zod schema object |
-| `options.events` | `string[]` | Names of event handlers that will trigger form validation |
-| `options.useFetcher` | `boolean` | Whether to use a [fetcher](https://reactrouter.com/api/hooks/useFetcher#usefetcher) to submit the form. Defaults to `false` |
+| `intent` <sup>(required)</sup> | `string` | The current form intent |
+| `schema` <sup>(required)</sup> | [`ZodObject`](https://v4.zod.dev/api#objects) | Your zod schema object |
+| `events` | `string[]` | Names of event handlers that will trigger form validation |
+| `useFetcher` | `boolean` | Whether to use a [fetcher](https://reactrouter.com/api/hooks/useFetcher#usefetcher) to submit the form. Defaults to `false` |
 
 ### `<Form />` component
 
