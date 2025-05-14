@@ -3,7 +3,7 @@ import { ZodFormContext } from "../context/FormContext";
 import { ZodFormsContext } from "../context/FormsContext";
 import { Path } from "../utils/Path";
 export function Message(props) {
-    let { as: Element = "div", children, form: formId, name, ...rest } = props;
+    let { as: Element = "div", children, className, form: formId, name, ...rest } = props;
     // Get forms context
     const { forms } = (useContext(ZodFormsContext));
     // If there is no context
@@ -40,8 +40,12 @@ export function Message(props) {
             return undefined;
         }
         return (children
-            ? children({ ...rest, message: data }, shape || {})
-            : (React.createElement(Element, { "data-status": data.status, title: data.message, ...rest },
+            ? children({
+                ...rest,
+                className: `react-router-zod-forms__form-message ${className || ""}`.trim(),
+                message: data,
+            }, shape || {})
+            : (React.createElement(Element, { className: `react-router-zod-forms__form-message ${className || ""}`.trim(), "data-status": data.status, title: data.message, ...rest },
                 React.createElement("p", null, data.message))));
     }
     // If validation is not set for this field
@@ -63,8 +67,12 @@ export function Message(props) {
         return undefined;
     }
     return (children
-        ? children({ ...rest, issues }, shape || {})
-        : (React.createElement(Element, { ...rest },
+        ? children({
+            ...rest,
+            className: `react-router-zod-forms__form-message ${className || ""}`.trim(),
+            issues,
+        }, shape || {})
+        : (React.createElement(Element, { className: `react-router-zod-forms__field-message ${className || ""}`.trim(), ...rest },
             React.createElement("ul", null, issues
                 .filter(Boolean)
                 .map(issue => {

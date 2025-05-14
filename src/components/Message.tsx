@@ -121,6 +121,7 @@ export function Message<
   let {
     as: Element = "div",
     children,
+    className,
     form: formId,
     name,
     ...rest
@@ -184,12 +185,19 @@ export function Message<
       children
         ? (
           children(
-            { ...rest, message: data } as any,
+            {
+              ...rest,
+              className: `react-router-zod-forms__form-message ${ className || "" }`.trim(),
+              message: data,
+            } as any,
             shape || {}
           ) as ReactNode
         )
         : (
           <Element
+            className={
+              `react-router-zod-forms__form-message ${ className || "" }`.trim()
+            }
             data-status={ data.status }
             title={ data.message }
             { ...rest }>
@@ -233,12 +241,20 @@ export function Message<
     children
       ? (
         children(
-          { ...rest, issues } as any,
+          {
+            ...rest,
+            className: `react-router-zod-forms__form-message ${ className || "" }`.trim(),
+            issues,
+          } as any,
           shape || {}
         ) as ReactNode
       )
       : (
-        <Element { ...rest }>
+        <Element
+          className={
+            `react-router-zod-forms__field-message ${ className || "" }`.trim()
+          }
+          { ...rest }>
           <ul>
             { issues
               .filter(Boolean)

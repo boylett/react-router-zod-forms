@@ -110,6 +110,7 @@ export function Field<
 ) {
   let {
     children,
+    className,
     form: formId,
     onBlur,
     onChange,
@@ -388,6 +389,7 @@ export function Field<
           children(
             {
               ...rest as any,
+              className: `react-router-zod-forms__field ${ className || "" }`.trim(),
               onBlur: handleBlur,
               onChange: handleChange,
               onInput: handleInput,
@@ -398,6 +400,9 @@ export function Field<
         )
         : (
           <select
+            className={
+              `react-router-zod-forms__field ${ className || "" }`.trim()
+            }
             multiple
             onBlur={ handleBlur }
             onChange={ handleChange }
@@ -409,6 +414,9 @@ export function Field<
       : type === "textarea"
         ? (
           <textarea
+            className={
+              `react-router-zod-forms__field ${ className || "" }`.trim()
+            }
             onBlur={ handleBlur }
             onChange={ handleChange }
             onInput={ handleInput }
@@ -416,6 +424,9 @@ export function Field<
         )
         : (
           <input
+            className={
+              `react-router-zod-forms__field ${ className || "" }`.trim()
+            }
             onBlur={ handleBlur }
             onChange={ handleChange }
             onInput={ handleInput }

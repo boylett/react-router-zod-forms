@@ -7,7 +7,7 @@ import { Path } from "../utils/Path";
  * Field component
  */
 export function Field(props) {
-    let { children, form: formId, onBlur, onChange, onInput, type = "text", ...rest } = props;
+    let { children, className, form: formId, onBlur, onChange, onInput, type = "text", ...rest } = props;
     // Get forms context
     const { forms } = (useContext(ZodFormsContext));
     // If there is no context
@@ -203,13 +203,14 @@ export function Field(props) {
         ? typeof children === "function"
             ? (children({
                 ...rest,
+                className: `react-router-zod-forms__field ${className || ""}`.trim(),
                 onBlur: handleBlur,
                 onChange: handleChange,
                 onInput: handleInput,
                 type,
             }, shape || {}))
-            : (React.createElement("select", { multiple: true, onBlur: handleBlur, onChange: handleChange, onInput: handleInput, ...rest }, children))
+            : (React.createElement("select", { className: `react-router-zod-forms__field ${className || ""}`.trim(), multiple: true, onBlur: handleBlur, onChange: handleChange, onInput: handleInput, ...rest }, children))
         : type === "textarea"
-            ? (React.createElement("textarea", { onBlur: handleBlur, onChange: handleChange, onInput: handleInput, ...rest }))
-            : (React.createElement("input", { onBlur: handleBlur, onChange: handleChange, onInput: handleInput, type: type, ...rest })));
+            ? (React.createElement("textarea", { className: `react-router-zod-forms__field ${className || ""}`.trim(), onBlur: handleBlur, onChange: handleChange, onInput: handleInput, ...rest }))
+            : (React.createElement("input", { className: `react-router-zod-forms__field ${className || ""}`.trim(), onBlur: handleBlur, onChange: handleChange, onInput: handleInput, type: type, ...rest })));
 }

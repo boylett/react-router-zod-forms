@@ -6,7 +6,7 @@ import { ZodFormsContext } from "../context/FormsContext";
  * Form component
  */
 export function Form(props) {
-    let { children, id: formId, intent: embedIntent = true, onBlur, onInput, onResponse, onSubmit, onValidate, ref, ...rest } = props;
+    let { children, className, id: formId, intent: embedIntent = true, onBlur, onInput, onResponse, onSubmit, onValidate, ref, ...rest } = props;
     // Get form context
     const { forms } = (useContext(ZodFormsContext));
     // If there is no context
@@ -93,7 +93,7 @@ export function Form(props) {
             onResponse?.(form?.data);
         }
     }, [form?.data, form?.state, onResponse]);
-    return (React.createElement(FormElement, { id: formId, method: "post", onBlur: handleBlur, onInput: handleInput, onSubmit: handleSubmit, ...rest, ref: ref },
+    return (React.createElement(FormElement, { className: `react-router-zod-forms__form ${className || ""}`.trim(), id: formId, method: "post", onBlur: handleBlur, onInput: handleInput, onSubmit: handleSubmit, ...rest, ref: ref },
         embedIntent && (React.createElement("input", { name: "_intent", type: "hidden", value: String(intent) })),
         children));
 }

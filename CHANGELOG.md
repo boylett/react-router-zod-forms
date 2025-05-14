@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved type safety for `default` handler
 - Prettified field keys now convert symbol delimited text to camel case (eg: `field_name` → `Field Name`)
 
+### Added
+
+- Added [BEM](https://getbem.com) className identifiers to custom components
+
 ### Fixed
 
 - Fixed error in `Field` component when checking for `defaultPrevented`

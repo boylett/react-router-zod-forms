@@ -44,6 +44,7 @@ export function Form<
 ) {
   let {
     children,
+    className,
     id: formId,
     intent: embedIntent = true,
     onBlur,
@@ -186,6 +187,9 @@ export function Form<
 
   return (
     <FormElement
+      className={
+        `react-router-zod-forms__form ${ className || "" }`.trim()
+      }
       id={ formId }
       method="post"
       onBlur={ handleBlur }
