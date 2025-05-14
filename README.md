@@ -215,11 +215,11 @@ export default function Component () {
     // The current form intent
     intent,
 
-    // Passed through from the fetcher
+    // Passed through from the fetcher if `useFetcher` is `true`
     load,
     submit,
 
-    // Fetcher state
+    // Fetcher state if `useFetcher` is `true`
     state,
 
     // Method to manually call client-side field validation
@@ -236,6 +236,9 @@ export default function Component () {
     {
       intent: "general",
       schema,
+      
+      // Fetcher is disabled by default
+      useFetcher: true,
     }
   );
 
