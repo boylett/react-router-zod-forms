@@ -197,9 +197,9 @@ These type parameters are particularly useful when you need type safety for your
 
 ## Client Hook
 
-Use the `useZodForm` hook to create a [fetcher](https://reactrouter.com/api/hooks/useFetcher#usefetcher) and form components for use on your page or in components.
+Use the `useZodForm` hook to initialize a form for use within your page or custom components. It accepts a single argument – `options` – which requires `intent` <sup>(`string`)</sup> and `schema` <sup>(`ZodObject`)</sup>.
 
-It accepts a single argument – `options` – which requires `intent` <sup>(`string`)</sup> and `schema` <sup>(`ZodObject`)</sup>.
+If you want to use a [fetcher](https://reactrouter.com/api/hooks/useFetcher#usefetcher) to submit your form, set `options.useFetcher` to `true`.
 
 ```tsx
 import { useZodForm } from "react-router-zod-forms";
@@ -286,6 +286,7 @@ export default function Component () {
 | `options.intent` <sup>(required)</sup> | `string` | The current form intent |
 | `options.schema` <sup>(required)</sup> | [`ZodObject`](https://v4.zod.dev/api#objects) | Your zod schema object |
 | `options.events` | `string[]` | Names of event handlers that will trigger form validation |
+| `options.useFetcher` | `boolean` | Whether to use a [fetcher](https://reactrouter.com/api/hooks/useFetcher#usefetcher) to submit the form. Defaults to `false` |
 
 ### `<Form />` component
 
