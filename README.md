@@ -131,7 +131,7 @@ The `handleZodForm` method parses the current request for `FormData`, performs a
 | Property | Type | Effect |
 | - | - | - |
 | `request` <sup>(required)</sup> | `Request` | The current request |
-| `schema` <sup>(required)</sup> | [`ZodObject`](https://v4.zod.dev/api#objects) | Your zod schema object |
+| `schema` <sup>(required)</sup> | `ZodObject` | Your zod schema object |
 | `maxFileSize` | `number` | Set the maximum file size for file uploads (see [@mjackson/multipart-parser](https://github.com/mjackson/remix-the-web/tree/main/packages/multipart-parser#limiting-file-upload-size)) |
 | `maxHeaderSize` | `number` | Set the maximum header size for multipart payloads (see [@mjackson/multipart-parser](https://github.com/mjackson/remix-the-web/blob/main/packages/multipart-parser/src/lib/multipart.ts#L18)) |
 | `transform` | `function` | Transforms the value of each formData field before it is parsed by Zod (arguments are `key: string`, `value: FormDataEntryValue` and `path: (number \| string)[]`) |
@@ -284,7 +284,7 @@ export default function Component () {
 | Property | Type | Effect |
 | - | - | - |
 | `intent` <sup>(required)</sup> | `string` | The current form intent |
-| `schema` <sup>(required)</sup> | [`ZodObject`](https://v4.zod.dev/api#objects) | Your zod schema object |
+| `schema` <sup>(required)</sup> | `ZodObject` | Your zod schema object |
 | `events` | `string[]` | Names of event handlers that will trigger form validation |
 | `useFetcher` | `boolean` | Whether to use a [fetcher](https://reactrouter.com/api/hooks/useFetcher#usefetcher) to submit the form. Defaults to `false` |
 
