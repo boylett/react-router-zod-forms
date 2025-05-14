@@ -21,6 +21,26 @@ type HandleZodFormOptions<
   maxHeaderSize?: number;
 
   /**
+   * Default response messages
+   */
+  messages?: {
+    /**
+     * Default message to send when there is an error
+     */
+    error?: string;
+
+    /**
+     * Default message to send when a handler was not called
+     */
+    notImplemented?: string;
+
+    /**
+     * Default message to send when the action succeeded
+     */
+    success?: string;
+  };
+
+  /**
    * The request object
    */
   request: Request;
@@ -174,6 +194,7 @@ export async function handleZodForm<
   const {
     maxFileSize,
     maxHeaderSize,
+    messages,
     request,
     schema,
     transform,
@@ -254,7 +275,7 @@ export async function handleZodForm<
 
   let response: HandleZodFormMessage<SchemaType> = {
     intent,
-    message: "Success",
+    message: messages?.success || "Success",
     payload: null,
     status: 200,
     validation,
@@ -357,7 +378,7 @@ export async function handleZodForm<
       }
 
       if (thrown instanceof Error) {
-        response.message = "error";
+        response.message = messages?.error || "Error";
         response.payload = thrown;
         response.status = 500;
 
@@ -422,7 +443,7 @@ export async function handleZodForm<
       }
 
       if (thrown instanceof Error) {
-        response.message = "error";
+        response.message = messages?.error || "Error";
         response.payload = thrown;
         response.status = 500;
 
@@ -464,7 +485,7 @@ export async function handleZodForm<
 
   console.error(`Unhandled form submission for intent '${ intent as string }' in ${ request.url }`);
 
-  response.message = "Not Implemented";
+  response.message = messages?.notImplemented || "Not Implemented";
   response.payload = null;
   response.status = 501;
   response.validation = {

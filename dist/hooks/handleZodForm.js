@@ -5,7 +5,7 @@ import { formDataToObject } from "../utils/formDataToObject";
  * Handle Zod Form submission
  */
 export async function handleZodForm(options, forms, hooks) {
-    const { maxFileSize, maxHeaderSize, request, schema, transform, uploadHandler, } = options;
+    const { maxFileSize, maxHeaderSize, messages, request, schema, transform, uploadHandler, } = options;
     const formData = (await parseFormData(request, {
         maxFileSize,
         maxHeaderSize,
@@ -50,7 +50,7 @@ export async function handleZodForm(options, forms, hooks) {
     };
     let response = {
         intent,
-        message: "Success",
+        message: messages?.success || "Success",
         payload: null,
         status: 200,
         validation,
@@ -119,7 +119,7 @@ export async function handleZodForm(options, forms, hooks) {
                 return thrown;
             }
             if (thrown instanceof Error) {
-                response.message = "error";
+                response.message = messages?.error || "Error";
                 response.payload = thrown;
                 response.status = 500;
                 return response;
@@ -166,7 +166,7 @@ export async function handleZodForm(options, forms, hooks) {
                 return thrown;
             }
             if (thrown instanceof Error) {
-                response.message = "error";
+                response.message = messages?.error || "Error";
                 response.payload = thrown;
                 response.status = 500;
                 return response;
@@ -195,7 +195,7 @@ export async function handleZodForm(options, forms, hooks) {
     }
     console.trace();
     console.error(`Unhandled form submission for intent '${intent}' in ${request.url}`);
-    response.message = "Not Implemented";
+    response.message = messages?.notImplemented || "Not Implemented";
     response.payload = null;
     response.status = 501;
     response.validation = {

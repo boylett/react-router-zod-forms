@@ -14,6 +14,23 @@ type HandleZodFormOptions<SchemaType extends z.ZodObject<any>, UploadHandlerRetu
      */
     maxHeaderSize?: number;
     /**
+     * Default response messages
+     */
+    messages?: {
+        /**
+         * Default message to send when there is an error
+         */
+        error?: string;
+        /**
+         * Default message to send when a handler was not called
+         */
+        notImplemented?: string;
+        /**
+         * Default message to send when the action succeeded
+         */
+        success?: string;
+    };
+    /**
      * The request object
      */
     request: Request;

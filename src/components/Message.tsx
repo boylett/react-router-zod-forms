@@ -200,14 +200,14 @@ export function Message<
             }
             data-status={ data.status }
             title={
-              data.message === "error" && data.payload && "message" in data.payload
+              data.status >= 400 && data.payload && data.payload instanceof Error
                 ? data.payload.message
                 : data.message
             }
             { ...rest }>
             <p>
               {
-                data.message === "error" && data.payload && "message" in data.payload
+                data.status >= 400 && data.payload && data.payload instanceof Error
                   ? data.payload.message
                   : data.message
               }

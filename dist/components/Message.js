@@ -45,10 +45,10 @@ export function Message(props) {
                 className: `react-router-zod-forms__form-message ${className || ""}`.trim(),
                 message: data,
             }, shape || {})
-            : (React.createElement(Element, { className: `react-router-zod-forms__form-message ${className || ""}`.trim(), "data-status": data.status, title: data.message === "error" && data.payload && "message" in data.payload
+            : (React.createElement(Element, { className: `react-router-zod-forms__form-message ${className || ""}`.trim(), "data-status": data.status, title: data.status >= 400 && data.payload && data.payload instanceof Error
                     ? data.payload.message
                     : data.message, ...rest },
-                React.createElement("p", null, data.message === "error" && data.payload && "message" in data.payload
+                React.createElement("p", null, data.status >= 400 && data.payload && data.payload instanceof Error
                     ? data.payload.message
                     : data.message))));
     }
