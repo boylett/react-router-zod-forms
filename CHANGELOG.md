@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Improved type safety for `default` handler
+- Prettified field keys now convert symbol delimited text to camel case (eg: `field_name` → `Field Name`)
 
 ## [0.0.11] - 2025-05-13
 

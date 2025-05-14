@@ -243,7 +243,15 @@ export class Path {
           key => (
             typeof key === "number"
               ? key + 1
-              : String(key).substring(0, 1).toUpperCase() + String(key).substring(1)
+              : (
+                String(key)
+                  .split(/[\s-_;:,\.]/g)
+                  .map(
+                    word =>
+                      String(word).substring(0, 1).toUpperCase() + String(word).substring(1)
+                  )
+                  .join(delimiter)
+              )
           )
         )
       )
