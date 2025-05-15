@@ -108,7 +108,7 @@ export function Form<
       onBlur?.(event);
 
       // If the event has been cancelled, do not validate
-      if (event.isDefaultPrevented()) {
+      if (event.defaultPrevented) {
         return;
       }
 
@@ -127,7 +127,7 @@ export function Form<
       onInput?.(event);
 
       // If the event has been cancelled, do not validate
-      if (event.isDefaultPrevented()) {
+      if (event.defaultPrevented) {
         return;
       }
 

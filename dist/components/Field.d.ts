@@ -44,4 +44,4 @@ export type ZodFormFieldProps<SchemaType extends z.ZodObject<any>, FieldPath ext
  */
 export declare function Field<SchemaType extends z.ZodObject<any>, FieldPath extends Paths<z.output<SchemaType>, {
     bracketNotation: true;
-}>>(props: ZodFormFieldProps<SchemaType, FieldPath>): string | number | bigint | boolean | React.JSX.Element | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined;
+}>>(props: ZodFormFieldProps<SchemaType, FieldPath>): string | number | bigint | boolean | Iterable<React.ReactNode> | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | React.JSX.Element | null | undefined;

@@ -38,7 +38,7 @@ export function Form(props) {
     const handleBlur = useCallback(event => {
         onBlur?.(event);
         // If the event has been cancelled, do not validate
-        if (event.isDefaultPrevented()) {
+        if (event.defaultPrevented) {
             return;
         }
         if (events?.includes("form.blur")) {
@@ -51,7 +51,7 @@ export function Form(props) {
     const handleInput = useCallback(event => {
         onInput?.(event);
         // If the event has been cancelled, do not validate
-        if (event.isDefaultPrevented()) {
+        if (event.defaultPrevented) {
             return;
         }
         // Validate the form

@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - You can now provide your own default error/response text in `handleZodForm` using the new `messages` option
 
+### Fixed
+
+- Fixed error in `Form` component when checking for `defaultPrevented`
+
 ### Improved
 
 - Improved error message response catching
