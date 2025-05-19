@@ -1,6 +1,6 @@
 import React, { type AllHTMLAttributes, type HTMLInputTypeAttribute, type InputHTMLAttributes, type ReactNode, type RefObject, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
 import type { Get, Paths } from "type-fest";
-import { z } from "zod";
+import { z } from "zod/v4";
 /**
  * Props for the Field component
  */

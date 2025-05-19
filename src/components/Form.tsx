@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useRef, type FocusEventHandler, type FormEventHandler, type RefObject } from "react";
 import { Form as ReactRouterForm, type FormProps } from "react-router";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { ZodFormContext } from "../context/FormContext";
 import { ZodFormsContext } from "../context/FormsContext";
 

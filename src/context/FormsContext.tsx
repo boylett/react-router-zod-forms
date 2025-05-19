@@ -1,7 +1,7 @@
 import React, { createContext, useRef, type ForwardRefExoticComponent, type ReactNode, type RefAttributes, type RefObject } from "react";
 import type { FetcherFormProps, FetcherSubmitFunction } from "react-router";
 import type { Paths } from "type-fest";
-import type z from "zod";
+import type { z } from "zod/v4";
 import type { ZodFormFieldProps } from "../components/Field";
 import type { ZodFormProps } from "../components/Form";
 import type { ZodFormMessageProps } from "../components/Message";

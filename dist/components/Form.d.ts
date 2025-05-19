@@ -1,6 +1,6 @@
 import React, { type RefObject } from "react";
 import { type FormProps } from "react-router";
-import { z } from "zod";
+import { z } from "zod/v4";
 /**
  * Props for the Form component
  */

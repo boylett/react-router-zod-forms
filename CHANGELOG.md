@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Improved
 
 - Improved error message response catching
+- Updated dependencies
 
 ## [0.0.12] - 2025-05-14
 

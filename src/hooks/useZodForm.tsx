@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useId, useState } from "react";
 import { useActionData, useFetcher, useNavigation } from "react-router";
 import type { Paths } from "type-fest";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { Field, type ZodFormFieldProps } from "../components/Field";
 import { Form, type ZodFormProps } from "../components/Form";
 import { Message, type ZodFormMessageProps } from "../components/Message";

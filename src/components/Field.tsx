@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import React, { useCallback, useContext, type AllHTMLAttributes, type ChangeEventHandler, type FocusEventHandler, type FormEventHandler, type HTMLInputTypeAttribute, type InputHTMLAttributes, type ReactNode, type RefObject, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
 import type { Get, Paths } from "type-fest";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { ZodFormContext } from "../context/FormContext";
 import { ZodFormsContext } from "../context/FormsContext";
 import { Path } from "../utils/Path";

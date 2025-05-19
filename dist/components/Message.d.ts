@@ -1,6 +1,6 @@
 import React, { type AllHTMLAttributes, type ElementType, type ReactNode, type RefObject } from "react";
 import type { Paths } from "type-fest";
-import { z } from "zod";
+import { z } from "zod/v4";
 import type { HandleZodFormMessage } from "../hooks/handleZodForm";
 /**
  * Props for the Message component

@@ -1,5 +1,4 @@
-import { parseFormData, type FileUpload } from "@mjackson/form-data-parser";
-import z from "zod";
+import { z } from "zod/v4";
 import { formDataToObject } from "../utils/formDataToObject";
 import type { Replace } from "../utils/types";
 

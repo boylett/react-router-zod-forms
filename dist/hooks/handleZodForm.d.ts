@@ -1,5 +1,5 @@
 import { type FileUpload } from "@mjackson/form-data-parser";
-import z from "zod";
+import { z } from "zod/v4";
 import type { Replace } from "../utils/types";
 /**
  * Hook options for a given schema

@@ -1,5 +1,5 @@
 import type { Paths } from "type-fest";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { type ZodFormsContextType, type ZodFormsContextTypeFetcher, type ZodFormsContextTypeForm } from "../context/FormsContext";
 import type { HandleZodFormMessage } from "./handleZodForm";
 /**

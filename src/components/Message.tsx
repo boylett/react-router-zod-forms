@@ -1,6 +1,6 @@
 import React, { useContext, type AllHTMLAttributes, type ElementType, type ReactNode, type RefObject } from "react";
 import type { Paths } from "type-fest";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { ZodFormContext } from "../context/FormContext";
 import { ZodFormsContext } from "../context/FormsContext";
 import type { HandleZodFormMessage } from "../hooks/handleZodForm";

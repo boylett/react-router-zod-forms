@@ -9,7 +9,7 @@
     ],
     "outDir": "./dist",
     "rootDir": "./src",
-    "moduleResolution": "node10",
+    "moduleResolution": "bundler",
     "jsx": "react",
     "strict": true,
     "noImplicitOverride": true,

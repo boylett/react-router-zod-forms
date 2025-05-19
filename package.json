@@ -29,17 +29,18 @@
     "watch": "tsc -w -p tsconfig.json"
   },
   "devDependencies": {
+    "@mjackson/form-data-parser": "^0.7.0",
     "@types/luxon": "^3.6.2",
     "@types/react": "^19.1.4",
     "type-fest": "^4.41.0",
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@mjackson/form-data-parser": "^0.7.0",
+    "@mjackson/multipart-parser": "^0.8.2",
     "luxon": "^3.6.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router": "^7.6.0",
-    "zod": "^4.0.0-beta.20250505T195954"
+    "zod": "^3.25.7"
   }
 }
