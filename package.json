@@ -28,19 +28,27 @@
     "ts-unpatch": "./scripts/Annotation\\ Truncation\\ Length\\ \\(Unpatch\\).sh",
     "watch": "tsc -w -p tsconfig.json"
   },
-  "devDependencies": {
-    "@mjackson/form-data-parser": "^0.7.0",
-    "@types/luxon": "^3.6.2",
-    "@types/react": "^19.1.4",
-    "type-fest": "^4.41.0",
-    "typescript": "^5.8.3"
-  },
-  "dependencies": {
+  "peerDependencies": {
     "@mjackson/multipart-parser": "^0.8.2",
     "luxon": "^3.6.1",
-    "react": "^19.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router": "^7.0.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@mjackson/form-data-parser": "^0.7.0",
+    "@mjackson/multipart-parser": "^0.8.2",
+    "@types/luxon": "^3.6.2",
+    "@types/react": "^19.1.5",
+    "luxon": "^3.6.1",
     "react-dom": "^19.1.0",
     "react-router": "^7.6.0",
-    "zod": "^3.25.7"
+    "react": "^19.1.0",
+    "typescript": "^5.8.3",
+    "zod": "^3.25.17"
+  },
+  "dependencies": {
+    "type-fest": "^4.41.0"
   }
 }
