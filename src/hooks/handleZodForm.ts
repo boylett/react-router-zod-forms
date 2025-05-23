@@ -1,3 +1,5 @@
+import { FileUpload } from "@mjackson/form-data-parser";
+import { getMultipartBoundary, isMultipartRequest, MultipartParseError, parseMultipart } from "@mjackson/multipart-parser";
 import { z } from "zod/v4";
 import { formDataToObject } from "../utils/formDataToObject";
 import type { Replace } from "../utils/types";
@@ -56,8 +58,11 @@ type HandleZodFormOptions<
 
   /**
    * A function to handle file uploads
+   * 
+   * @param file The file to upload
+   * @param formData The current form data payload
    */
-  uploadHandler?: (file: FileUpload) => Promise<UploadHandlerReturnType> | UploadHandlerReturnType;
+  uploadHandler?: (file: FileUpload, formData: FormData) => Promise<UploadHandlerReturnType> | UploadHandlerReturnType;
 };
 
 /**
@@ -174,7 +179,7 @@ export type HandleZodFormResponsePayloadType<
 export async function handleZodForm<
   SchemaType extends z.ZodObject<Record<string, z.ZodObject<any>>>,
   PayloadTypes extends { [ key in "default" | keyof SchemaType[ "_zod" ][ "def" ][ "shape" ] ]: any; },
-  UploadHandlerReturnType extends Blob | null | string | void = File,
+  UploadHandlerReturnType extends Blob | null | string | void,
 > (
   options: HandleZodFormOptions<SchemaType, UploadHandlerReturnType>,
   forms: HandleZodFormForms<SchemaType, UploadHandlerReturnType, PayloadTypes>,
@@ -200,34 +205,105 @@ export async function handleZodForm<
     uploadHandler,
   } = options;
 
-  const formData = (
-    await parseFormData(
-      request,
+  let formData = new FormData();
+
+  // If this is a multipart request, upload files and extract form data
+  if (isMultipartRequest(request)) {
+    // If the request body is empty
+    if (!request.body) {
+      throw new Error("Request body is empty");
+    }
+
+    // Get the multipart boundary
+    const boundary = getMultipartBoundary(
+      request.headers.get("Content-Type") as string
+    );
+
+    // If there is no boundary, throw an error
+    if (!boundary) {
+      throw new MultipartParseError("Invalid Content-Type header: missing boundary");
+    }
+
+    let multipartFiles: {
+      fieldName: string;
+      file: FileUpload;
+    }[] = [];
+
+    // Parse regular form data first and save uploadable files for later
+    await parseMultipart(
+      request.body,
       {
+        boundary,
         maxFileSize,
         maxHeaderSize,
       },
-      async file => {
-        const hookFile = await hooks?.beforeUpload?.(file);
-
-        if (hookFile) {
-          file = hookFile;
+      async part => {
+        if (part.name && !part.isFile) {
+          formData.append(part.name, await part.text());
         }
 
-        const handle = await uploadHandler?.(file);
-
-        const hookHandle = await hooks?.afterUpload?.(handle);
-
-        if (hookHandle) {
-          return hookHandle;
-        }
-
-        if (handle) {
-          return handle;
+        else if (part.name && part.isFile) {
+          multipartFiles.push({
+            fieldName: part.name,
+            file: new FileUpload(part)
+          });
         }
       }
-    )
-  );
+    );
+
+    // Handle file uploads in parallel with access to form data
+    await Promise.all(
+      multipartFiles.map(
+        async ({ fieldName, file }) => {
+          const hookFile = (
+            await hooks?.beforeUpload?.(file)
+          );
+
+          if (hookFile) {
+            file = hookFile;
+          }
+
+          const handle = (
+            await (
+              uploadHandler || (
+                async (file: FileUpload) =>
+                  new File(
+                    [ await file.arrayBuffer() ],
+                    file.name,
+                    {
+                      lastModified: file.lastModified,
+                      type: file.type,
+                    }
+                  )
+              )
+            )(
+              file,
+              formData
+            )
+          ) as UploadHandlerReturnType;
+
+          const hookHandle = (
+            await hooks?.afterUpload?.(handle)
+          );
+
+          if (hookHandle) {
+            formData.append(fieldName, hookHandle);
+          }
+
+          else if (handle) {
+            formData.append(fieldName, handle);
+          }
+        }
+      )
+    );
+  }
+
+  // If this is not a multipart request, we can just use the form data from the request
+  else {
+    formData = (
+      await request.formData()
+    );
+  }
 
   try {
     hooks?.before?.(formData);

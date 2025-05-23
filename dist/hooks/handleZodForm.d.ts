@@ -1,4 +1,4 @@
-import { type FileUpload } from "@mjackson/form-data-parser";
+import { FileUpload } from "@mjackson/form-data-parser";
 import { z } from "zod/v4";
 import type { Replace } from "../utils/types";
 /**
@@ -44,8 +44,11 @@ type HandleZodFormOptions<SchemaType extends z.ZodObject<any>, UploadHandlerRetu
     transform?: (key: string, value: FormDataEntryValue, path: (number | string)[]) => any;
     /**
      * A function to handle file uploads
+     *
+     * @param file The file to upload
+     * @param formData The current form data payload
      */
-    uploadHandler?: (file: FileUpload) => Promise<UploadHandlerReturnType> | UploadHandlerReturnType;
+    uploadHandler?: (file: FileUpload, formData: FormData) => Promise<UploadHandlerReturnType> | UploadHandlerReturnType;
 };
 /**
  * Form handlers for a given schema
@@ -116,5 +119,5 @@ export type HandleZodFormResponsePayloadType<SchemaType extends z.ZodObject<any>
  */
 export declare function handleZodForm<SchemaType extends z.ZodObject<Record<string, z.ZodObject<any>>>, PayloadTypes extends {
     [key in "default" | keyof SchemaType["_zod"]["def"]["shape"]]: any;
-}, UploadHandlerReturnType extends Blob | null | string | void = File>(options: HandleZodFormOptions<SchemaType, UploadHandlerReturnType>, forms: HandleZodFormForms<SchemaType, UploadHandlerReturnType, PayloadTypes>, hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>): Promise<Response | HandleZodFormMessage<any, PayloadTypes["default"]> | HandleZodFormMessage<SchemaType["_zod"]["def"]["shape"][keyof SchemaType["_zod"]["def"]["shape"]], PayloadTypes[keyof SchemaType["_zod"]["def"]["shape"]]>>;
+}, UploadHandlerReturnType extends Blob | null | string | void>(options: HandleZodFormOptions<SchemaType, UploadHandlerReturnType>, forms: HandleZodFormForms<SchemaType, UploadHandlerReturnType, PayloadTypes>, hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>): Promise<Response | HandleZodFormMessage<any, PayloadTypes["default"]> | HandleZodFormMessage<SchemaType["_zod"]["def"]["shape"][keyof SchemaType["_zod"]["def"]["shape"]], PayloadTypes[keyof SchemaType["_zod"]["def"]["shape"]]>>;
 export {};
