@@ -138,43 +138,6 @@ The `handleZodForm` method parses the current request for `FormData`, performs a
 | `transform` | `function` | Transforms the value of each formData field before it is parsed by Zod (arguments are `key: string`, `value: FormDataEntryValue` and `path: (number \| string)[]`) |
 | `uploadHandler` | `function` | See [File Uploads](#file-uploads) |
 
-### File Uploads
-
-React Router Zod Forms uses [mjackson](https://github.com/mjackson)'s [form-data-parser](https://github.com/mjackson/remix-the-web/tree/main/packages/form-data-parser#usage) logic to upload files under-the-hood, with one notable exception;
-
-The `uploadHandler` method accepts a second parameter that provides access to the current form data object (except for file upload fields).
-
-This allows you to manage your file uploads based on the current form intent, or conditionally based on other submitted data. For instance;
-
-```typescript
-return await handleZodForm({
-  request, schema,
-  async uploadHandler (fileUpload: FileUpload, formData: FormData) {
-    const intent = formData.get("_intent") as string;
-
-    switch (intent) {
-      case "upload": {
-        const storageKey = "uploaded-file-" + fileUpload.fieldName;
-
-        await fileStorage.set(storageKey, fileUpload);
-
-        return fileStorage.get(storageKey);
-      }
-
-      case "decode": {
-        const contents = someDecoderLibrary.decode(fileUpload);
-
-        // You can also directly modify the form data contents, but beware that
-        // there may be a type mismatch between the form data and schema output.
-        // If you plan to do this, add a `z.or()` method to your schema field.
-        formData.set(fileUpload.fieldName, contents.text);
-      }
-    }
-  },
-}, {
-  ...
-```
-
 #### 2. `forms` <sup>(required)</sup> – Form handlers corresponding to schema entries
 
 For every `ZodObject` within your schema, you can define a namesake form handler function inside the `forms` object. For instance;
@@ -220,6 +183,43 @@ return await handleZodForm({ request, schema }, {
 
 > [!NOTE]
 > Hooks do not have to return a value
+
+### File Uploads
+
+React Router Zod Forms uses [mjackson](https://github.com/mjackson)'s [form-data-parser](https://github.com/mjackson/remix-the-web/tree/main/packages/form-data-parser#usage) logic to upload files under-the-hood, with one notable exception;
+
+The `uploadHandler` method accepts a second parameter that provides access to the current form data object (except for file upload fields).
+
+This allows you to manage your file uploads based on the current form intent, or conditionally based on other submitted data. For instance;
+
+```typescript
+return await handleZodForm({
+  request, schema,
+  async uploadHandler (fileUpload: FileUpload, formData: FormData) {
+    const intent = formData.get("_intent") as string;
+
+    switch (intent) {
+      case "upload": {
+        const storageKey = "uploaded-file-" + fileUpload.fieldName;
+
+        await fileStorage.set(storageKey, fileUpload);
+
+        return fileStorage.get(storageKey);
+      }
+
+      case "decode": {
+        const contents = someDecoderLibrary.decode(fileUpload);
+
+        // You can also directly modify the form data contents, but beware that
+        // there may be a type mismatch between the form data and schema output.
+        // If you plan to do this, add a `z.or()` method to your schema field.
+        formData.set(fileUpload.fieldName, contents.text);
+      }
+    }
+  },
+}, {
+  ...
+```
 
 ### Type Generics
 
