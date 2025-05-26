@@ -23,9 +23,6 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "postinstall": "npm run ts-patch",
-    "ts-patch": "./scripts/Annotation\\ Truncation\\ Length.sh",
-    "ts-unpatch": "./scripts/Annotation\\ Truncation\\ Length\\ \\(Unpatch\\).sh",
     "watch": "tsc -w -p tsconfig.json"
   },
   "peerDependencies": {
