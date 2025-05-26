@@ -1,14 +1,16 @@
 import { FileUpload } from "@mjackson/form-data-parser";
 import { getMultipartBoundary, isMultipartRequest, MultipartParseError, parseMultipart } from "@mjackson/multipart-parser";
 import { z } from "zod/v4";
+import { FileUploadFormData } from "../utils/fileUploadFormData";
 import { formDataToObject } from "../utils/formDataToObject";
 /**
  * Handle Zod Form submission
  */
 export async function handleZodForm(options, forms, hooks) {
-    const { maxFileSize, maxHeaderSize, messages, request, schema, transform, uploadHandler, } = options;
-    let formData = new FormData();
-    // If this is a multipart request, upload files and extract form data
+    const { maxFileSize, maxHeaderSize, messages, request, schema, transform, } = options;
+    // Custom form data handler
+    const formData = new FileUploadFormData();
+    // If this is a multipart request, extract form data and handle file uploads
     if (isMultipartRequest(request)) {
         // If the request body is empty
         if (!request.body) {
@@ -20,45 +22,24 @@ export async function handleZodForm(options, forms, hooks) {
         if (!boundary) {
             throw new MultipartParseError("Invalid Content-Type header: missing boundary");
         }
-        let multipartFiles = [];
         // Parse regular form data first and save uploadable files for later
         await parseMultipart(request.body, {
             boundary,
             maxFileSize,
             maxHeaderSize,
         }, async (part) => {
-            if (part.name && !part.isFile) {
+            if (part.name && part.isFile) {
+                formData.appendFile(part.name, new FileUpload(part));
+            }
+            else if (part.name && !part.isFile) {
                 formData.append(part.name, await part.text());
             }
-            else if (part.name && part.isFile) {
-                multipartFiles.push({
-                    fieldName: part.name,
-                    file: new FileUpload(part)
-                });
-            }
         });
-        // Handle file uploads in parallel with access to form data
-        await Promise.all(multipartFiles.map(async ({ fieldName, file }) => {
-            const hookFile = (await hooks?.beforeUpload?.(file));
-            if (hookFile) {
-                file = hookFile;
-            }
-            const handle = (await (uploadHandler || (async (file) => new File([await file.arrayBuffer()], file.name, {
-                lastModified: file.lastModified,
-                type: file.type,
-            })))(file, formData));
-            const hookHandle = (await hooks?.afterUpload?.(handle));
-            if (hookHandle) {
-                formData.append(fieldName, hookHandle);
-            }
-            else if (handle) {
-                formData.append(fieldName, handle);
-            }
-        }));
     }
     // If this is not a multipart request, we can just use the form data from the request
     else {
-        formData = (await request.formData());
+        const data = (await request.formData());
+        data.forEach((value, key) => formData.append(key, value));
     }
     try {
         hooks?.before?.(formData);
@@ -79,7 +60,7 @@ export async function handleZodForm(options, forms, hooks) {
     }
     const intent = (formData.get("_intent") ?? "default");
     formData.delete("_intent");
-    let data = (formDataToObject(formData, transform));
+    let data = formDataToObject(formData, transform);
     let validation = {
         data,
         error: new z.ZodError([]),

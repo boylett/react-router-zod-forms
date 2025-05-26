@@ -1,6 +1,7 @@
 import { FileUpload } from "@mjackson/form-data-parser";
 import { getMultipartBoundary, isMultipartRequest, MultipartParseError, parseMultipart } from "@mjackson/multipart-parser";
 import { z } from "zod/v4";
+import { FileUploadFormData } from "../utils/fileUploadFormData";
 import { formDataToObject } from "../utils/formDataToObject";
 import type { Replace } from "../utils/types";
 
@@ -9,7 +10,6 @@ import type { Replace } from "../utils/types";
  */
 type HandleZodFormOptions<
   SchemaType extends z.ZodObject<any>,
-  UploadHandlerReturnType extends Blob | null | string | void,
 > = {
   /**
    * Maximum file size for multipart data
@@ -55,14 +55,6 @@ type HandleZodFormOptions<
    * A function to transform the value of each formData field before it is parsed by Zod
    */
   transform?: (key: string, value: FormDataEntryValue, path: (number | string)[]) => any;
-
-  /**
-   * A function to handle file uploads
-   * 
-   * @param file The file to upload
-   * @param formData The current form data payload
-   */
-  uploadHandler?: (file: FileUpload, formData: FormData) => Promise<UploadHandlerReturnType> | UploadHandlerReturnType;
 };
 
 /**
@@ -70,18 +62,17 @@ type HandleZodFormOptions<
  */
 type HandleZodFormForms<
   SchemaType extends z.ZodObject<any>,
-  UploadHandlerReturnType extends Blob | null | string | void,
   PayloadTypes extends { [ key in "default" | keyof SchemaType[ "_zod" ][ "def" ][ "shape" ] ]: any; },
 > = {
     [ Intent in "default" | keyof z.output<SchemaType> ]?: (
       props: Intent extends "default"
         ? HandleZodFormResponsePayloadType<any, PayloadTypes[ "default" ]>
-        : HandleZodFormResponsePayloadType<Replace<SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ], File, UploadHandlerReturnType>, PayloadTypes[ Intent ]>
+        : HandleZodFormResponsePayloadType<Replace<SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ], File, FileUpload>, PayloadTypes[ Intent ]>
     ) => Promise<
       (
         Intent extends "default"
         ? HandleZodFormMessage<any, PayloadTypes[ "default" ]> | any
-        : HandleZodFormMessage<Replace<SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ], File, UploadHandlerReturnType>, PayloadTypes[ Intent ]>
+        : HandleZodFormMessage<Replace<SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ], File, FileUpload>, PayloadTypes[ Intent ]>
       ) | void
     >;
   };
@@ -91,15 +82,10 @@ type HandleZodFormForms<
  */
 type HandleZodFormHooks<
   SchemaType extends z.ZodObject<any>,
-  UploadHandlerReturnType extends Blob | null | string | void,
 > = {
     [ key in `${ "after" | "before" }${ "Upload" | "Validate" | "" }` ]?:
     key extends "after" | "before"
-    ? (data: FormData) => void
-    : key extends "afterUpload"
-    ? (file?: UploadHandlerReturnType) => Promise<UploadHandlerReturnType> | UploadHandlerReturnType
-    : key extends "beforeUpload"
-    ? (file: FileUpload) => Promise<FileUpload | void> | FileUpload | void
+    ? (data: FileUploadFormData) => void
     : key extends "afterValidate"
     ? (result?: z.ZodSafeParseResult<z.output<SchemaType>>) => z.ZodSafeParseResult<z.output<SchemaType>> | void
     : key extends "beforeValidate"
@@ -150,12 +136,12 @@ export type HandleZodFormResponsePayloadType<
   /**
    * Form data validated and parsed with Zod
    */
-  data: z.output<SchemaType>;
+  data: Replace<z.output<SchemaType>, File, FileUpload>;
 
   /**
-   * Raw, unparsed form data
+   * Raw form data with unhandled file upload instances
    */
-  formData: FormData;
+  formData: FileUploadFormData;
 
   /**
    * The submitted form intent
@@ -180,9 +166,9 @@ export async function handleZodForm<
   SchemaType extends z.ZodObject<Record<string, z.ZodObject<any>>>,
   PayloadTypes extends { [ key in "default" | keyof SchemaType[ "_zod" ][ "def" ][ "shape" ] ]?: any; },
 > (
-  options: HandleZodFormOptions<SchemaType, UploadHandlerReturnType>,
-  forms: HandleZodFormForms<SchemaType, UploadHandlerReturnType, PayloadTypes>,
-  hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>
+  options: HandleZodFormOptions<SchemaType>,
+  forms: HandleZodFormForms<SchemaType, PayloadTypes>,
+  hooks?: HandleZodFormHooks<SchemaType>
 ): Promise<
   | Response
   | HandleZodFormMessage<
@@ -201,12 +187,12 @@ export async function handleZodForm<
     request,
     schema,
     transform,
-    uploadHandler,
   } = options;
 
-  let formData = new FormData();
+  // Custom form data handler
+  const formData: FileUploadFormData = new FileUploadFormData();
 
-  // If this is a multipart request, upload files and extract form data
+  // If this is a multipart request, extract form data and handle file uploads
   if (isMultipartRequest(request)) {
     // If the request body is empty
     if (!request.body) {
@@ -223,11 +209,6 @@ export async function handleZodForm<
       throw new MultipartParseError("Invalid Content-Type header: missing boundary");
     }
 
-    let multipartFiles: {
-      fieldName: string;
-      file: FileUpload;
-    }[] = [];
-
     // Parse regular form data first and save uploadable files for later
     await parseMultipart(
       request.body,
@@ -237,70 +218,26 @@ export async function handleZodForm<
         maxHeaderSize,
       },
       async part => {
-        if (part.name && !part.isFile) {
+        if (part.name && part.isFile) {
+          formData.appendFile(part.name, new FileUpload(part));
+        }
+
+        else if (part.name && !part.isFile) {
           formData.append(part.name, await part.text());
         }
-
-        else if (part.name && part.isFile) {
-          multipartFiles.push({
-            fieldName: part.name,
-            file: new FileUpload(part)
-          });
-        }
       }
-    );
-
-    // Handle file uploads in parallel with access to form data
-    await Promise.all(
-      multipartFiles.map(
-        async ({ fieldName, file }) => {
-          const hookFile = (
-            await hooks?.beforeUpload?.(file)
-          );
-
-          if (hookFile) {
-            file = hookFile;
-          }
-
-          const handle = (
-            await (
-              uploadHandler || (
-                async (file: FileUpload) =>
-                  new File(
-                    [ await file.arrayBuffer() ],
-                    file.name,
-                    {
-                      lastModified: file.lastModified,
-                      type: file.type,
-                    }
-                  )
-              )
-            )(
-              file,
-              formData
-            )
-          ) as UploadHandlerReturnType;
-
-          const hookHandle = (
-            await hooks?.afterUpload?.(handle)
-          );
-
-          if (hookHandle) {
-            formData.append(fieldName, hookHandle);
-          }
-
-          else if (handle) {
-            formData.append(fieldName, handle);
-          }
-        }
-      )
     );
   }
 
   // If this is not a multipart request, we can just use the form data from the request
   else {
-    formData = (
+    const data = (
       await request.formData()
+    );
+
+    data.forEach(
+      (value, key) =>
+        formData.append(key, value)
     );
   }
 
@@ -337,9 +274,7 @@ export async function handleZodForm<
 
   formData.delete("_intent");
 
-  let data: any = (
-    formDataToObject(formData, transform)
-  );
+  let data: any = formDataToObject(formData, transform);
 
   let validation: z.ZodSafeParseResult<z.output<SchemaType>> = {
     data,

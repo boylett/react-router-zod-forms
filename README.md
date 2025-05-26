@@ -136,7 +136,6 @@ The `handleZodForm` method parses the current request for `FormData`, performs a
 | `maxHeaderSize` | `number` | Set the maximum header size for multipart payloads (see [@mjackson/multipart-parser](https://github.com/mjackson/remix-the-web/blob/main/packages/multipart-parser/src/lib/multipart.ts#L18)) |
 | `messages` | `object` | Supply your own default message text for `error`, `success` and `notImplemented` responses |
 | `transform` | `function` | Transforms the value of each formData field before it is parsed by Zod (arguments are `key: string`, `value: FormDataEntryValue` and `path: (number \| string)[]`) |
-| `uploadHandler` | `function` | See [File Uploads](#file-uploads) |
 
 #### 2. `forms` <sup>(required)</sup> – Form handlers corresponding to schema entries
 
@@ -176,8 +175,6 @@ return await handleZodForm({ request, schema }, {
 | - | - | - | - |
 | `before` | <sub>`data: FormData`</sub> | | Called before form data is cast to a POJO and before validation occurs |
 | `after` | <sub>`data: FormData`</sub> | | Called after all relevant handlers have executed |
-| `beforeUpload` | <sub>`file: `[`FileUpload`](https://github.com/mjackson/remix-the-web/blob/main/packages/form-data-parser/src/lib/form-data.ts#L19)</sub> | <sub>[`FileUpload`](https://github.com/mjackson/remix-the-web/blob/main/packages/form-data-parser/src/lib/form-data.ts#L19)</sub> | Called before `options.uploadHandler`. May be used to mutate the file before upload |
-| `afterUpload` | <sub>`file?: Blob \| null \| string`</sub> | <sub>`Blob \| null \| string`</sub> | Called before `options.uploadHandler`. May be used to mutate the file before upload |
 | `beforeValidate` | <sub>`data?: z.output<typeof schema>`</sub> | <sub>`z.output<typeof schema>`</sub> | Called before zod validation. May be used to mutate the form data before validation |
 | `afterValidate` | <sub>`result?: ZodSafeParseResult<z.output<typeof schema>>`</sub> | <sub>`ZodSafeParseResult<z.output<typeof schema>>`</sub> | Called after zod validation. May be used to mutate the validation response before action handling |
 
@@ -186,52 +183,54 @@ return await handleZodForm({ request, schema }, {
 
 ### File Uploads
 
-React Router Zod Forms uses [mjackson](https://github.com/mjackson)'s [form-data-parser](https://github.com/mjackson/remix-the-web/tree/main/packages/form-data-parser#usage) logic to upload files under-the-hood, with one notable exception;
+Uploaded files are parsed by [form-data-parser](https://github.com/mjackson/remix-the-web/tree/main/packages/form-data-parser#usage) under-the-hood and converted to [FileUpload](https://github.com/mjackson/remix-the-web/blob/main/packages/form-data-parser/src/lib/form-data.ts#L19) instances before getting delivered to your handler data.
 
-The `uploadHandler` method accepts a second parameter that provides access to the current form data object (except for file upload fields).
+File fields should implement `z.instanceof(File)` in the schema for correct validation.
 
-This allows you to manage your file uploads based on the current form intent, or conditionally based on other submitted data. For instance;
+You can manipulate files directly from your handlers alongside all other form data. For instance;
 
 ```typescript
-return await handleZodForm({
-  request, schema,
-  async uploadHandler (fileUpload: FileUpload, formData: FormData) {
-    const intent = formData.get("_intent") as string;
+const schema = z.object({
+  decode: z.object({
+    file: z.instanceof(File),
+  }),
+  upload: z.object({
+    file: z.instanceof(File),
+  }),
+});
 
-    switch (intent) {
-      case "upload": {
-        const storageKey = "uploaded-file-" + fileUpload.fieldName;
+return await handleZodForm({ request, schema }, {
+  async upload ({ data: { file } }) {
+    const client = new S3Client(s3config);
 
-        await fileStorage.set(storageKey, fileUpload);
+    const upload = new Upload({
+      client,
+      params: {
+        Body: await file.arrayBuffer(),
+        Bucket: "storage",
+        Key: file.name,
+      },
+    });
 
-        return fileStorage.get(storageKey);
-      }
-
-      case "decode": {
-        const contents = someDecoderLibrary.decode(fileUpload);
-
-        // You can also directly modify the form data contents, but beware that
-        // there may be a type mismatch between the form data and schema output.
-        // If you plan to do this, add a `z.or()` method to your schema field.
-        formData.set(fileUpload.fieldName, contents.text);
-      }
-    }
+    await upload.done();
   },
-}, {
-  ...
+    
+  async decode ({ data: { file } }) {
+    const contents = someDecoderLibrary.decode(file.stream());
+  
+    ...
 ```
 
 ### Type Generics
 
-The `handleZodForm` method accepts up to three type parameters;
+The `handleZodForm` method accepts the following type parameters;
 
 | Generic | Type | Effect |
 | - | - | - |
 | `SchemaType` | <sub>`z.ZodObject<Record<string, z.ZodObject<any>>>`</sub> | Input schema type. Should be `typeof schema` in almost every case |
-| `PayloadTypes` | <sub>`Record<keyof SchemaType[ "_zod" ][ "def" ][ "shape" ], any>`</sub> | Fetcher data payload type map |
-| `UploadHandlerReturnType` | <sub>`Blob \| null \| string \| void`</sub> | Type constraint for the result of `uploadHandler` |
+| `PayloadTypes` | <sub>`Record<"default" \\| keyof SchemaType[ "_zod" ][ "def" ][ "shape" ], any>`</sub> | Fetcher data payload type map |
 
-These type parameters are particularly useful when you need type safety for your form action's `data` payload (see [**Payload Type Safety**](#payload-type-safety)).
+`PayloadTypes` is particularly useful when you need type safety for your form action's `data` payload (see [**Payload Type Safety**](#payload-type-safety)).
 
 ## Client Hook
 

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Removed `uploadHandler` method in favor of simply providing `FileUpload` instances to handlers directly via a custom `FormData` implementation
+
 ### Added
 
 - `objectToFormData` helper method for rehydrating form data
