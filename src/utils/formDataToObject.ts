@@ -10,7 +10,7 @@ export function formDataToObject<
   Type = any
 > (
   input: HTMLFormElement | FormData,
-  transform?: (key: string, value: FormDataEntryValue, path: (number | string)[]) => any
+  transform?: (key: string, value: any, path: (number | string)[]) => any
 ): Type {
   if ("onsubmit" in input) {
     input = new FormData(input);

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `objectToFormData` helper method for rehydrating form data
+
 ### Fixed
 
 - `handleZodForm` payload type keys are now all optional when specifying payload types
