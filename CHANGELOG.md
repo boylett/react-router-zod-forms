@@ -9,7 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `handleZodForm` payload type keys are now all optional when specifying payload types
 - Moved `handleZodForm` export to `react-router-zod-forms/server` (fixes vite SSR error)
+
+### Improved
+
+- Updated dependencies
 
 ## [0.0.14] - 2025-05-23
 

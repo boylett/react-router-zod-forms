@@ -178,8 +178,7 @@ export type HandleZodFormResponsePayloadType<
  */
 export async function handleZodForm<
   SchemaType extends z.ZodObject<Record<string, z.ZodObject<any>>>,
-  PayloadTypes extends { [ key in "default" | keyof SchemaType[ "_zod" ][ "def" ][ "shape" ] ]: any; },
-  UploadHandlerReturnType extends Blob | null | string | void,
+  PayloadTypes extends { [ key in "default" | keyof SchemaType[ "_zod" ][ "def" ][ "shape" ] ]?: any; },
 > (
   options: HandleZodFormOptions<SchemaType, UploadHandlerReturnType>,
   forms: HandleZodFormForms<SchemaType, UploadHandlerReturnType, PayloadTypes>,

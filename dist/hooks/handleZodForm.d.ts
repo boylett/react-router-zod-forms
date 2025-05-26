@@ -118,6 +118,6 @@ export type HandleZodFormResponsePayloadType<SchemaType extends z.ZodObject<any>
  * Handle Zod Form submission
  */
 export declare function handleZodForm<SchemaType extends z.ZodObject<Record<string, z.ZodObject<any>>>, PayloadTypes extends {
-    [key in "default" | keyof SchemaType["_zod"]["def"]["shape"]]: any;
+    [key in "default" | keyof SchemaType["_zod"]["def"]["shape"]]?: any;
 }, UploadHandlerReturnType extends Blob | null | string | void>(options: HandleZodFormOptions<SchemaType, UploadHandlerReturnType>, forms: HandleZodFormForms<SchemaType, UploadHandlerReturnType, PayloadTypes>, hooks?: HandleZodFormHooks<SchemaType, UploadHandlerReturnType>): Promise<Response | HandleZodFormMessage<any, PayloadTypes["default"]> | HandleZodFormMessage<SchemaType["_zod"]["def"]["shape"][keyof SchemaType["_zod"]["def"]["shape"]], PayloadTypes[keyof SchemaType["_zod"]["def"]["shape"]]>>;
 export {};
