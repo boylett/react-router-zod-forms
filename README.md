@@ -223,7 +223,7 @@ The `handleZodForm` method accepts the following type parameters;
 | Generic | Type | Effect |
 | - | - | - |
 | `SchemaType` | <sub>`z.ZodObject<Record<string, z.ZodObject<any>>>`</sub> | Input schema type. Should be `typeof schema` in almost every case |
-| `PayloadTypes` | <sub>`Record<"default" \\| keyof SchemaType[ "_zod" ][ "def" ][ "shape" ], any>`</sub> | Fetcher data payload type map |
+| `PayloadTypes` | <sub>`Record<"default" \| keyof SchemaType[ "_zod" ][ "def" ][ "shape" ], any>`</sub> | Fetcher data payload type map |
 
 `PayloadTypes` is particularly useful when you need type safety for your form action's `data` payload (see [**Payload Type Safety**](#payload-type-safety)).
 
