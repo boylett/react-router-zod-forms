@@ -1,155 +1,14 @@
 import React, { useCallback, useContext, useId, useState } from "react";
 import { useActionData, useFetcher, useNavigation } from "react-router";
-import type { Paths } from "type-fest";
+import type { Paths } from "type-fest/source/paths";
 import { z } from "zod/v4";
-import { Field, type ZodFormFieldProps } from "../components/Field";
-import { Form, type ZodFormProps } from "../components/Form";
-import { Message, type ZodFormMessageProps } from "../components/Message";
+import { Field } from "../components/Field";
+import { Form } from "../components/Form";
+import { Message } from "../components/Message";
 import { ZodFormContext } from "../context/FormContext";
-import { ZodFormsContext, type ZodFormsContextType, type ZodFormsContextTypeFetcher, type ZodFormsContextTypeForm } from "../context/FormsContext";
+import { ZodFormsContext } from "../context/FormsContext";
+import type { ZodForms } from "../types";
 import { formDataToObject } from "../utils/formDataToObject";
-import type { HandleZodFormMessage } from "./handleZodForm";
-
-/**
- * Options for the useZodForms hook
- */
-interface useZodFormOptionsFetcher<
-  SchemaType extends z.ZodObject<any>,
-  Intent extends keyof z.output<SchemaType[ "_zod" ][ "def" ][ "shape" ]>,
-> {
-  /**
-   * Configure which events trigger validation
-   * 
-   * @remarks
-   * Defaults to `[ "blur", "form.submit" ]`
-   */
-  events?: ZodFormsContextType[ "events" ];
-
-  /**
-   * The current form intent
-   */
-  intent: Intent;
-
-  /**
-   * The Zod schema used to validate form data
-   */
-  schema: SchemaType;
-
-  /**
-   * Whether to use a fetcher for this form
-   * 
-   * @remarks
-   * Defaults to `false`.
-   */
-  useFetcher: true;
-}
-
-/**
- * Options for the useZodForms hook
- */
-interface useZodFormOptionsForm<
-  SchemaType extends z.ZodObject<any>,
-  Intent extends keyof z.output<SchemaType[ "_zod" ][ "def" ][ "shape" ]>,
-> {
-  /**
-   * Configure which events trigger validation
-   * 
-   * @remarks
-   * Defaults to `[ "blur", "form.submit" ]`
-   */
-  events?: ZodFormsContextType[ "events" ];
-
-  /**
-   * The current form intent
-   */
-  intent: Intent;
-
-  /**
-   * The Zod schema used to validate form data
-   */
-  schema: SchemaType;
-
-  /**
-   * Whether to use a fetcher for this form
-   * 
-   * @remarks
-   * Defaults to `false`.
-   */
-  useFetcher?: false;
-}
-
-/**
- * Options for the useZodForms hook
- */
-export type useZodFormOptions<
-  SchemaType extends z.ZodObject<any>,
-  Intent extends keyof z.output<SchemaType[ "_zod" ][ "def" ][ "shape" ]>,
-> =
-  | useZodFormOptionsFetcher<SchemaType, Intent>
-  | useZodFormOptionsForm<SchemaType, Intent>;
-
-/**
- * Return type of the useZodForm hook
- */
-type useZodFormsReturnTypeFetcher<
-  DataType = any,
-  SchemaType extends z.ZodObject<any> = z.ZodObject<any>,
-  FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }> = Paths<z.output<SchemaType>, { bracketNotation: true; }>
-> = Pick<
-  ZodFormsContextTypeFetcher<
-    DataType,
-    SchemaType,
-    FieldPath
-  >,
-  | "data"
-  | "id"
-  | "intent"
-  | "load"
-  | "schema"
-  | "state"
-  | "submit"
-  | "validate"
-  | "validation"
-  | "Field"
-  | "Form"
-  | "Message"
->;
-
-/**
- * Return type of the useZodForm hook
- */
-type useZodFormsReturnTypeForm<
-  DataType = any,
-  SchemaType extends z.ZodObject<any> = z.ZodObject<any>,
-  FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }> = Paths<z.output<SchemaType>, { bracketNotation: true; }>
-> = Pick<
-  ZodFormsContextTypeForm<
-    DataType,
-    SchemaType,
-    FieldPath
-  >,
-  | "data"
-  | "id"
-  | "intent"
-  | "schema"
-  | "state"
-  | "validate"
-  | "validation"
-  | "Field"
-  | "Form"
-  | "Message"
->;
-
-/**
- * Return type of the useZodForm hook
- */
-export type useZodFormsReturnType<
-  DataType = any,
-  SchemaType extends z.ZodObject<any> = z.ZodObject<any>,
-  FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }> = Paths<z.output<SchemaType>, { bracketNotation: true; }>
-> =
-  | useZodFormsReturnTypeFetcher<DataType, SchemaType, FieldPath>
-  | useZodFormsReturnTypeForm<DataType, SchemaType, FieldPath>;
 
 /**
  * Initialize a new Form instance
@@ -160,9 +19,9 @@ export function useZodForm<
   PayloadType = any,
   IntentSchemaType extends z.ZodObject<any> = SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ]
 > (
-  options: useZodFormOptionsFetcher<SchemaType, Intent>
-): useZodFormsReturnTypeFetcher<
-  HandleZodFormMessage<
+  options: ZodForms.UseZodForm.Options.Fetcher<SchemaType, Intent>
+): ZodForms.UseZodForm.Fetcher<
+  ZodForms.Response<
     IntentSchemaType,
     PayloadType
   >,
@@ -178,9 +37,9 @@ export function useZodForm<
   PayloadType = any,
   IntentSchemaType extends z.ZodObject<any> = SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ]
 > (
-  options: useZodFormOptionsForm<SchemaType, Intent>
-): useZodFormsReturnTypeForm<
-  HandleZodFormMessage<
+  options: ZodForms.UseZodForm.Options.Form<SchemaType, Intent>
+): ZodForms.UseZodForm.Form<
+  ZodForms.Response<
     IntentSchemaType,
     PayloadType
   >,
@@ -196,9 +55,9 @@ export function useZodForm<
   PayloadType = any,
   IntentSchemaType extends z.ZodObject<any> = SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ]
 > (
-  options: useZodFormOptions<SchemaType, Intent>
-): useZodFormsReturnType<
-  HandleZodFormMessage<
+  options: ZodForms.UseZodForm.Options<SchemaType, Intent>
+): ZodForms.UseZodForm<
+  ZodForms.Response<
     IntentSchemaType,
     PayloadType
   >,
@@ -307,7 +166,7 @@ export function useZodForm<
 
   // Create the field component
   const FieldComponent = useCallback(
-    (props: ZodFormFieldProps<IntentSchemaType, Paths<z.output<IntentSchemaType>, { bracketNotation: true; }>>) => (
+    (props: ZodForms.Components.Field.Props<IntentSchemaType, Paths<z.output<IntentSchemaType>, { bracketNotation: true; }>>) => (
       <ZodFormContext value={ formId }>
         <Field { ...props } />
       </ZodFormContext>
@@ -317,7 +176,7 @@ export function useZodForm<
 
   // Create the form component
   const FormComponent = useCallback(
-    (props: ZodFormProps<IntentSchemaType>) => (
+    (props: ZodForms.Components.Form.Props<IntentSchemaType>) => (
       <ZodFormContext value={ formId }>
         <Form { ...props } />
       </ZodFormContext>
@@ -327,9 +186,9 @@ export function useZodForm<
 
   // Create the message component
   const MessageComponent = useCallback(
-    (props: ZodFormMessageProps<PayloadType, IntentSchemaType, Paths<z.output<IntentSchemaType>, { bracketNotation: true; }>>) => (
+    (props: ZodForms.Components.Message.Props<PayloadType, IntentSchemaType, Paths<z.output<IntentSchemaType>, { bracketNotation: true; }>>) => (
       <ZodFormContext value={ formId }>
-        <Message { ...props } />
+        <Message { ...props as any } />
       </ZodFormContext>
     ),
     [ formId ]
@@ -338,8 +197,8 @@ export function useZodForm<
   // If fetcher is enabled
   if (fetcher) {
     // Create the form object
-    const form: ZodFormsContextTypeFetcher<
-      HandleZodFormMessage<IntentSchemaType>,
+    const form: ZodForms.Context.Fetcher<
+      ZodForms.Response<IntentSchemaType>,
       IntentSchemaType
     > = {
       data: data || actionData,
@@ -359,7 +218,7 @@ export function useZodForm<
     };
 
     // Add this form to the list
-    forms.current[ formId ] = form;
+    forms.current[ formId ] = form as any;
 
     return {
       data: form.data,
@@ -378,8 +237,8 @@ export function useZodForm<
   }
 
   // Create the form object
-  const form: ZodFormsContextTypeForm<
-    HandleZodFormMessage<IntentSchemaType>,
+  const form: ZodForms.Context.Form<
+    ZodForms.Response<IntentSchemaType>,
     IntentSchemaType
   > = {
     data: data || actionData,
@@ -397,7 +256,7 @@ export function useZodForm<
   };
 
   // Add this form to the list
-  forms.current[ formId ] = form;
+  forms.current[ formId ] = form as any;
 
   return {
     data: form.data,

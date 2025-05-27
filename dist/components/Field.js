@@ -49,15 +49,19 @@ export function Field(props) {
         shape = path.toSchema(schema);
         // If we found the shape for this field
         if (shape) {
+            // Whether the shape is optional
+            const isOptional = shape.safeParse(undefined).success;
+            // Whether the shape is nullable
+            const isNullable = shape.safeParse(null).success;
             // If the field should be required
-            if (!shape.isOptional() && !shape.isNullable() && !("required" in rest)) {
+            if (!isOptional && !isNullable && !("required" in rest)) {
                 // Set the required attribute
                 Object.assign(rest, {
                     required: true,
                 });
             }
             // If the field is optional
-            else if (shape.isOptional() && "innerType" in shape.def) {
+            else if (isOptional && "innerType" in shape.def) {
                 shape = shape.def.innerType;
             }
             // If the field has a max date

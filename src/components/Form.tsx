@@ -1,38 +1,9 @@
-import React, { useCallback, useContext, useEffect, useRef, type FocusEventHandler, type FormEventHandler, type RefObject } from "react";
-import { Form as ReactRouterForm, type FormProps } from "react-router";
+import React, { useCallback, useContext, useEffect, useRef, type FocusEventHandler, type FormEventHandler } from "react";
+import { Form as ReactRouterForm } from "react-router";
 import { z } from "zod/v4";
 import { ZodFormContext } from "../context/FormContext";
 import { ZodFormsContext } from "../context/FormsContext";
-
-/**
- * Props for the Form component
- */
-export interface ZodFormProps<
-  SchemaType extends z.ZodObject<any>
-> extends FormProps {
-  /**
-   * Whether to embed the current intent as a hidden field
-   * 
-   * @remarks
-   * Defaults to `true`
-   */
-  intent?: boolean;
-
-  /**
-   * Called when data returns from the action
-   */
-  onResponse?: (data: any) => void;
-
-  /**
-   * Called during form data validation
-   */
-  onValidate?: (data: z.output<SchemaType>, validation: z.ZodSafeParseResult<z.output<SchemaType>>) => void;
-
-  /**
-   * Form element reference
-   */
-  ref?: RefObject<HTMLFormElement | null>;
-}
+import type { ZodForms } from "../types";
 
 /**
  * Form component
@@ -40,7 +11,7 @@ export interface ZodFormProps<
 export function Form<
   SchemaType extends z.ZodObject<any>
 > (
-  props: ZodFormProps<SchemaType>
+  props: ZodForms.Components.Form.Props<SchemaType>
 ) {
   let {
     children,

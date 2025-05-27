@@ -1,99 +1,11 @@
 import { DateTime } from "luxon";
-import React, { useCallback, useContext, type AllHTMLAttributes, type ChangeEventHandler, type FocusEventHandler, type FormEventHandler, type HTMLInputTypeAttribute, type InputHTMLAttributes, type ReactNode, type RefObject, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
-import type { Get, Paths } from "type-fest";
+import React, { useCallback, useContext, type ChangeEventHandler, type FocusEventHandler, type FormEventHandler } from "react";
+import type { Paths } from "type-fest/source/paths";
 import { z } from "zod/v4";
 import { ZodFormContext } from "../context/FormContext";
 import { ZodFormsContext } from "../context/FormsContext";
+import type { ZodForms } from "../types";
 import { Path } from "../utils/Path";
-
-/**
- * Props for the Field component
- */
-export type ZodFormFieldProps<
-  SchemaType extends z.ZodObject<any>,
-  FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }>,
-  FieldValue = Get<z.output<SchemaType>, FieldPath>,
-  FieldType = (
-    FieldValue extends boolean
-    ? "hidden" | "image" | "checkbox" | "radio"
-    : FieldValue extends Date
-    ? "hidden" | "image" | "date" | "datetime" | "datetime-local" | "month" | "time" | "week"
-    : FieldValue extends File
-    ? "hidden" | "image" | "file"
-    : FieldValue extends number
-    ? "hidden" | "image" | "number" | "range"
-    : FieldValue extends Array<any>
-    ? "select"
-    : HTMLInputTypeAttribute | "select" | "textarea"
-  )
-> = Omit<
-  FieldValue extends Array<any>
-  ? Omit<
-    SelectHTMLAttributes<HTMLSelectElement>,
-    | "defaultValue"
-    | "multiple"
-    | "value"
-  >
-  : Omit<
-    InputHTMLAttributes<HTMLInputElement> & TextareaHTMLAttributes<HTMLTextAreaElement>,
-    | "defaultValue"
-    | "value"
-  >,
-  | "children"
-  | "name"
-  | "type"
-> & {
-  /**
-   * Renders a custom component for the field with passthrough attributes
-   * 
-   * @param props Element attributes passed through to the component
-   * @param shape (optional) The schema for this field
-   */
-  children?: ReactNode | (
-    (
-      props: AllHTMLAttributes<HTMLElement>,
-      shape: z.ZodType | Record<string, undefined>
-    ) => ReactNode
-  );
-
-  /**
-   * The default value of this input
-   */
-  defaultValue?: FieldValue;
-
-  /**
-   * The name of the field in the schema
-   */
-  name?: FieldPath;
-
-  /**
-   * Whether the field should be read only
-   */
-  readOnly?: boolean;
-
-  /**
-   * Field element reference
-   */
-  ref?: RefObject<
-    (
-      FieldType extends "select"
-      ? HTMLSelectElement
-      : FieldType extends "textarea"
-      ? HTMLTextAreaElement
-      : HTMLInputElement
-    ) | null
-  >;
-
-  /**
-   * The type of the field
-   */
-  type?: FieldType;
-
-  /**
-   * The controlled value of this input
-   */
-  value?: FieldValue;
-};
 
 /**
  * Field component
@@ -102,7 +14,7 @@ export function Field<
   SchemaType extends z.ZodObject<any>,
   FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }>,
 > (
-  props: ZodFormFieldProps<SchemaType, FieldPath>
+  props: ZodForms.Components.Field.Props<SchemaType, FieldPath>
 ) {
   let {
     children,
@@ -180,8 +92,14 @@ export function Field<
 
     // If we found the shape for this field
     if (shape) {
+      // Whether the shape is optional
+      const isOptional = shape.safeParse(undefined).success;
+
+      // Whether the shape is nullable
+      const isNullable = shape.safeParse(null).success;
+
       // If the field should be required
-      if (!shape.isOptional() && !shape.isNullable() && !("required" in rest)) {
+      if (!isOptional && !isNullable && !("required" in rest)) {
         // Set the required attribute
         Object.assign(rest, {
           required: true,
@@ -189,7 +107,7 @@ export function Field<
       }
 
       // If the field is optional
-      else if (shape.isOptional() && "innerType" in shape.def) {
+      else if (isOptional && "innerType" in shape.def) {
         shape = shape.def.innerType as z.ZodType<any, any>;
       }
 
@@ -384,7 +302,7 @@ export function Field<
         ? (
           children(
             {
-              ...rest as any,
+              ...rest,
               className: `react-router-zod-forms__field ${ className || "" }`.trim(),
               onBlur: handleBlur,
               onChange: handleChange,

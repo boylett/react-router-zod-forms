@@ -2,6 +2,9 @@ import React, { useContext } from "react";
 import { ZodFormContext } from "../context/FormContext";
 import { ZodFormsContext } from "../context/FormsContext";
 import { Path } from "../utils/Path";
+/**
+ * Message component
+ */
 export function Message(props) {
     let { as: Element = "div", children, className, form: formId, name, ...rest } = props;
     // Get forms context
@@ -43,8 +46,7 @@ export function Message(props) {
             ? children({
                 ...rest,
                 className: `react-router-zod-forms__form-message ${className || ""}`.trim(),
-                message: data,
-            }, shape || {})
+            }, schema, data)
             : (React.createElement(Element, { className: `react-router-zod-forms__form-message ${className || ""}`.trim(), "data-status": data.status, title: data.status >= 400 && data.payload && data.payload instanceof Error
                     ? data.payload.message
                     : data.message, ...rest },
@@ -74,8 +76,7 @@ export function Message(props) {
         ? children({
             ...rest,
             className: `react-router-zod-forms__form-message ${className || ""}`.trim(),
-            issues,
-        }, shape || {})
+        }, shape, issues)
         : (React.createElement(Element, { className: `react-router-zod-forms__field-message ${className || ""}`.trim(), ...rest },
             React.createElement("ul", null, issues
                 .filter(Boolean)

@@ -1,1 +1,1 @@
-export * from "./hooks/handleZodForm";
+export { handleZodForm } from "./hooks/handleZodForm";

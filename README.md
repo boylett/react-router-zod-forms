@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  Strongly typed form management with <a href="https://reactrouter.com">React Router 7</a> and <a href="https://v4.zod.dev">Zod 4</a>.
+  Strongly typed form management with <a href="https://reactrouter.com">React Router 7</a> and <a href="https://zod.dev">Zod 4</a>.
 </p>
 
 <p align="center">
@@ -13,17 +13,12 @@
 
 ---
 
-> [!CAUTION]
-> This library is very much not ready for production use yet. I am actively developing it alongside a large-scale real-world project.
-
----
-
 # Documentation
 
 **React Router Zod Forms** aims to simplify the process of handling form submission and validation with React Router and Zod 4.
 
 > [!NOTE]
-> Requires [React 19](https://react.dev/blog/2024/12/05/react-19), [React Router 7](https://reactrouter.com) and [zod 4](https://v4.zod.dev)
+> Requires [React 19](https://react.dev/blog/2024/12/05/react-19), [React Router 7](https://reactrouter.com) and [zod 4](https://zod.dev)
 
 ## Installation
 
@@ -38,7 +33,7 @@ Form schemas are zod objects where the top-level key is the "intent" of the form
 In the example below, the `general` intent indicates a schema with keys `title`, `content` and `settings`.
 
 ```typescript
-import z from "zod";
+import z from "zod/v4";
 
 const schema = z.object({
   /**
@@ -135,7 +130,7 @@ The `handleZodForm` method parses the current request for `FormData`, performs a
 | `maxFileSize` | `number` | Set the maximum file size for file uploads (see [@mjackson/multipart-parser](https://github.com/mjackson/remix-the-web/tree/main/packages/multipart-parser#limiting-file-upload-size)) |
 | `maxHeaderSize` | `number` | Set the maximum header size for multipart payloads (see [@mjackson/multipart-parser](https://github.com/mjackson/remix-the-web/blob/main/packages/multipart-parser/src/lib/multipart.ts#L18)) |
 | `messages` | `object` | Supply your own default message text for `error`, `success` and `notImplemented` responses |
-| `transform` | `function` | Transforms the value of each formData field before it is parsed by Zod (arguments are `key: string`, `value: FormDataEntryValue` and `path: (number \| string)[]`) |
+| `transform` | `function` | Transforms the value of each formData field before it is parsed by Zod (arguments are `key: string`, `value: any` and `path: (number \| string)[]`) |
 
 #### 2. `forms` <sup>(required)</sup> – Form handlers corresponding to schema entries
 
@@ -173,17 +168,17 @@ return await handleZodForm({ request, schema }, {
 
 | Hook | Properties | Returns | Effect |
 | - | - | - | - |
-| `before` | <sub>`data: FormData`</sub> | | Called before form data is cast to a POJO and before validation occurs |
-| `after` | <sub>`data: FormData`</sub> | | Called after all relevant handlers have executed |
+| `before` | <sub>`data: `[`FileUploadFormData`](https://github.com/boylett/react-router-zod-forms/blob/main/src/utils/fileUploadFormData.ts)</sub> | | Called before form data is cast to a POJO and before validation occurs |
+| `after` | <sub>`data: `[`FileUploadFormData`](https://github.com/boylett/react-router-zod-forms/blob/main/src/utils/fileUploadFormData.ts)</sub> | | Called after all relevant handlers have executed |
 | `beforeValidate` | <sub>`data?: z.output<typeof schema>`</sub> | <sub>`z.output<typeof schema>`</sub> | Called before zod validation. May be used to mutate the form data before validation |
 | `afterValidate` | <sub>`result?: ZodSafeParseResult<z.output<typeof schema>>`</sub> | <sub>`ZodSafeParseResult<z.output<typeof schema>>`</sub> | Called after zod validation. May be used to mutate the validation response before action handling |
 
 > [!NOTE]
-> Hooks do not have to return a value
+> Hooks are not required to return a value
 
 ### File Uploads
 
-Uploaded files are parsed by [form-data-parser](https://github.com/mjackson/remix-the-web/tree/main/packages/form-data-parser#usage) under-the-hood and converted to [FileUpload](https://github.com/mjackson/remix-the-web/blob/main/packages/form-data-parser/src/lib/form-data.ts#L19) instances before getting delivered to your handler data.
+Uploaded files are parsed by [multipart-parser](https://github.com/mjackson/remix-the-web/tree/main/packages/multipart-parser) under-the-hood and converted to [FileUpload](https://github.com/mjackson/remix-the-web/blob/main/packages/form-data-parser/src/lib/form-data.ts#L19) instances before getting delivered to your handler data.
 
 File fields should implement `z.instanceof(File)` in the schema for correct validation.
 
@@ -256,7 +251,7 @@ export default function Component () {
     load,
     submit,
 
-    // Fetcher state if `useFetcher` is `true`
+    // Fetcher or form navigation state
     state,
 
     // Method to manually call client-side field validation
@@ -306,9 +301,7 @@ export default function Component () {
           <Field name="settings[2]" />
           <Message name="settings.*" />
         </fieldset>
-        <button disabled={
-          state !== "idle"
-        }>
+        <button disabled={ state !== "idle" }>
           submit
         </button>
       </Form>
@@ -365,6 +358,9 @@ return (
   </Form>
 );
 ```
+
+> [!NOTE]
+> Be aware that submitting a form to a different intent may cause validation errors if the schema for the target intent does not contain fields for the submitted form, or if the schema field types do not match.
 
 ### `<Field />` component
 
