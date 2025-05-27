@@ -161,8 +161,8 @@ return await handleZodForm({ request, schema }, {
 });
 ```
 
-> [!WARNING]
-> Bare in mind that returning `handleZodForm` from your action will *always* return a `HandleZodFormMessage` object (see below), unless a `Response` is thrown.
+> [!NOTE]
+> `handleZodForm` will *always* return a [`ZodForms.Response`](https://github.com/boylett/react-router-zod-forms/blob/main/src/types.ts#L659) object, unless a [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response) is thrown specifically.
 
 #### 3. `hooks` – Event callbacks that help you modify the form data before and after it is parsed and validated
 
