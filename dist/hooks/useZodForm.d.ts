@@ -1,5 +1,5 @@
 import { z } from "zod/v4";
-import type { ZodForms } from "../types";
+import type { ZodForms } from "../types.js";
 /**
  * Initialize a new Form instance
  */

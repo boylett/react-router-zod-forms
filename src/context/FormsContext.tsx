@@ -1,5 +1,5 @@
-import React, { createContext, useRef, type ReactNode } from "react";
-import type { ZodForms } from "../types";
+import { createContext, useRef, type ReactNode, type RefObject } from "react";
+import type { ZodForms } from "../types.js";
 
 /**
  * Context for ZodForms
@@ -9,7 +9,7 @@ export const ZodFormsContext = createContext<
     /**
      * The current forums in the document
      */
-    forms?: React.RefObject<Record<string, Partial<ZodForms.Context>>>;
+    forms?: RefObject<Record<string, Partial<ZodForms.Context>>>;
   }
 >({});
 

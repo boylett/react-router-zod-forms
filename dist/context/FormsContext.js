@@ -1,4 +1,5 @@
-import React, { createContext, useRef } from "react";
+import { jsx as _jsx } from "react/jsx-runtime";
+import { createContext, useRef } from "react";
 /**
  * Context for ZodForms
  */
@@ -12,5 +13,6 @@ export const ZodFormsContext = createContext({});
 export function ZodFormProvider({ children }) {
     // Create forms state
     const forms = useRef({});
-    return (React.createElement(ZodFormsContext, { value: { forms } }, children));
+    return (_jsx(ZodFormsContext, { value: { forms }, children: children }));
 }
+//# sourceMappingURL=FormsContext.js.map

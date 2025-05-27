@@ -1,7 +1,9 @@
-import React, { useContext } from "react";
-import { ZodFormContext } from "../context/FormContext";
-import { ZodFormsContext } from "../context/FormsContext";
-import { Path } from "../utils/Path";
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { useContext } from "react";
+import { z } from "zod/v4";
+import { ZodFormContext } from "../context/FormContext.js";
+import { ZodFormsContext } from "../context/FormsContext.js";
+import { Path } from "../utils/Path.js";
 /**
  * Message component
  */
@@ -47,12 +49,11 @@ export function Message(props) {
                 ...rest,
                 className: `react-router-zod-forms__form-message ${className || ""}`.trim(),
             }, schema, data)
-            : (React.createElement(Element, { className: `react-router-zod-forms__form-message ${className || ""}`.trim(), "data-status": data.status, title: data.status >= 400 && data.payload && data.payload instanceof Error
+            : (_jsx(Element, { className: `react-router-zod-forms__form-message ${className || ""}`.trim(), "data-status": data.status, title: data.status >= 400 && data.payload && data.payload instanceof Error
                     ? data.payload.message
-                    : data.message, ...rest },
-                React.createElement("p", null, data.status >= 400 && data.payload && data.payload instanceof Error
-                    ? data.payload.message
-                    : data.message))));
+                    : data.message, ...rest, children: _jsx("p", { children: data.status >= 400 && data.payload && data.payload instanceof Error
+                        ? data.payload.message
+                        : data.message }) })));
     }
     // If validation is not set for this field
     if (!validation || validation.success || validation.error.issues.length === 0) {
@@ -66,7 +67,7 @@ export function Message(props) {
     const issues = name === "*"
         ? validation.error.issues
         : validation.error.issues
-            .filter(issue => fieldPath.is(issue.path) ||
+            .filter((issue) => fieldPath.is(issue.path) ||
             (wildcard && fieldPath.startsWith(issue.path)));
     // If there are no issues for this field
     if (issues.length === 0) {
@@ -77,16 +78,14 @@ export function Message(props) {
             ...rest,
             className: `react-router-zod-forms__form-message ${className || ""}`.trim(),
         }, shape, issues)
-        : (React.createElement(Element, { className: `react-router-zod-forms__field-message ${className || ""}`.trim(), ...rest },
-            React.createElement("ul", null, issues
-                .filter(Boolean)
-                .map(issue => {
-                // Get the field path
-                const fieldPath = new Path(issue.path);
-                // Get the field schema
-                const fieldSchema = schema && fieldPath.toSchema(schema);
-                return (React.createElement("li", { "data-issue-code": issue.code, key: `${issue.path}${issue.code}` },
-                    React.createElement("strong", null, fieldSchema?.meta()?.description || fieldPath.toPrettyString()),
-                    React.createElement("span", null, issue.message)));
-            })))));
+        : (_jsx(Element, { className: `react-router-zod-forms__field-message ${className || ""}`.trim(), ...rest, children: _jsx("ul", { children: issues
+                    .filter(Boolean)
+                    .map((issue) => {
+                    // Get the field path
+                    const fieldPath = new Path(issue.path);
+                    // Get the field schema
+                    const fieldSchema = schema && fieldPath.toSchema(schema);
+                    return (_jsxs("li", { "data-issue-code": issue.code, children: [_jsx("strong", { children: fieldSchema?.meta()?.description || fieldPath.toPrettyString() }), _jsx("span", { children: issue.message })] }, `${issue.path}${issue.code}`));
+                }) }) })));
 }
+//# sourceMappingURL=Message.js.map

@@ -1,9 +1,9 @@
 import { FileUpload } from "@mjackson/form-data-parser";
 import { getMultipartBoundary, isMultipartRequest, MultipartParseError, parseMultipart } from "@mjackson/multipart-parser";
 import { z } from "zod/v4";
-import type { ZodForms } from "../types";
-import { FileUploadFormData } from "../utils/fileUploadFormData";
-import { formDataToObject } from "../utils/formDataToObject";
+import type { ZodForms } from "../types.js";
+import { FileUploadFormData } from "../utils/fileUploadFormData.js";
+import { formDataToObject } from "../utils/formDataToObject.js";
 
 /**
  * Handle Zod Form submission
@@ -168,9 +168,11 @@ export async function handleZodForm<
       throw thrown;
     }
 
-    validation = (
-      await schema.def.shape[ intent ].safeParseAsync(data)
-    );
+    if (schema.def.shape[ intent ]) {
+      validation = (
+        await schema.def.shape[ intent ].safeParseAsync(data)
+      );
+    }
 
     try {
       const hookResult = (

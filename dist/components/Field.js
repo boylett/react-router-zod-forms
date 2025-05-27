@@ -1,8 +1,10 @@
+import { jsx as _jsx } from "react/jsx-runtime";
 import { DateTime } from "luxon";
-import React, { useCallback, useContext } from "react";
-import { ZodFormContext } from "../context/FormContext";
-import { ZodFormsContext } from "../context/FormsContext";
-import { Path } from "../utils/Path";
+import { useCallback, useContext } from "react";
+import { z } from "zod/v4";
+import { ZodFormContext } from "../context/FormContext.js";
+import { ZodFormsContext } from "../context/FormsContext.js";
+import { Path } from "../utils/Path.js";
 /**
  * Field component
  */
@@ -148,7 +150,7 @@ export function Field(props) {
             if (validation?.error?.issues?.length) {
                 // Get the field issues
                 const issues = validation.error.issues
-                    .filter(issue => path.is(issue.path));
+                    .filter((issue) => path.is(issue.path));
                 // If the field has issues
                 if (issues.length > 0) {
                     Object.assign(rest, {
@@ -213,8 +215,9 @@ export function Field(props) {
                 onInput: handleInput,
                 type,
             }, shape || {}))
-            : (React.createElement("select", { className: `react-router-zod-forms__field ${className || ""}`.trim(), multiple: true, onBlur: handleBlur, onChange: handleChange, onInput: handleInput, ...rest }, children))
+            : (_jsx("select", { className: `react-router-zod-forms__field ${className || ""}`.trim(), multiple: true, onBlur: handleBlur, onChange: handleChange, onInput: handleInput, ...rest, children: children }))
         : type === "textarea"
-            ? (React.createElement("textarea", { className: `react-router-zod-forms__field ${className || ""}`.trim(), onBlur: handleBlur, onChange: handleChange, onInput: handleInput, ...rest }))
-            : (React.createElement("input", { className: `react-router-zod-forms__field ${className || ""}`.trim(), onBlur: handleBlur, onChange: handleChange, onInput: handleInput, type: type, ...rest })));
+            ? (_jsx("textarea", { className: `react-router-zod-forms__field ${className || ""}`.trim(), onBlur: handleBlur, onChange: handleChange, onInput: handleInput, ...rest }))
+            : (_jsx("input", { className: `react-router-zod-forms__field ${className || ""}`.trim(), onBlur: handleBlur, onChange: handleChange, onInput: handleInput, type: type, ...rest })));
 }
+//# sourceMappingURL=Field.js.map

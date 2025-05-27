@@ -1,11 +1,11 @@
 import type { FileUpload } from "@mjackson/form-data-parser";
 import type { AllHTMLAttributes, ElementType, ForwardRefExoticComponent, HTMLInputTypeAttribute, InputHTMLAttributes, ReactNode, RefAttributes, RefObject, SelectHTMLAttributes, TextareaHTMLAttributes } from "react";
 import type { FetcherFormProps, FetcherSubmitFunction, FormProps } from "react-router";
-import type { Get } from "type-fest/source/get";
-import type { IsPlainObject } from "type-fest/source/internal";
-import type { Paths } from "type-fest/source/paths";
+import type { Get } from "type-fest/source/get.js";
+import type { IsPlainObject } from "type-fest/source/internal/object.js";
+import type { Paths } from "type-fest/source/paths.js";
 import type z from "zod/v4";
-import type { FileUploadFormData } from "./utils/fileUploadFormData";
+import type { FileUploadFormData } from "./utils/fileUploadFormData.js";
 /**
  * Replace all instances of `From` with `To` in `Object`
  */

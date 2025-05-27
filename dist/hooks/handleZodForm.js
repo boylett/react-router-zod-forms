@@ -1,8 +1,8 @@
 import { FileUpload } from "@mjackson/form-data-parser";
 import { getMultipartBoundary, isMultipartRequest, MultipartParseError, parseMultipart } from "@mjackson/multipart-parser";
 import { z } from "zod/v4";
-import { FileUploadFormData } from "../utils/fileUploadFormData";
-import { formDataToObject } from "../utils/formDataToObject";
+import { FileUploadFormData } from "../utils/fileUploadFormData.js";
+import { formDataToObject } from "../utils/formDataToObject.js";
 /**
  * Handle Zod Form submission
  */
@@ -94,7 +94,9 @@ export async function handleZodForm(options, forms, hooks) {
             }
             throw thrown;
         }
-        validation = (await schema.def.shape[intent].safeParseAsync(data));
+        if (schema.def.shape[intent]) {
+            validation = (await schema.def.shape[intent].safeParseAsync(data));
+        }
         try {
             const hookResult = (hooks?.afterValidate?.(validation));
             if (hookResult) {
@@ -223,3 +225,4 @@ export async function handleZodForm(options, forms, hooks) {
     };
     return response;
 }
+//# sourceMappingURL=handleZodForm.js.map

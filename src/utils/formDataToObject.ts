@@ -1,4 +1,4 @@
-import { Path } from "./Path";
+import { Path } from "./Path.js";
 
 /**
  * Parse form data to a POJO
@@ -28,34 +28,38 @@ export function formDataToObject<
       }
 
       for (let i = 0; i < path.length; i++) {
-        if (path[ i ] === "[]") {
-          if (!Array.isArray(current)) {
-            current = [ current ];
+        const key = path[ i ];
+
+        if (key !== undefined) {
+          if (key === "[]") {
+            if (!Array.isArray(current)) {
+              current = [ current ];
+            }
+
+            current.push(value);
+
+            continue;
           }
 
-          current.push(value);
+          if (i === path.length - 1) {
+            if (Array.isArray(current)) {
+              current.push(value);
+            }
 
-          continue;
-        }
-
-        if (i === path.length - 1) {
-          if (Array.isArray(current)) {
-            current.push(value);
+            else {
+              current[ key ] = value;
+            }
           }
 
           else {
-            current[ path[ i ] ] = value;
-          }
-        }
+            if (!(key in current)) {
+              current[ key ] = path[ i + 1 ] === "[]" || typeof path[ i + 1 ] === "number"
+                ? []
+                : {};
+            }
 
-        else {
-          if (!(path[ i ] in current)) {
-            current[ path[ i ] ] = path[ i + 1 ] === "[]" || typeof path[ i + 1 ] === "number"
-              ? []
-              : {};
+            current = current[ key ];
           }
-
-          current = current[ path[ i ] ];
         }
       }
     }

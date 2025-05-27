@@ -1,13 +1,13 @@
-import React, { type ReactNode } from "react";
-import type { ZodForms } from "../types";
+import { type ReactNode, type RefObject } from "react";
+import type { ZodForms } from "../types.js";
 /**
  * Context for ZodForms
  */
-export declare const ZodFormsContext: React.Context<{
+export declare const ZodFormsContext: import("react").Context<{
     /**
      * The current forums in the document
      */
-    forms?: React.RefObject<Record<string, Partial<ZodForms.Context>>>;
+    forms?: RefObject<Record<string, Partial<ZodForms.Context>>>;
 }>;
 /**
  * ZodForm context provider
@@ -17,4 +17,4 @@ export declare const ZodFormsContext: React.Context<{
  */
 export declare function ZodFormProvider({ children }: {
     children: ReactNode;
-}): React.JSX.Element;
+}): import("react/jsx-runtime").JSX.Element;

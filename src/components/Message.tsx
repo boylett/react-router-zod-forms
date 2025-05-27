@@ -1,10 +1,10 @@
-import React, { useContext, type ReactNode } from "react";
-import type { Paths } from "type-fest/source/paths";
+import { useContext, type ReactNode } from "react";
+import type { Paths } from "type-fest/source/paths.js";
 import { z } from "zod/v4";
-import { ZodFormContext } from "../context/FormContext";
-import { ZodFormsContext } from "../context/FormsContext";
-import type { ZodForms } from "../types";
-import { Path } from "../utils/Path";
+import { ZodFormContext } from "../context/FormContext.js";
+import { ZodFormsContext } from "../context/FormsContext.js";
+import type { ZodForms } from "../types.js";
+import { Path } from "../utils/Path.js";
 
 /**
  * Message component
@@ -133,7 +133,7 @@ export function Message<
     ? validation.error.issues
     : validation.error.issues
       .filter(
-        issue =>
+        (issue: z.core.$ZodIssue) =>
           fieldPath.is(issue.path) ||
           (
             wildcard && fieldPath.startsWith(issue.path)
@@ -169,7 +169,7 @@ export function Message<
             { issues
               .filter(Boolean)
               .map(
-                issue => {
+                (issue: z.core.$ZodIssue) => {
                   // Get the field path
                   const fieldPath = new Path(issue.path);
 

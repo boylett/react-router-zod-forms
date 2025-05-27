@@ -1,7 +1,9 @@
-import React, { useCallback, useContext, useEffect, useRef } from "react";
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { useCallback, useContext, useEffect, useRef } from "react";
 import { Form as ReactRouterForm } from "react-router";
-import { ZodFormContext } from "../context/FormContext";
-import { ZodFormsContext } from "../context/FormsContext";
+import { z } from "zod/v4";
+import { ZodFormContext } from "../context/FormContext.js";
+import { ZodFormsContext } from "../context/FormsContext.js";
 /**
  * Form component
  */
@@ -28,7 +30,7 @@ export function Form(props) {
     // Create a new form element reference
     ref ||= useRef(null);
     // Assign the reference and validation result to context
-    if (form) {
+    if (form && forms.current[formId]) {
         forms.current[formId].form = ref;
     }
     const { events, FormElement = ReactRouterForm, intent, validate, validation, } = forms.current[formId];
@@ -93,7 +95,6 @@ export function Form(props) {
             onResponse?.(form?.data);
         }
     }, [form?.data, form?.state, onResponse]);
-    return (React.createElement(FormElement, { className: `react-router-zod-forms__form ${className || ""}`.trim(), id: formId, method: "post", onBlur: handleBlur, onInput: handleInput, onSubmit: handleSubmit, ...rest, ref: ref },
-        embedIntent && (React.createElement("input", { name: "_intent", type: "hidden", value: String(intent) })),
-        children));
+    return (_jsxs(FormElement, { className: `react-router-zod-forms__form ${className || ""}`.trim(), id: formId, method: "post", onBlur: handleBlur, onInput: handleInput, onSubmit: handleSubmit, ...rest, ref: ref, children: [embedIntent && (_jsx("input", { name: "_intent", type: "hidden", value: String(intent) })), children] }));
 }
+//# sourceMappingURL=Form.js.map

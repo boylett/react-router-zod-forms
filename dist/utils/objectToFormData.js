@@ -30,3 +30,4 @@ export function objectToFormData(object, formData = new FormData(), path = "", t
     }
     return formData;
 }
+//# sourceMappingURL=objectToFormData.js.map

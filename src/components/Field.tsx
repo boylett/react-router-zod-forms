@@ -1,11 +1,11 @@
 import { DateTime } from "luxon";
-import React, { useCallback, useContext, type ChangeEventHandler, type FocusEventHandler, type FormEventHandler } from "react";
-import type { Paths } from "type-fest/source/paths";
+import { useCallback, useContext, type ChangeEventHandler, type FocusEventHandler, type FormEventHandler } from "react";
+import type { Paths } from "type-fest/source/paths.js";
 import { z } from "zod/v4";
-import { ZodFormContext } from "../context/FormContext";
-import { ZodFormsContext } from "../context/FormsContext";
-import type { ZodForms } from "../types";
-import { Path } from "../utils/Path";
+import { ZodFormContext } from "../context/FormContext.js";
+import { ZodFormsContext } from "../context/FormsContext.js";
+import type { ZodForms } from "../types.js";
+import { Path } from "../utils/Path.js";
 
 /**
  * Field component
@@ -216,7 +216,7 @@ export function Field<
         // Get the field issues
         const issues = validation.error.issues
           .filter(
-            issue =>
+            (issue: z.core.$ZodIssue) =>
               path.is(issue.path)
           );
 

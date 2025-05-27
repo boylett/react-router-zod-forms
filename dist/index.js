@@ -1,5 +1,6 @@
-export { ZodFormProvider } from "./context/FormsContext";
-export { useZodForm } from "./hooks/useZodForm";
-export { formDataToObject } from "./utils/formDataToObject";
-export { objectToFormData } from "./utils/objectToFormData";
-export { Path } from "./utils/Path";
+export { ZodFormProvider } from "./context/FormsContext.js";
+export { useZodForm } from "./hooks/useZodForm.js";
+export { formDataToObject } from "./utils/formDataToObject.js";
+export { objectToFormData } from "./utils/objectToFormData.js";
+export { Path } from "./utils/Path.js";
+//# sourceMappingURL=index.js.map

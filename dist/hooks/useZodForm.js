@@ -1,11 +1,13 @@
-import React, { useCallback, useContext, useId, useState } from "react";
+import { jsx as _jsx } from "react/jsx-runtime";
+import { useCallback, useContext, useId, useState } from "react";
 import { useActionData, useFetcher, useNavigation } from "react-router";
-import { Field } from "../components/Field";
-import { Form } from "../components/Form";
-import { Message } from "../components/Message";
-import { ZodFormContext } from "../context/FormContext";
-import { ZodFormsContext } from "../context/FormsContext";
-import { formDataToObject } from "../utils/formDataToObject";
+import { z } from "zod/v4";
+import { Field } from "../components/Field.js";
+import { Form } from "../components/Form.js";
+import { Message } from "../components/Message.js";
+import { ZodFormContext } from "../context/FormContext.js";
+import { ZodFormsContext } from "../context/FormsContext.js";
+import { formDataToObject } from "../utils/formDataToObject.js";
 /**
  * Initialize a new Form instance
  */
@@ -65,14 +67,11 @@ export function useZodForm(options) {
         }
     }, [formId, intentSchema]);
     // Create the field component
-    const FieldComponent = useCallback((props) => (React.createElement(ZodFormContext, { value: formId },
-        React.createElement(Field, { ...props }))), [formId]);
+    const FieldComponent = useCallback((props) => (_jsx(ZodFormContext, { value: formId, children: _jsx(Field, { ...props }) })), [formId]);
     // Create the form component
-    const FormComponent = useCallback((props) => (React.createElement(ZodFormContext, { value: formId },
-        React.createElement(Form, { ...props }))), [formId]);
+    const FormComponent = useCallback((props) => (_jsx(ZodFormContext, { value: formId, children: _jsx(Form, { ...props }) })), [formId]);
     // Create the message component
-    const MessageComponent = useCallback((props) => (React.createElement(ZodFormContext, { value: formId },
-        React.createElement(Message, { ...props }))), [formId]);
+    const MessageComponent = useCallback((props) => (_jsx(ZodFormContext, { value: formId, children: _jsx(Message, { ...props }) })), [formId]);
     // If fetcher is enabled
     if (fetcher) {
         // Create the form object
@@ -139,3 +138,4 @@ export function useZodForm(options) {
         Message: form.Message,
     };
 }
+//# sourceMappingURL=useZodForm.js.map

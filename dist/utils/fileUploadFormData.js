@@ -47,3 +47,4 @@ export class FileUploadFormData extends FormData {
         super.append(`$FileUpload::${key}`, file);
     }
 }
+//# sourceMappingURL=fileUploadFormData.js.map

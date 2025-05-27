@@ -1,2 +1,2 @@
-export { handleZodForm } from "./hooks/handleZodForm";
+export { handleZodForm } from "./hooks/handleZodForm.js";
 

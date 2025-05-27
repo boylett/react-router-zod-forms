@@ -1,9 +1,9 @@
-import React, { useCallback, useContext, useEffect, useRef, type FocusEventHandler, type FormEventHandler } from "react";
+import { useCallback, useContext, useEffect, useRef, type FocusEventHandler, type FormEventHandler } from "react";
 import { Form as ReactRouterForm } from "react-router";
 import { z } from "zod/v4";
-import { ZodFormContext } from "../context/FormContext";
-import { ZodFormsContext } from "../context/FormsContext";
-import type { ZodForms } from "../types";
+import { ZodFormContext } from "../context/FormContext.js";
+import { ZodFormsContext } from "../context/FormsContext.js";
+import type { ZodForms } from "../types.js";
 
 /**
  * Form component
@@ -59,8 +59,8 @@ export function Form<
   ref ||= useRef<HTMLFormElement>(null);
 
   // Assign the reference and validation result to context
-  if (form) {
-    forms.current[ formId ].form = ref;
+  if (form && forms.current[ formId ]) {
+    forms.current[ formId ]!.form = ref;
   }
 
   const {
@@ -69,7 +69,7 @@ export function Form<
     intent,
     validate,
     validation,
-  } = forms.current[ formId ];
+  } = forms.current[ formId ] as Partial<ZodForms.Context>;
 
   /**
    * Validate the form on blur

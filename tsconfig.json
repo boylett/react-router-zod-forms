@@ -1,21 +1,10 @@
 {
+  "extends": "@total-typescript/tsconfig/tsc/dom/library",
+  "include": [
+    "src/**/*"
+  ],
   "compilerOptions": {
-    "module": "ESNext",
-    "target": "ESNext",
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ESNext"
-    ],
     "outDir": "./dist",
-    "rootDir": "./src",
-    "moduleResolution": "bundler",
-    "jsx": "react",
-    "strict": true,
-    "noImplicitOverride": true,
-    "noEmit": false,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "declaration": true
+    "jsx": "react-jsx"
   }
 }
