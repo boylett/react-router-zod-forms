@@ -1,5 +1,5 @@
-import { FileUpload } from "@mjackson/form-data-parser";
-import { getMultipartBoundary, isMultipartRequest, MultipartParseError, parseMultipart } from "@mjackson/multipart-parser";
+import { FileUpload, MaxFilesExceededError } from "@mjackson/form-data-parser";
+import { getMultipartBoundary, isMultipartRequest, MultipartParseError, parseMultipartRequest } from "@mjackson/multipart-parser";
 import { z } from "zod/v4";
 import { FileUploadFormData } from "../utils/fileUploadFormData.js";
 import { formDataToObject } from "../utils/formDataToObject.js";
@@ -7,7 +7,7 @@ import { formDataToObject } from "../utils/formDataToObject.js";
  * Handle Zod Form submission
  */
 export async function handleZodForm(options, forms, hooks) {
-    const { maxFileSize, maxHeaderSize, messages, request, schema, transform, } = options;
+    const { maxFiles = 20, maxFileSize, maxHeaderSize, messages, request, schema, transform, } = options;
     // Custom form data handler
     const formData = new FileUploadFormData();
     // If this is a multipart request, extract form data and handle file uploads
@@ -22,19 +22,19 @@ export async function handleZodForm(options, forms, hooks) {
         if (!boundary) {
             throw new MultipartParseError("Invalid Content-Type header: missing boundary");
         }
+        let fileCount = 0;
         // Parse regular form data first and save uploadable files for later
-        await parseMultipart(request.body, {
-            boundary,
-            maxFileSize,
-            maxHeaderSize,
-        }, async (part) => {
+        for await (let part of parseMultipartRequest(request, { maxFileSize, maxHeaderSize })) {
             if (part.name && part.isFile) {
-                formData.appendFile(part.name, new FileUpload(part));
+                if (++fileCount > maxFiles) {
+                    throw new MaxFilesExceededError(maxFiles);
+                }
+                formData.appendFile(part.name, new FileUpload(part, part.name));
             }
-            else if (part.name && !part.isFile) {
-                formData.append(part.name, await part.text());
+            else if (part.name && part.isText) {
+                formData.append(part.name, part.text);
             }
-        });
+        }
     }
     // If this is not a multipart request, we can just use the form data from the request
     else {
@@ -95,7 +95,7 @@ export async function handleZodForm(options, forms, hooks) {
             throw thrown;
         }
         if (schema.def.shape[intent]) {
-            validation = (await schema.def.shape[intent].safeParseAsync(data));
+            validation = await schema.def.shape[intent].safeParseAsync(data);
         }
         try {
             const hookResult = (hooks?.afterValidate?.(validation));

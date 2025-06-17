@@ -569,6 +569,11 @@ export namespace ZodForms {
       SchemaType extends z.ZodObject<any>,
     > = {
       /**
+       * Maximum number of files to upload for multipart data
+       */
+      maxFiles?: number;
+
+      /**
        * Maximum file size for multipart data
        */
       maxFileSize?: number;

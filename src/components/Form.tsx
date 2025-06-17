@@ -84,7 +84,7 @@ export function Form<
       }
 
       if (events?.includes("form.blur")) {
-        validate?.(onValidate);
+        validate?.(onValidate as any);
       }
     },
     [ onBlur, onValidate, validate ]
@@ -104,7 +104,7 @@ export function Form<
 
       // Validate the form
       if (events?.includes("form.input")) {
-        validate?.(onValidate);
+        validate?.(onValidate as any);
       }
     },
     [ onInput, onValidate, validate ]
@@ -119,7 +119,7 @@ export function Form<
 
       // Validate the form
       if (events?.includes("form.submit")) {
-        submitValidation = validate?.(onValidate);
+        submitValidation = validate?.(onValidate as any);
       }
 
       // If validation succeeded
@@ -138,7 +138,7 @@ export function Form<
 
   // Custom event listener to enable external field validation
   useEffect(() => {
-    const listener = () => validate?.(onValidate);
+    const listener = () => validate?.(onValidate as any);
 
     ref.current?.addEventListener("$ZodForms.externalFieldValidate", listener);
 

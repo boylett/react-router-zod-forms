@@ -1,5 +1,5 @@
-import { FileUpload } from "@mjackson/form-data-parser";
-import { getMultipartBoundary, isMultipartRequest, MultipartParseError, parseMultipart } from "@mjackson/multipart-parser";
+import { FileUpload, MaxFilesExceededError } from "@mjackson/form-data-parser";
+import { getMultipartBoundary, isMultipartRequest, MultipartParseError, parseMultipartRequest } from "@mjackson/multipart-parser";
 import { z } from "zod/v4";
 import type { ZodForms } from "../types.js";
 import { FileUploadFormData } from "../utils/fileUploadFormData.js";
@@ -27,6 +27,7 @@ export async function handleZodForm<
   >
 > {
   const {
+    maxFiles = 20,
     maxFileSize,
     maxHeaderSize,
     messages,
@@ -55,24 +56,22 @@ export async function handleZodForm<
       throw new MultipartParseError("Invalid Content-Type header: missing boundary");
     }
 
+    let fileCount = 0;
+
     // Parse regular form data first and save uploadable files for later
-    await parseMultipart(
-      request.body,
-      {
-        boundary,
-        maxFileSize,
-        maxHeaderSize,
-      },
-      async part => {
-        if (part.name && part.isFile) {
-          formData.appendFile(part.name, new FileUpload(part));
+    for await (let part of parseMultipartRequest(request, { maxFileSize, maxHeaderSize })) {
+      if (part.name && part.isFile) {
+        if (++fileCount > maxFiles) {
+          throw new MaxFilesExceededError(maxFiles);
         }
 
-        else if (part.name && !part.isFile) {
-          formData.append(part.name, await part.text());
-        }
+        formData.appendFile(part.name, new FileUpload(part, part.name));
       }
-    );
+
+      else if (part.name && part.isText) {
+        formData.append(part.name, part.text);
+      }
+    }
   }
 
   // If this is not a multipart request, we can just use the form data from the request
@@ -124,7 +123,7 @@ export async function handleZodForm<
 
   let validation: z.ZodSafeParseResult<z.output<SchemaType>> = {
     data,
-    error: new z.ZodError([]),
+    error: new z.ZodError([]) as z.ZodError<z.output<SchemaType>>,
     success: false,
   };
 
@@ -170,7 +169,7 @@ export async function handleZodForm<
 
     if (schema.def.shape[ intent ]) {
       validation = (
-        await schema.def.shape[ intent ].safeParseAsync(data)
+        await schema.def.shape[ intent ].safeParseAsync(data) as z.ZodSafeParseResult<z.output<SchemaType>>
       );
     }
 
@@ -347,7 +346,7 @@ export async function handleZodForm<
   response.status = 501;
   response.validation = {
     data,
-    error: new z.ZodError([]),
+    error: new z.ZodError([]) as z.ZodError<z.output<SchemaType>>,
     success: false,
   };
 

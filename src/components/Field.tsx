@@ -25,7 +25,7 @@ export function Field<
     onInput,
     type = "text",
     ...rest
-  } = props;
+  } = props as any;
 
   // Get forms context
   const { forms } = (
