@@ -24,6 +24,7 @@
   },
   "scripts": {
     "build": "rm -rf ./dist && tsc -p tsconfig.json",
+    "postinstall": "patch-package",
     "watch": "tsc -w -p tsconfig.json"
   },
   "peerDependencies": {
@@ -43,6 +44,7 @@
     "@types/luxon": "^3.6.2",
     "@types/react": "^19.1.8",
     "luxon": "^3.6.1",
+    "patch-package": "^8.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router": "^7.6.2",
