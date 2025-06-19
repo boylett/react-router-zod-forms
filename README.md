@@ -531,8 +531,8 @@ export const action = async ({ context, params, request }: Route.ActionArgs) => 
 }
 
 export default function Component () {
-                  // Note the second type parameter ↴
-  const { data } = useZodForm<typeof schema, SchemaPayloads>({ intent: "general", schema });
+      // Note the second and third type parameters ↴ ––––––––––––↴
+  const { data } = useZodForm<typeof schema, SchemaPayloads, "general">({ intent: "general", schema });
 
   console.log(data.payload.enabled); // true
 }

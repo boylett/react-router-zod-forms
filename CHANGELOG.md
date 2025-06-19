@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### To Do
+
+- Implement class-based handler execution so that we can perform `this.<handler>(props)` from inside other handlers and access and update config options like `messages.error` or `maxFileSize` etc.
+
+## [1.1.6] - 2025-06-19
+
+### Changed
+
+- Changed the order of type parameters for `useZodForm` to be more in line with `handleZodForm`
+
 ## [1.1.5] - 2025-06-19
 
 ### Fixed

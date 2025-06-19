@@ -15,8 +15,8 @@ import { formDataToObject } from "../utils/formDataToObject.js";
  */
 export function useZodForm<
   SchemaType extends z.ZodObject<any>,
+  PayloadType,
   Intent extends keyof z.output<SchemaType>,
-  PayloadType = any,
   IntentSchemaType extends z.ZodObject<any> = SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ]
 > (
   options: ZodForms.UseZodForm.Options.Fetcher<SchemaType, Intent>
@@ -33,8 +33,8 @@ export function useZodForm<
  */
 export function useZodForm<
   SchemaType extends z.ZodObject<any>,
+  PayloadType,
   Intent extends keyof z.output<SchemaType>,
-  PayloadType = any,
   IntentSchemaType extends z.ZodObject<any> = SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ]
 > (
   options: ZodForms.UseZodForm.Options.Form<SchemaType, Intent>
