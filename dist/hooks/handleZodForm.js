@@ -119,6 +119,7 @@ export async function handleZodForm(options, forms, hooks) {
         }
         if (validation) {
             validation.data ||= data;
+            response.validation = validation;
         }
         const payload = {
             data,
