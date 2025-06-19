@@ -15,7 +15,7 @@ import { formDataToObject } from "../utils/formDataToObject.js";
  */
 export function useZodForm<
   SchemaType extends z.ZodObject<any>,
-  PayloadType,
+  PayloadTypes extends { [ key in "default" | keyof SchemaType[ "_zod" ][ "def" ][ "shape" ] ]?: any; },
   Intent extends keyof z.output<SchemaType>,
   IntentSchemaType extends z.ZodObject<any> = SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ]
 > (
@@ -23,7 +23,7 @@ export function useZodForm<
 ): ZodForms.UseZodForm.Fetcher<
   ZodForms.Response<
     IntentSchemaType,
-    PayloadType
+    PayloadTypes[ Intent ]
   >,
   IntentSchemaType
 >;
@@ -33,7 +33,7 @@ export function useZodForm<
  */
 export function useZodForm<
   SchemaType extends z.ZodObject<any>,
-  PayloadType,
+  PayloadTypes extends { [ key in "default" | keyof SchemaType[ "_zod" ][ "def" ][ "shape" ] ]?: any; },
   Intent extends keyof z.output<SchemaType>,
   IntentSchemaType extends z.ZodObject<any> = SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ]
 > (
@@ -41,7 +41,7 @@ export function useZodForm<
 ): ZodForms.UseZodForm.Form<
   ZodForms.Response<
     IntentSchemaType,
-    PayloadType
+    PayloadTypes[ Intent ]
   >,
   IntentSchemaType
 >;
@@ -51,15 +51,15 @@ export function useZodForm<
  */
 export function useZodForm<
   SchemaType extends z.ZodObject<any>,
+  PayloadTypes extends { [ key in "default" | keyof SchemaType[ "_zod" ][ "def" ][ "shape" ] ]?: any; },
   Intent extends keyof z.output<SchemaType>,
-  PayloadType = any,
   IntentSchemaType extends z.ZodObject<any> = SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ]
 > (
   options: ZodForms.UseZodForm.Options<SchemaType, Intent>
 ): ZodForms.UseZodForm<
   ZodForms.Response<
     IntentSchemaType,
-    PayloadType
+    PayloadTypes[ Intent ]
   >,
   IntentSchemaType
 > {
@@ -190,7 +190,7 @@ export function useZodForm<
 
   // Create the message component
   const MessageComponent = useCallback(
-    (props: ZodForms.Components.Message.Props<PayloadType, IntentSchemaType, Paths<z.output<IntentSchemaType>, { bracketNotation: true; }>>) => (
+    (props: ZodForms.Components.Message.Props<PayloadTypes[ Intent ], IntentSchemaType, Paths<z.output<IntentSchemaType>, { bracketNotation: true; }>>) => (
       <ZodFormContext value={ formId }>
         <Message { ...props as any } />
       </ZodFormContext>
