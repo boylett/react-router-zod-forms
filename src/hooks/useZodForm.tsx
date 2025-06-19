@@ -201,7 +201,7 @@ export function useZodForm<
       ZodForms.Response<IntentSchemaType>,
       IntentSchemaType
     > = {
-      data: data || actionData,
+      data,
       events,
       id: formId,
       intent: String(intent),
@@ -241,7 +241,7 @@ export function useZodForm<
     ZodForms.Response<IntentSchemaType>,
     IntentSchemaType
   > = {
-    data: data || actionData,
+    data,
     events,
     id: formId,
     intent: String(intent),

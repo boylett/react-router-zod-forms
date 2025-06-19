@@ -76,7 +76,7 @@ export function useZodForm(options) {
     if (fetcher) {
         // Create the form object
         const form = {
-            data: data || actionData,
+            data,
             events,
             id: formId,
             intent: String(intent),
@@ -110,7 +110,7 @@ export function useZodForm(options) {
     }
     // Create the form object
     const form = {
-        data: data || actionData,
+        data,
         events,
         id: formId,
         intent: String(intent),
