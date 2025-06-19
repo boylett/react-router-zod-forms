@@ -42,7 +42,9 @@ export function useZodForm(options) {
         ? useFetcher()
         : {});
     // Current validation state
-    const [validation, setValidation] = (useState(undefined));
+    const [validation, setValidation] = (useState(data?.validation && typeof data.validation === "object" && "data" in data.validation && "error" in data.validation && "success" in data.validation
+        ? data.validation
+        : undefined));
     /**
      * Validate the form data against the schema
      */

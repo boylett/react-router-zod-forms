@@ -120,7 +120,11 @@ export function useZodForm<
 
   // Current validation state
   const [ validation, setValidation ] = (
-    useState<z.ZodSafeParseResult<z.output<IntentSchemaType>> | undefined>(undefined)
+    useState<z.ZodSafeParseResult<z.output<IntentSchemaType>> | undefined>(
+      data?.validation && typeof data.validation === "object" && "data" in data.validation && "error" in data.validation && "success" in data.validation
+        ? data.validation
+        : undefined
+    )
   );
 
   /**
