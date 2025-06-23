@@ -95,6 +95,6 @@ export function Form(props) {
             onResponse?.(form?.data);
         }
     }, [form?.data, form?.state, onResponse]);
-    return (_jsxs(FormElement, { className: `react-router-zod-forms__form ${className || ""}`.trim(), id: formId, method: "post", onBlur: handleBlur, onInput: handleInput, onSubmit: handleSubmit, ...rest, ref: ref, children: [embedIntent && (_jsx("input", { name: "_intent", type: "hidden", value: String(intent) })), children] }));
+    return (_jsxs(FormElement, { className: `react-router-zod-forms__form ${className || ""}`.trim(), encType: "multipart/form-data", id: formId, method: "post", onBlur: handleBlur, onInput: handleInput, onSubmit: handleSubmit, ...rest, ref: ref, children: [embedIntent && (_jsx("input", { name: "_intent", type: "hidden", value: String(intent) })), children] }));
 }
 //# sourceMappingURL=Form.js.map

@@ -161,6 +161,7 @@ export function Form<
       className={
         `react-router-zod-forms__form ${ className || "" }`.trim()
       }
+      encType="multipart/form-data"
       id={ formId }
       method="post"
       onBlur={ handleBlur }

@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed empty file fields adding empty File instance to form data
 
+### Improved
+
+- Form component now uses `multipart/form-data` encoding by default
+
 ## [1.1.7] - 2025-06-19
 
 ### Fixed
