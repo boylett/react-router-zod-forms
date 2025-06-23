@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed custom form data implementation
 
+### Improved
+
+- Updated peer dependencies
+
 ## [1.1.8] - 2025-06-23
 
 ### Fixed
