@@ -5,7 +5,6 @@ import type { Get } from "type-fest/source/get.js";
 import type { IsPlainObject } from "type-fest/source/internal/object.js";
 import type { Paths } from "type-fest/source/paths.js";
 import type z from "zod/v4";
-import type { FileUploadFormData } from "./utils/fileUploadFormData.js";
 /**
  * Replace all instances of `From` with `To` in `Object`
  */
@@ -388,7 +387,7 @@ export declare namespace ZodForms {
         * Event hook handlers for a given schema
         */
         type Hooks<SchemaType extends z.ZodObject<any>> = {
-            [key in `${"after" | "before"}${"Upload" | "Validate" | ""}`]?: key extends "after" | "before" ? (data: FileUploadFormData) => void : key extends "afterValidate" ? (result?: z.ZodSafeParseResult<z.output<SchemaType>>) => z.ZodSafeParseResult<z.output<SchemaType>> | void : key extends "beforeValidate" ? (data?: z.output<SchemaType>) => z.output<SchemaType> | void : () => void;
+            [key in `${"after" | "before"}${"Upload" | "Validate" | ""}`]?: key extends "after" | "before" ? (data: FormData) => void : key extends "afterValidate" ? (result?: z.ZodSafeParseResult<z.output<SchemaType>>) => z.ZodSafeParseResult<z.output<SchemaType>> | void : key extends "beforeValidate" ? (data?: z.output<SchemaType>) => z.output<SchemaType> | void : () => void;
         };
         /**
          * Hook options for a given schema
@@ -452,7 +451,7 @@ export declare namespace ZodForms {
             /**
              * Raw form data with unhandled file upload instances
              */
-            formData: FileUploadFormData;
+            formData: FormData;
             /**
              * The submitted form intent
              */

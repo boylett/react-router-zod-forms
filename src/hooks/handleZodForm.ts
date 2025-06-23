@@ -2,7 +2,6 @@ import { FileUpload, MaxFilesExceededError } from "@mjackson/form-data-parser";
 import { getMultipartBoundary, isMultipartRequest, MultipartParseError, parseMultipartRequest } from "@mjackson/multipart-parser";
 import { z } from "zod/v4";
 import type { ZodForms } from "../types.js";
-import { FileUploadFormData } from "../utils/fileUploadFormData.js";
 import { formDataToObject } from "../utils/formDataToObject.js";
 
 /**
@@ -37,7 +36,7 @@ export async function handleZodForm<
   } = options;
 
   // Custom form data handler
-  const formData: FileUploadFormData = new FileUploadFormData();
+  const formData = new FormData();
 
   // If this is a multipart request, extract form data and handle file uploads
   if (isMultipartRequest(request)) {
@@ -66,7 +65,7 @@ export async function handleZodForm<
         }
 
         if (part.filename && part.size > 0) {
-          formData.appendFile(part.name, new FileUpload(part, part.name));
+          formData.append(part.name, new FileUpload(part, part.name));
         }
       }
 
