@@ -65,7 +65,9 @@ export async function handleZodForm<
           throw new MaxFilesExceededError(maxFiles);
         }
 
-        formData.appendFile(part.name, new FileUpload(part, part.name));
+        if (part.filename && part.size > 0) {
+          formData.appendFile(part.name, new FileUpload(part, part.name));
+        }
       }
 
       else if (part.name && part.isText) {

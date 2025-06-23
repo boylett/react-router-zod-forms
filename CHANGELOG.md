@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Implement class-based handler execution so that we can perform `this.<handler>(props)` from inside other handlers and access and update config options like `messages.error` or `maxFileSize` etc.
 
+## [1.1.8] - 2025-06-23
+
+### Fixed
+
+- Fixed empty file fields adding empty File instance to form data
+
 ## [1.1.7] - 2025-06-19
 
 ### Fixed
