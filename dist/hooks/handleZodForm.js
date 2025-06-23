@@ -141,6 +141,7 @@ export async function handleZodForm(options, forms, hooks) {
                 return thrown;
             }
             if (thrown instanceof Error) {
+                console.error(thrown);
                 response.message = messages?.error || "Error";
                 response.payload = thrown;
                 response.status = 500;
@@ -188,6 +189,7 @@ export async function handleZodForm(options, forms, hooks) {
                 return thrown;
             }
             if (thrown instanceof Error) {
+                console.error(thrown);
                 response.message = messages?.error || "Error";
                 response.payload = thrown;
                 response.status = 500;
