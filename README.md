@@ -168,8 +168,8 @@ return await handleZodForm({ request, schema }, {
 
 | Hook | Properties | Returns | Effect |
 | - | - | - | - |
-| `before` | <sub>`data: `[`FileUploadFormData`](https://github.com/boylett/react-router-zod-forms/blob/main/src/utils/fileUploadFormData.ts)</sub> | | Called before form data is cast to a POJO and before validation occurs |
-| `after` | <sub>`data: `[`FileUploadFormData`](https://github.com/boylett/react-router-zod-forms/blob/main/src/utils/fileUploadFormData.ts)</sub> | | Called after all relevant handlers have executed |
+| `before` | <sub>`data: FormData`</sub> | | Called before form data is cast to a POJO and before validation occurs |
+| `after` | <sub>`data: FormData`</sub> | | Called after all relevant handlers have executed |
 | `beforeValidate` | <sub>`data?: z.output<typeof schema>`</sub> | <sub>`z.output<typeof schema>`</sub> | Called before zod validation. May be used to mutate the form data before validation |
 | `afterValidate` | <sub>`result?: ZodSafeParseResult<z.output<typeof schema>>`</sub> | <sub>`ZodSafeParseResult<z.output<typeof schema>>`</sub> | Called after zod validation. May be used to mutate the validation response before action handling |
 
