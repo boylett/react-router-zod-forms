@@ -172,7 +172,7 @@ export function useZodForm<
   const FieldComponent = useCallback(
     (props: ZodForms.Components.Field.Props<IntentSchemaType, Paths<z.output<IntentSchemaType>, { bracketNotation: true; }>>) => (
       <ZodFormContext value={ formId }>
-        <Field { ...props } />
+        <Field form={ formId } { ...props } />
       </ZodFormContext>
     ),
     [ formId ]
@@ -192,7 +192,7 @@ export function useZodForm<
   const MessageComponent = useCallback(
     (props: ZodForms.Components.Message.Props<PayloadTypes[ Intent ], IntentSchemaType, Paths<z.output<IntentSchemaType>, { bracketNotation: true; }>>) => (
       <ZodFormContext value={ formId }>
-        <Message { ...props as any } />
+        <Message form={ formId } { ...props as any } />
       </ZodFormContext>
     ),
     [ formId ]

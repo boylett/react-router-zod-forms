@@ -69,11 +69,11 @@ export function useZodForm(options) {
         }
     }, [formId, intentSchema]);
     // Create the field component
-    const FieldComponent = useCallback((props) => (_jsx(ZodFormContext, { value: formId, children: _jsx(Field, { ...props }) })), [formId]);
+    const FieldComponent = useCallback((props) => (_jsx(ZodFormContext, { value: formId, children: _jsx(Field, { form: formId, ...props }) })), [formId]);
     // Create the form component
     const FormComponent = useCallback((props) => (_jsx(ZodFormContext, { value: formId, children: _jsx(Form, { ...props }) })), [formId]);
     // Create the message component
-    const MessageComponent = useCallback((props) => (_jsx(ZodFormContext, { value: formId, children: _jsx(Message, { ...props }) })), [formId]);
+    const MessageComponent = useCallback((props) => (_jsx(ZodFormContext, { value: formId, children: _jsx(Message, { form: formId, ...props }) })), [formId]);
     // If fetcher is enabled
     if (fetcher) {
         // Create the form object
