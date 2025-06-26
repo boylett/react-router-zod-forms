@@ -1,10 +1,9 @@
 import { DateTime } from "luxon";
 import { useCallback, useContext, type ChangeEventHandler, type FocusEventHandler, type FormEventHandler } from "react";
-import type { Paths } from "type-fest/source/paths.js";
 import { z } from "zod/v4";
 import { ZodFormContext } from "../context/FormContext.js";
 import { ZodFormsContext } from "../context/FormsContext.js";
-import type { ZodForms } from "../types.js";
+import type { SchemaPaths, ZodForms } from "../types.js";
 import { Path } from "../utils/Path.js";
 
 /**
@@ -12,7 +11,7 @@ import { Path } from "../utils/Path.js";
  */
 export function Field<
   SchemaType extends z.ZodObject<any>,
-  FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }>,
+  FieldPath extends SchemaPaths<SchemaType>,
 > (
   props: ZodForms.Components.Field.Props<SchemaType, FieldPath>
 ) {

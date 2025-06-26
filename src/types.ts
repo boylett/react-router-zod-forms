@@ -19,6 +19,14 @@ type Replace<Object, From, To> =
   : Object;
 
 /**
+ * Retrieve path names to schema fields
+ * 
+ * @remarks
+ * Replace `Blob` instances with an empty object so that we don't get paths like `file.lastModified` or `file.stream`.
+ */
+export type SchemaPaths<SchemaType extends z.ZodObject<any>> = Paths<Replace<z.output<SchemaType>, Blob | File | FileUpload, {}>, { bracketNotation: true; }>;
+
+/**
  * React Router Zod Forms types
  */
 export namespace ZodForms {
@@ -35,7 +43,7 @@ export namespace ZodForms {
        */
       export type Props<
         SchemaType extends z.ZodObject<any>,
-        FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }>,
+        FieldPath extends SchemaPaths<SchemaType>,
         FieldValue = Get<z.output<SchemaType>, FieldPath>,
         FieldType = (
           FieldValue extends boolean
@@ -168,7 +176,7 @@ export namespace ZodForms {
          */
         export interface Field<
           SchemaType extends z.ZodObject<any>,
-          FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }>,
+          FieldPath extends SchemaPaths<SchemaType>,
         > extends Omit<
           AllHTMLAttributes<HTMLElement>,
           | "as"
@@ -258,7 +266,7 @@ export namespace ZodForms {
       export type Props<
         PayloadType,
         SchemaType extends z.ZodObject<any>,
-        FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }>,
+        FieldPath extends SchemaPaths<SchemaType>,
       > = ZodForms.Components.Message.Props.Field<
         SchemaType,
         FieldPath
@@ -279,7 +287,7 @@ export namespace ZodForms {
     export type Fetcher<
       DataType = any,
       SchemaType extends z.ZodObject<any> = z.ZodObject<any>,
-      FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }> = Paths<z.output<SchemaType>, { bracketNotation: true; }>
+      FieldPath extends SchemaPaths<SchemaType> = SchemaPaths<SchemaType>
     > = {
       /**
        * Fetcher response data
@@ -430,7 +438,7 @@ export namespace ZodForms {
     export type Form<
       DataType = any,
       SchemaType extends z.ZodObject<any> = z.ZodObject<any>,
-      FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }> = Paths<z.output<SchemaType>, { bracketNotation: true; }>
+      FieldPath extends SchemaPaths<SchemaType> = SchemaPaths<SchemaType>
     > = {
       /**
        * Action data
@@ -516,7 +524,7 @@ export namespace ZodForms {
   export type Context<
     DataType = any,
     SchemaType extends z.ZodObject<any> = z.ZodObject<any>,
-    FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }> = Paths<z.output<SchemaType>, { bracketNotation: true; }>
+    FieldPath extends SchemaPaths<SchemaType> = SchemaPaths<SchemaType>
   > =
     | ZodForms.Context.Fetcher<DataType, SchemaType, FieldPath>
     | ZodForms.Context.Form<DataType, SchemaType, FieldPath>;
@@ -700,7 +708,7 @@ export namespace ZodForms {
     export type Fetcher<
       DataType = any,
       SchemaType extends z.ZodObject<any> = z.ZodObject<any>,
-      FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }> = Paths<z.output<SchemaType>, { bracketNotation: true; }>
+      FieldPath extends SchemaPaths<SchemaType> = SchemaPaths<SchemaType>
     > = Pick<
       ZodForms.Context.Fetcher<
         DataType,
@@ -727,7 +735,7 @@ export namespace ZodForms {
     export type Form<
       DataType = any,
       SchemaType extends z.ZodObject<any> = z.ZodObject<any>,
-      FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }> = Paths<z.output<SchemaType>, { bracketNotation: true; }>
+      FieldPath extends SchemaPaths<SchemaType> = SchemaPaths<SchemaType>
     > = Pick<
       ZodForms.Context.Form<
         DataType,
@@ -835,7 +843,7 @@ export namespace ZodForms {
   export type UseZodForm<
     DataType = any,
     SchemaType extends z.ZodObject<any> = z.ZodObject<any>,
-    FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }> = Paths<z.output<SchemaType>, { bracketNotation: true; }>
+    FieldPath extends SchemaPaths<SchemaType> = SchemaPaths<SchemaType>
   > =
     | ZodForms.UseZodForm.Fetcher<DataType, SchemaType, FieldPath>
     | ZodForms.UseZodForm.Form<DataType, SchemaType, FieldPath>;

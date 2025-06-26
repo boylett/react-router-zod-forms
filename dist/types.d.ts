@@ -12,6 +12,15 @@ type Replace<Object, From, To> = Object extends From ? To : Object extends Array
     [K in keyof Object]: Replace<Object[K], From, To>;
 } : Object;
 /**
+ * Retrieve path names to schema fields
+ *
+ * @remarks
+ * Replace `Blob` instances with an empty object so that we don't get paths like `file.lastModified` or `file.stream`.
+ */
+export type SchemaPaths<SchemaType extends z.ZodObject<any>> = Paths<Replace<z.output<SchemaType>, Blob | File | FileUpload, {}>, {
+    bracketNotation: true;
+}>;
+/**
  * React Router Zod Forms types
  */
 export declare namespace ZodForms {
@@ -26,9 +35,7 @@ export declare namespace ZodForms {
             /**
              * Props for the Field component
              */
-            type Props<SchemaType extends z.ZodObject<any>, FieldPath extends Paths<z.output<SchemaType>, {
-                bracketNotation: true;
-            }>, FieldValue = Get<z.output<SchemaType>, FieldPath>, FieldType = (FieldValue extends boolean ? "hidden" | "image" | "checkbox" | "radio" : FieldValue extends Date ? "hidden" | "image" | "date" | "datetime" | "datetime-local" | "month" | "time" | "week" : FieldValue extends File ? "hidden" | "image" | "file" : FieldValue extends number ? "hidden" | "image" | "number" | "range" : FieldValue extends Array<any> ? "select" : HTMLInputTypeAttribute | "select" | "textarea")> = Omit<FieldValue extends Array<any> ? Omit<SelectHTMLAttributes<HTMLSelectElement>, "defaultValue" | "multiple" | "value"> : Omit<InputHTMLAttributes<HTMLInputElement> & TextareaHTMLAttributes<HTMLTextAreaElement>, "defaultValue" | "value">, "children" | "name" | "type"> & {
+            type Props<SchemaType extends z.ZodObject<any>, FieldPath extends SchemaPaths<SchemaType>, FieldValue = Get<z.output<SchemaType>, FieldPath>, FieldType = (FieldValue extends boolean ? "hidden" | "image" | "checkbox" | "radio" : FieldValue extends Date ? "hidden" | "image" | "date" | "datetime" | "datetime-local" | "month" | "time" | "week" : FieldValue extends File ? "hidden" | "image" | "file" : FieldValue extends number ? "hidden" | "image" | "number" | "range" : FieldValue extends Array<any> ? "select" : HTMLInputTypeAttribute | "select" | "textarea")> = Omit<FieldValue extends Array<any> ? Omit<SelectHTMLAttributes<HTMLSelectElement>, "defaultValue" | "multiple" | "value"> : Omit<InputHTMLAttributes<HTMLInputElement> & TextareaHTMLAttributes<HTMLTextAreaElement>, "defaultValue" | "value">, "children" | "name" | "type"> & {
                 /**
                  * Renders a custom component for the field with passthrough attributes
                  *
@@ -102,9 +109,7 @@ export declare namespace ZodForms {
                 /**
                  * Props for the Message component with a `name` attribute
                  */
-                interface Field<SchemaType extends z.ZodObject<any>, FieldPath extends Paths<z.output<SchemaType>, {
-                    bracketNotation: true;
-                }>> extends Omit<AllHTMLAttributes<HTMLElement>, "as" | "children" | "name"> {
+                interface Field<SchemaType extends z.ZodObject<any>, FieldPath extends SchemaPaths<SchemaType>> extends Omit<AllHTMLAttributes<HTMLElement>, "as" | "children" | "name"> {
                     /**
                      * The element type to render
                      *
@@ -161,9 +166,7 @@ export declare namespace ZodForms {
             /**
              * Props for the Message component
              */
-            type Props<PayloadType, SchemaType extends z.ZodObject<any>, FieldPath extends Paths<z.output<SchemaType>, {
-                bracketNotation: true;
-            }>> = ZodForms.Components.Message.Props.Field<SchemaType, FieldPath> | ZodForms.Components.Message.Props.Form<PayloadType, SchemaType>;
+            type Props<PayloadType, SchemaType extends z.ZodObject<any>, FieldPath extends SchemaPaths<SchemaType>> = ZodForms.Components.Message.Props.Field<SchemaType, FieldPath> | ZodForms.Components.Message.Props.Form<PayloadType, SchemaType>;
         }
     }
     /**
@@ -173,11 +176,7 @@ export declare namespace ZodForms {
         /**
          * Fetcher context for Zod Forms
          */
-        type Fetcher<DataType = any, SchemaType extends z.ZodObject<any> = z.ZodObject<any>, FieldPath extends Paths<z.output<SchemaType>, {
-            bracketNotation: true;
-        }> = Paths<z.output<SchemaType>, {
-            bracketNotation: true;
-        }>> = {
+        type Fetcher<DataType = any, SchemaType extends z.ZodObject<any> = z.ZodObject<any>, FieldPath extends SchemaPaths<SchemaType> = SchemaPaths<SchemaType>> = {
             /**
              * Fetcher response data
              */
@@ -301,11 +300,7 @@ export declare namespace ZodForms {
         /**
          * Form context for Zod Forms
          */
-        type Form<DataType = any, SchemaType extends z.ZodObject<any> = z.ZodObject<any>, FieldPath extends Paths<z.output<SchemaType>, {
-            bracketNotation: true;
-        }> = Paths<z.output<SchemaType>, {
-            bracketNotation: true;
-        }>> = {
+        type Form<DataType = any, SchemaType extends z.ZodObject<any> = z.ZodObject<any>, FieldPath extends SchemaPaths<SchemaType> = SchemaPaths<SchemaType>> = {
             /**
              * Action data
              */
@@ -366,11 +361,7 @@ export declare namespace ZodForms {
     /**
      * Return type of the Zod Forms context
      */
-    type Context<DataType = any, SchemaType extends z.ZodObject<any> = z.ZodObject<any>, FieldPath extends Paths<z.output<SchemaType>, {
-        bracketNotation: true;
-    }> = Paths<z.output<SchemaType>, {
-        bracketNotation: true;
-    }>> = ZodForms.Context.Fetcher<DataType, SchemaType, FieldPath> | ZodForms.Context.Form<DataType, SchemaType, FieldPath>;
+    type Context<DataType = any, SchemaType extends z.ZodObject<any> = z.ZodObject<any>, FieldPath extends SchemaPaths<SchemaType> = SchemaPaths<SchemaType>> = ZodForms.Context.Fetcher<DataType, SchemaType, FieldPath> | ZodForms.Context.Form<DataType, SchemaType, FieldPath>;
     /**
      * Types for the `handleZodForm` function
      */
@@ -498,19 +489,11 @@ export declare namespace ZodForms {
         /**
          * Return type of the useZodForm hook
          */
-        type Fetcher<DataType = any, SchemaType extends z.ZodObject<any> = z.ZodObject<any>, FieldPath extends Paths<z.output<SchemaType>, {
-            bracketNotation: true;
-        }> = Paths<z.output<SchemaType>, {
-            bracketNotation: true;
-        }>> = Pick<ZodForms.Context.Fetcher<DataType, SchemaType, FieldPath>, "data" | "id" | "intent" | "load" | "schema" | "state" | "submit" | "validate" | "validation" | "Field" | "Form" | "Message">;
+        type Fetcher<DataType = any, SchemaType extends z.ZodObject<any> = z.ZodObject<any>, FieldPath extends SchemaPaths<SchemaType> = SchemaPaths<SchemaType>> = Pick<ZodForms.Context.Fetcher<DataType, SchemaType, FieldPath>, "data" | "id" | "intent" | "load" | "schema" | "state" | "submit" | "validate" | "validation" | "Field" | "Form" | "Message">;
         /**
         * Return type of the useZodForm hook
         */
-        type Form<DataType = any, SchemaType extends z.ZodObject<any> = z.ZodObject<any>, FieldPath extends Paths<z.output<SchemaType>, {
-            bracketNotation: true;
-        }> = Paths<z.output<SchemaType>, {
-            bracketNotation: true;
-        }>> = Pick<ZodForms.Context.Form<DataType, SchemaType, FieldPath>, "data" | "id" | "intent" | "schema" | "state" | "validate" | "validation" | "Field" | "Form" | "Message">;
+        type Form<DataType = any, SchemaType extends z.ZodObject<any> = z.ZodObject<any>, FieldPath extends SchemaPaths<SchemaType> = SchemaPaths<SchemaType>> = Pick<ZodForms.Context.Form<DataType, SchemaType, FieldPath>, "data" | "id" | "intent" | "schema" | "state" | "validate" | "validation" | "Field" | "Form" | "Message">;
         /**
          * Options for the useZodForms hook
          */
@@ -578,10 +561,6 @@ export declare namespace ZodForms {
     /**
      * Return type of the useZodForm hook
      */
-    type UseZodForm<DataType = any, SchemaType extends z.ZodObject<any> = z.ZodObject<any>, FieldPath extends Paths<z.output<SchemaType>, {
-        bracketNotation: true;
-    }> = Paths<z.output<SchemaType>, {
-        bracketNotation: true;
-    }>> = ZodForms.UseZodForm.Fetcher<DataType, SchemaType, FieldPath> | ZodForms.UseZodForm.Form<DataType, SchemaType, FieldPath>;
+    type UseZodForm<DataType = any, SchemaType extends z.ZodObject<any> = z.ZodObject<any>, FieldPath extends SchemaPaths<SchemaType> = SchemaPaths<SchemaType>> = ZodForms.UseZodForm.Fetcher<DataType, SchemaType, FieldPath> | ZodForms.UseZodForm.Form<DataType, SchemaType, FieldPath>;
 }
 export {};

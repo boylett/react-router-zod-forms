@@ -1,13 +1,12 @@
 import { useCallback, useContext, useId, useState } from "react";
 import { useActionData, useFetcher, useNavigation } from "react-router";
-import type { Paths } from "type-fest/source/paths.js";
 import { z } from "zod/v4";
 import { Field } from "../components/Field.js";
 import { Form } from "../components/Form.js";
 import { Message } from "../components/Message.js";
 import { ZodFormContext } from "../context/FormContext.js";
 import { ZodFormsContext } from "../context/FormsContext.js";
-import type { ZodForms } from "../types.js";
+import type { SchemaPaths, ZodForms } from "../types.js";
 import { formDataToObject } from "../utils/formDataToObject.js";
 
 /**
@@ -170,7 +169,7 @@ export function useZodForm<
 
   // Create the field component
   const FieldComponent = useCallback(
-    (props: ZodForms.Components.Field.Props<IntentSchemaType, Paths<z.output<IntentSchemaType>, { bracketNotation: true; }>>) => (
+    (props: ZodForms.Components.Field.Props<IntentSchemaType, SchemaPaths<IntentSchemaType>>) => (
       <ZodFormContext value={ formId }>
         <Field form={ formId } { ...props } />
       </ZodFormContext>
@@ -190,7 +189,7 @@ export function useZodForm<
 
   // Create the message component
   const MessageComponent = useCallback(
-    (props: ZodForms.Components.Message.Props<PayloadTypes[ Intent ], IntentSchemaType, Paths<z.output<IntentSchemaType>, { bracketNotation: true; }>>) => (
+    (props: ZodForms.Components.Message.Props<PayloadTypes[ Intent ], IntentSchemaType, SchemaPaths<IntentSchemaType>>) => (
       <ZodFormContext value={ formId }>
         <Message form={ formId } { ...props as any } />
       </ZodFormContext>

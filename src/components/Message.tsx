@@ -1,9 +1,8 @@
 import { useContext, type ReactNode } from "react";
-import type { Paths } from "type-fest/source/paths.js";
 import { z } from "zod/v4";
 import { ZodFormContext } from "../context/FormContext.js";
 import { ZodFormsContext } from "../context/FormsContext.js";
-import type { ZodForms } from "../types.js";
+import type { SchemaPaths, ZodForms } from "../types.js";
 import { Path } from "../utils/Path.js";
 
 /**
@@ -12,7 +11,7 @@ import { Path } from "../utils/Path.js";
 export function Message<
   PayloadType,
   SchemaType extends z.ZodObject<any>,
-  FieldPath extends Paths<z.output<SchemaType>, { bracketNotation: true; }>,
+  FieldPath extends SchemaPaths<SchemaType>,
 > (
   props: ZodForms.Components.Message.Props<PayloadType, SchemaType, FieldPath>
 ) {
