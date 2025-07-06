@@ -27,6 +27,9 @@ export function Form<
     ...rest
   } = props;
 
+  // Keep a local copy of the form context in case the form is detached from the DOM
+  const localContext = useRef<Partial<ZodForms.Context> | null>(null);
+
   // Get form context
   const { forms } = (
     useContext(ZodFormsContext)
@@ -48,7 +51,7 @@ export function Form<
   }
 
   // Get the current form
-  const form = formId && forms?.current?.[ formId ] || undefined;
+  const form = formId && forms?.current?.[ formId ] || localContext.current || undefined;
 
   // If a form was not found
   if (!form) {
@@ -62,6 +65,9 @@ export function Form<
   if (form && forms.current[ formId ]) {
     forms.current[ formId ]!.form = ref;
   }
+
+  // Save local context
+  localContext.current ||= forms.current[ formId ] || null;
 
   const {
     events,

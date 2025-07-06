@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { useCallback, useContext, type ChangeEventHandler, type FocusEventHandler, type FormEventHandler } from "react";
+import { useCallback, useContext, useRef, type ChangeEventHandler, type FocusEventHandler, type FormEventHandler } from "react";
 import { z } from "zod/v4";
 import { ZodFormContext } from "../context/FormContext.js";
 import { ZodFormsContext } from "../context/FormsContext.js";
@@ -26,6 +26,9 @@ export function Field<
     ...rest
   } = props as any;
 
+  // Keep a local copy of the form context in case the field is detached from the DOM
+  const localContext = useRef<Partial<ZodForms.Context> | null>(null);
+
   // Get forms context
   const { forms } = (
     useContext(ZodFormsContext)
@@ -47,12 +50,15 @@ export function Field<
   }
 
   // Get the current form
-  const form = formId && forms?.current?.[ formId ];
+  const form = formId && forms?.current?.[ formId ] || localContext.current || undefined;
 
   // If a form schema was not found
   if (!form?.schema) {
     throw new Error("Could not connect to form context. Check `form` prop or wrap component with a Zod Forms `<Form />` component.");
   }
+
+  // Save local context
+  localContext.current ||= form;
 
   // Get form data
   const {

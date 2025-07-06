@@ -1,6 +1,6 @@
 import { jsx as _jsx } from "react/jsx-runtime";
 import { DateTime } from "luxon";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useRef } from "react";
 import { z } from "zod/v4";
 import { ZodFormContext } from "../context/FormContext.js";
 import { ZodFormsContext } from "../context/FormsContext.js";
@@ -10,6 +10,8 @@ import { Path } from "../utils/Path.js";
  */
 export function Field(props) {
     let { children, className, form: formId, onBlur, onChange, onInput, type = "text", ...rest } = props;
+    // Keep a local copy of the form context in case the field is detached from the DOM
+    const localContext = useRef(null);
     // Get forms context
     const { forms } = (useContext(ZodFormsContext));
     // If there is no context
@@ -23,11 +25,13 @@ export function Field(props) {
         throw new Error("Form identifier not supplied. Pass `form` prop or wrap component with a Zod Forms `<Form />` component.");
     }
     // Get the current form
-    const form = formId && forms?.current?.[formId];
+    const form = formId && forms?.current?.[formId] || localContext.current || undefined;
     // If a form schema was not found
     if (!form?.schema) {
         throw new Error("Could not connect to form context. Check `form` prop or wrap component with a Zod Forms `<Form />` component.");
     }
+    // Save local context
+    localContext.current ||= form;
     // Get form data
     const { data, events, schema, validation, } = form;
     // The schema for this field

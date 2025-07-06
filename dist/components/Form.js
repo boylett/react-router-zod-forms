@@ -9,6 +9,8 @@ import { ZodFormsContext } from "../context/FormsContext.js";
  */
 export function Form(props) {
     let { children, className, id: formId, intent: embedIntent = true, onBlur, onInput, onResponse, onSubmit, onValidate, ref, ...rest } = props;
+    // Keep a local copy of the form context in case the form is detached from the DOM
+    const localContext = useRef(null);
     // Get form context
     const { forms } = (useContext(ZodFormsContext));
     // If there is no context
@@ -22,7 +24,7 @@ export function Form(props) {
         throw new Error("Form identifier not supplied. Pass `id` prop or use `useZodForm` hook to generate this component.");
     }
     // Get the current form
-    const form = formId && forms?.current?.[formId] || undefined;
+    const form = formId && forms?.current?.[formId] || localContext.current || undefined;
     // If a form was not found
     if (!form) {
         throw new Error("Could not connect to form context. Check `id` prop or wrap component with a Zod Forms `<Form />` component.");
@@ -33,6 +35,8 @@ export function Form(props) {
     if (form && forms.current[formId]) {
         forms.current[formId].form = ref;
     }
+    // Save local context
+    localContext.current ||= forms.current[formId] || null;
     const { events, FormElement = ReactRouterForm, intent, validate, validation, } = forms.current[formId];
     /**
      * Validate the form on blur
