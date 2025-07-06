@@ -210,14 +210,15 @@ export function Field(props) {
             ? (children({
                 ...rest,
                 className: `react-router-zod-forms__field ${className || ""}`.trim(),
+                form: formId,
                 onBlur: handleBlur,
                 onChange: handleChange,
                 onInput: handleInput,
                 type,
             }, shape || {}))
-            : (_jsx("select", { className: `react-router-zod-forms__field ${className || ""}`.trim(), multiple: true, onBlur: handleBlur, onChange: handleChange, onInput: handleInput, ...rest, children: children }))
+            : (_jsx("select", { ...rest, className: `react-router-zod-forms__field ${className || ""}`.trim(), form: formId, multiple: true, onBlur: handleBlur, onChange: handleChange, onInput: handleInput, children: children }))
         : type === "textarea"
-            ? (_jsx("textarea", { className: `react-router-zod-forms__field ${className || ""}`.trim(), onBlur: handleBlur, onChange: handleChange, onInput: handleInput, ...rest }))
-            : (_jsx("input", { className: `react-router-zod-forms__field ${className || ""}`.trim(), onBlur: handleBlur, onChange: handleChange, onInput: handleInput, type: type, ...rest })));
+            ? (_jsx("textarea", { ...rest, className: `react-router-zod-forms__field ${className || ""}`.trim(), form: formId, onBlur: handleBlur, onChange: handleChange, onInput: handleInput }))
+            : (_jsx("input", { ...rest, className: `react-router-zod-forms__field ${className || ""}`.trim(), form: formId, onBlur: handleBlur, onChange: handleChange, onInput: handleInput, type: type })));
 }
 //# sourceMappingURL=Field.js.map

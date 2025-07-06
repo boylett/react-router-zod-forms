@@ -11,9 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Implement class-based handler execution so that we can perform `this.<handler>(props)` from inside other handlers and access and update config options like `messages.error` or `maxFileSize` etc.
 
+## [1.1.10] - 2025-07-06
+
 ### Fixed
 
 - Replace `Blob` instance types with an empty object during path extraction so that we don't get paths like `file.lastModified` or `file.stream`
+
+### Improved
+
+- `Field` components now always pass along their `form` ID to the child component
 
 ### Improved
 
