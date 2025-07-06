@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Replace `Blob` instance types with an empty object during path extraction so that we don't get paths like `file.lastModified` or `file.stream`
 
+### Improved
+
+- Updated dependencies
+
 ## [1.1.9] - 2025-06-25
 
 ### Added
