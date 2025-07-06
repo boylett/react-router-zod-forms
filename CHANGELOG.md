@@ -20,9 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Improved
 
 - `Field` components now always pass along their `form` ID to the child component
-
-### Improved
-
 - Updated dependencies
 
 ## [1.1.9] - 2025-06-25
