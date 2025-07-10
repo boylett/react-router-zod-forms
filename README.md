@@ -33,7 +33,7 @@ Form schemas are zod objects where the top-level key is the "intent" of the form
 In the example below, the `general` intent indicates a schema with keys `title`, `content` and `settings`.
 
 ```typescript
-import z from "zod/v4";
+import z from "zod";
 
 const schema = z.object({
   /**
