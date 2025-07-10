@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 import type { ZodForms } from "../types.js";
 /**
  * Handle Zod Form submission

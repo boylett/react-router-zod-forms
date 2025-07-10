@@ -4,7 +4,7 @@ import type { FetcherFormProps, FetcherSubmitFunction, FormProps } from "react-r
 import type { Get } from "type-fest/source/get.js";
 import type { IsPlainObject } from "type-fest/source/internal/object.js";
 import type { Paths } from "type-fest/source/paths.js";
-import type z from "zod/v4";
+import type z from "zod";
 /**
  * Replace all instances of `From` with `To` in `Object`
  */
@@ -491,8 +491,8 @@ export declare namespace ZodForms {
          */
         type Fetcher<DataType = any, SchemaType extends z.ZodObject<any> = z.ZodObject<any>, FieldPath extends SchemaPaths<SchemaType> = SchemaPaths<SchemaType>> = Pick<ZodForms.Context.Fetcher<DataType, SchemaType, FieldPath>, "data" | "id" | "intent" | "load" | "schema" | "state" | "submit" | "validate" | "validation" | "Field" | "Form" | "Message">;
         /**
-        * Return type of the useZodForm hook
-        */
+         * Return type of the useZodForm hook
+         */
         type Form<DataType = any, SchemaType extends z.ZodObject<any> = z.ZodObject<any>, FieldPath extends SchemaPaths<SchemaType> = SchemaPaths<SchemaType>> = Pick<ZodForms.Context.Form<DataType, SchemaType, FieldPath>, "data" | "id" | "intent" | "schema" | "state" | "validate" | "validation" | "Field" | "Form" | "Message">;
         /**
          * Options for the useZodForms hook

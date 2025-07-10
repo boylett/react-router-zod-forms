@@ -1,6 +1,6 @@
 import { FileUpload, MaxFilesExceededError } from "@mjackson/form-data-parser";
 import { getMultipartBoundary, isMultipartRequest, MultipartParseError, parseMultipartRequest } from "@mjackson/multipart-parser";
-import { z } from "zod/v4";
+import { z } from "zod";
 import { formDataToObject } from "../utils/formDataToObject.js";
 /**
  * Handle Zod Form submission

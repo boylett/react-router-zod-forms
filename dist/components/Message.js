@@ -1,6 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useContext, useRef } from "react";
-import { z } from "zod/v4";
+import { z } from "zod";
 import { ZodFormContext } from "../context/FormContext.js";
 import { ZodFormsContext } from "../context/FormsContext.js";
 import { Path } from "../utils/Path.js";

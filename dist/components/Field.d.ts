@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 import type { SchemaPaths, ZodForms } from "../types.js";
 /**
  * Field component

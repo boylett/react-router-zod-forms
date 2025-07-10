@@ -1,7 +1,7 @@
 import { jsx as _jsx } from "react/jsx-runtime";
 import { DateTime } from "luxon";
 import { useCallback, useContext, useRef } from "react";
-import { z } from "zod/v4";
+import { z } from "zod";
 import { ZodFormContext } from "../context/FormContext.js";
 import { ZodFormsContext } from "../context/FormsContext.js";
 import { Path } from "../utils/Path.js";
@@ -19,7 +19,7 @@ export function Field(props) {
         throw new Error("`ZodFormsContext` is not defined. Make sure to wrap your `<App />` with `<ZodFormProvider />`.");
     }
     // Get current form context
-    formId ||= (useContext(ZodFormContext));
+    formId ||= useContext(ZodFormContext);
     // If a form was not defined
     if (!formId) {
         throw new Error("Form identifier not supplied. Pass `form` prop or wrap component with a Zod Forms `<Form />` component.");

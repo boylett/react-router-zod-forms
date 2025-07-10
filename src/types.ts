@@ -4,7 +4,7 @@ import type { FetcherFormProps, FetcherSubmitFunction, FormProps } from "react-r
 import type { Get } from "type-fest/source/get.js";
 import type { IsPlainObject } from "type-fest/source/internal/object.js";
 import type { Paths } from "type-fest/source/paths.js";
-import type z from "zod/v4";
+import type z from "zod";
 
 /**
  * Replace all instances of `From` with `To` in `Object`
@@ -730,8 +730,8 @@ export namespace ZodForms {
     >;
 
     /**
-    * Return type of the useZodForm hook
-    */
+     * Return type of the useZodForm hook
+     */
     export type Form<
       DataType = any,
       SchemaType extends z.ZodObject<any> = z.ZodObject<any>,
@@ -753,6 +753,7 @@ export namespace ZodForms {
       | "Form"
       | "Message"
     >;
+
     /**
      * Options for the useZodForms hook
      */

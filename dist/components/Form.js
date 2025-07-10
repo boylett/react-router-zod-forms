@@ -1,7 +1,7 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useCallback, useContext, useEffect, useRef } from "react";
 import { Form as ReactRouterForm } from "react-router";
-import { z } from "zod/v4";
+import { z } from "zod";
 import { ZodFormContext } from "../context/FormContext.js";
 import { ZodFormsContext } from "../context/FormsContext.js";
 /**
@@ -18,7 +18,7 @@ export function Form(props) {
         throw new Error("`ZodFormsContext` is not defined. Make sure to wrap your `<App />` with `<ZodFormProvider />`.");
     }
     // Get current form context
-    formId ||= (useContext(ZodFormContext));
+    formId ||= useContext(ZodFormContext);
     // If a form ID was not defined
     if (!formId) {
         throw new Error("Form identifier not supplied. Pass `id` prop or use `useZodForm` hook to generate this component.");

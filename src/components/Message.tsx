@@ -1,5 +1,5 @@
 import { useContext, useRef, type ReactNode } from "react";
-import { z } from "zod/v4";
+import { z } from "zod";
 import { ZodFormContext } from "../context/FormContext.js";
 import { ZodFormsContext } from "../context/FormsContext.js";
 import type { SchemaPaths, ZodForms } from "../types.js";

@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useRef, type FocusEventHandler, type FormEventHandler } from "react";
 import { Form as ReactRouterForm } from "react-router";
-import { z } from "zod/v4";
+import { z } from "zod";
 import { ZodFormContext } from "../context/FormContext.js";
 import { ZodFormsContext } from "../context/FormsContext.js";
 import type { ZodForms } from "../types.js";
@@ -41,9 +41,7 @@ export function Form<
   }
 
   // Get current form context
-  formId ||= (
-    useContext(ZodFormContext)
-  );
+  formId ||= useContext(ZodFormContext);
 
   // If a form ID was not defined
   if (!formId) {

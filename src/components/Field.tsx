@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { useCallback, useContext, useRef, type ChangeEventHandler, type FocusEventHandler, type FormEventHandler } from "react";
-import { z } from "zod/v4";
+import { z } from "zod";
 import { ZodFormContext } from "../context/FormContext.js";
 import { ZodFormsContext } from "../context/FormsContext.js";
 import type { SchemaPaths, ZodForms } from "../types.js";
@@ -40,9 +40,7 @@ export function Field<
   }
 
   // Get current form context
-  formId ||= (
-    useContext(ZodFormContext)
-  );
+  formId ||= useContext(ZodFormContext);
 
   // If a form was not defined
   if (!formId) {

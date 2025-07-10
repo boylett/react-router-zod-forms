@@ -1,7 +1,7 @@
 import { jsx as _jsx } from "react/jsx-runtime";
 import { useCallback, useContext, useId, useState } from "react";
 import { useActionData, useFetcher, useNavigation } from "react-router";
-import { z } from "zod/v4";
+import { z } from "zod";
 import { Field } from "../components/Field.js";
 import { Form } from "../components/Form.js";
 import { Message } from "../components/Message.js";
