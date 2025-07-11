@@ -3,8 +3,8 @@ import { useCallback, useContext, useRef, type ChangeEventHandler, type FocusEve
 import { z } from "zod";
 import { ZodFormContext } from "../context/FormContext.js";
 import { ZodFormsContext } from "../context/FormsContext.js";
+import { Path } from "../index.js";
 import type { SchemaPaths, ZodForms } from "../types.js";
-import { Path } from "../utils/Path.js";
 
 /**
  * Field component

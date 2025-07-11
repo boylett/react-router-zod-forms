@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Implement class-based handler execution so that we can perform `this.<handler>(props)` from inside other handlers and access and update config options like `messages.error` or `maxFileSize` etc.
 
+## [1.2.1] - 2025-07-11
+
+### Fixed
+
+- Fixed a bug where transformed data from zod was not populated in handler data
+
 ## [1.2.0] - 2025-07-10
 
 ### Improved

@@ -1,4 +1,4 @@
-import { Path } from "./Path.js";
+import { Path } from "../index.js";
 /**
  * Parse form data to a POJO
  *

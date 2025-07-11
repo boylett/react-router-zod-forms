@@ -206,7 +206,7 @@ export async function handleZodForm<
     }
 
     if (validation) {
-      validation.data ||= data;
+      data = validation.data;
 
       response.validation = validation;
     }

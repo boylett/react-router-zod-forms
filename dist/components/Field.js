@@ -4,7 +4,7 @@ import { useCallback, useContext, useRef } from "react";
 import { z } from "zod";
 import { ZodFormContext } from "../context/FormContext.js";
 import { ZodFormsContext } from "../context/FormsContext.js";
-import { Path } from "../utils/Path.js";
+import { Path } from "../index.js";
 /**
  * Field component
  */
