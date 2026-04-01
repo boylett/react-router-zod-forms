@@ -1,14 +1,12 @@
 import type { FileUpload } from "@mjackson/form-data-parser";
 import type { AllHTMLAttributes, ElementType, ForwardRefExoticComponent, HTMLInputTypeAttribute, InputHTMLAttributes, ReactNode, RefAttributes, RefObject, SelectHTMLAttributes, TextareaHTMLAttributes } from "react";
 import type { FetcherFormProps, FetcherSubmitFunction, FormProps } from "react-router";
-import type { Get } from "type-fest/source/get.js";
-import type { IsPlainObject } from "type-fest/source/internal/object.js";
-import type { Paths } from "type-fest/source/paths.js";
+import type { Get, Paths } from "type-fest";
 import type z from "zod";
 /**
  * Replace all instances of `From` with `To` in `Object`
  */
-type Replace<Object, From, To> = Object extends From ? To : Object extends Array<infer U> ? Array<Replace<U, From, To>> : IsPlainObject<Object> extends true ? {
+type Replace<Object, From, To> = Object extends From ? To : Object extends Array<infer U> ? Array<Replace<U, From, To>> : Object extends Record<string, any> ? {
     [K in keyof Object]: Replace<Object[K], From, To>;
 } : Object;
 /**
