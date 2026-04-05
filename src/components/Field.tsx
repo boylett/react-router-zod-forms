@@ -252,7 +252,7 @@ export function Field<
         form.form.current?.dispatchEvent(event);
       }
     },
-    [ onBlur ]
+    [ events, form?.form, onBlur ]
   );
 
   /**
@@ -274,7 +274,7 @@ export function Field<
         form.form.current?.dispatchEvent(event);
       }
     },
-    [ onChange ]
+    [ events, form?.form, onChange ]
   );
 
   /**
@@ -296,7 +296,7 @@ export function Field<
         form.form.current?.dispatchEvent(event);
       }
     },
-    [ onInput ]
+    [ events, form?.form, onInput ]
   );
 
   return (
