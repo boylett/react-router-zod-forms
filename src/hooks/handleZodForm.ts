@@ -344,8 +344,6 @@ export async function handleZodForm<
     }
   }
 
-  console.trace();
-
   console.error(`Unhandled form submission for intent '${ intent as string }' in ${ request.url }`);
 
   response.message = messages?.notImplemented || "Not Implemented";

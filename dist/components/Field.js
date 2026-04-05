@@ -178,7 +178,7 @@ export function Field(props) {
             const event = new CustomEvent("$ZodForms.externalFieldValidate");
             form.form.current?.dispatchEvent(event);
         }
-    }, [onBlur]);
+    }, [events, form?.form, onBlur]);
     /**
      * Validate the form on change
      */
@@ -193,7 +193,7 @@ export function Field(props) {
             const event = new CustomEvent("$ZodForms.externalFieldValidate");
             form.form.current?.dispatchEvent(event);
         }
-    }, [onChange]);
+    }, [events, form?.form, onChange]);
     /**
      * Validate the form on input
      */
@@ -208,7 +208,7 @@ export function Field(props) {
             const event = new CustomEvent("$ZodForms.externalFieldValidate");
             form.form.current?.dispatchEvent(event);
         }
-    }, [onInput]);
+    }, [events, form?.form, onInput]);
     return (children
         ? typeof children === "function"
             ? (children({

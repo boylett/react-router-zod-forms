@@ -50,7 +50,7 @@ export function Form(props) {
         if (events?.includes("form.blur")) {
             validate?.(onValidate);
         }
-    }, [onBlur, onValidate, validate]);
+    }, [events, onBlur, onValidate, validate]);
     /**
      * Validate the form on input
      */
@@ -64,7 +64,7 @@ export function Form(props) {
         if (events?.includes("form.input")) {
             validate?.(onValidate);
         }
-    }, [onInput, onValidate, validate]);
+    }, [events, onInput, onValidate, validate]);
     /**
      * Handle form submission
      */
@@ -83,16 +83,17 @@ export function Form(props) {
             // Prevent form submission
             event.preventDefault();
         }
-    }, [onSubmit, onValidate, validate]);
+    }, [events, onSubmit, onValidate, validate, validation]);
     // Custom event listener to enable external field validation
     useEffect(() => {
+        const element = ref.current;
         const listener = () => validate?.(onValidate);
-        ref.current?.addEventListener("$ZodForms.externalFieldValidate", listener);
+        element?.addEventListener("$ZodForms.externalFieldValidate", listener);
         return () => {
-            ref.current?.removeEventListener("$ZodForms.externalFieldValidate", listener);
+            element?.removeEventListener("$ZodForms.externalFieldValidate", listener);
             delete forms?.current[formId];
         };
-    }, [ref.current]);
+    }, [ref, formId, validate, onValidate]);
     // Watch fetcher data to trigger response handler
     useEffect(() => {
         if (form?.data && form?.state === "idle") {

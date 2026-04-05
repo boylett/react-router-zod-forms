@@ -112,8 +112,12 @@ export class Path {
      */
     endsWith(key) {
         const compare = new Path(key);
-        for (let index = this.length - 1; index >= 0; index--) {
-            if (this.path[index] !== compare.at(index)) {
+        if (compare.length > this.length) {
+            return false;
+        }
+        const offset = this.length - compare.length;
+        for (let index = compare.length - 1; index >= 0; index--) {
+            if (this.path[offset + index] !== compare.at(index)) {
                 return false;
             }
         }
