@@ -142,16 +142,17 @@ export function Form<
 
   // Custom event listener to enable external field validation
   useEffect(() => {
+    const element = ref.current;
     const listener = () => validate?.(onValidate as any);
 
-    ref.current?.addEventListener("$ZodForms.externalFieldValidate", listener);
+    element?.addEventListener("$ZodForms.externalFieldValidate", listener);
 
     return () => {
-      ref.current?.removeEventListener("$ZodForms.externalFieldValidate", listener);
+      element?.removeEventListener("$ZodForms.externalFieldValidate", listener);
 
       delete forms?.current[ formId ];
     };
-  }, [ ref.current ]);
+  }, [ ref, formId, validate, onValidate ]);
 
   // Watch fetcher data to trigger response handler
   useEffect(() => {
