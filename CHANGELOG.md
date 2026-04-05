@@ -11,6 +11,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Implement class-based handler execution so that we can perform `this.<handler>(props)` from inside other handlers and access and update config options like `messages.error` or `maxFileSize` etc.
 
+## [1.2.2] - 2026-04-05
+
+### Fixed
+
+- Fixed `Path.endsWith` comparing wrong indices, preventing suffix matches on shorter paths
+- Fixed stale closures in `Form` component callbacks where `events` and `validation` were missing from dependency arrays
+- Fixed `useEffect` cleanup in `Form` capturing stale `ref.current` instead of the element at effect creation time
+- Fixed stale closures in `Field` component callbacks where `events` and `form` ref were missing from dependency arrays
+- Removed noisy `console.trace` from unhandled intent code path
+
+### Improved
+
+- Updated dependencies (`type-fest` 5, `typescript` 6, `react` 19.2, `react-router` 7.13, `zod` 4.3)
+- Removed `patch-package` dependency and TypeScript truncation patch
+
 ## [1.2.1] - 2025-07-11
 
 ### Fixed
