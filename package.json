@@ -10,16 +10,30 @@
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "react",
+    "react-router",
+    "zod",
+    "forms",
+    "validation",
+    "typescript"
+  ],
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./server": {
+      "types": "./dist/server.d.ts",
       "default": "./dist/server.js"
     },
     "./types": {
-      "types": "./dist/types.d.js"
+      "types": "./dist/types.d.ts"
     }
   },
   "scripts": {
