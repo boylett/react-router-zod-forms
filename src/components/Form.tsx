@@ -91,7 +91,7 @@ export function Form<
         validate?.(onValidate as any);
       }
     },
-    [ onBlur, onValidate, validate ]
+    [ events, onBlur, onValidate, validate ]
   );
 
   /**
@@ -111,7 +111,7 @@ export function Form<
         validate?.(onValidate as any);
       }
     },
-    [ onInput, onValidate, validate ]
+    [ events, onInput, onValidate, validate ]
   );
 
   /**
@@ -137,7 +137,7 @@ export function Form<
         event.preventDefault();
       }
     },
-    [ onSubmit, onValidate, validate ]
+    [ events, onSubmit, onValidate, validate, validation ]
   );
 
   // Custom event listener to enable external field validation
