@@ -541,12 +541,12 @@ export namespace ZodForms {
         [ Intent in "default" | keyof z.output<SchemaType> ]?: (
           props: Intent extends "default"
             ? ZodForms.Response.Payload<any, PayloadTypes[ "default" ]>
-            : ZodForms.Response.Payload<Replace<SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ], File, FileUpload>, PayloadTypes[ Intent ]>
+            : ZodForms.Response.Payload<SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ], PayloadTypes[ Intent ]>
         ) => Promise<
           (
             Intent extends "default"
             ? ZodForms.Response<any, PayloadTypes[ "default" ]> | any
-            : ZodForms.Response<Replace<SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ], File, FileUpload>, PayloadTypes[ Intent ]>
+            : ZodForms.Response<SchemaType[ "_zod" ][ "def" ][ "shape" ][ Intent ], PayloadTypes[ Intent ]> | globalThis.Response | any
           ) | void
         >;
       };

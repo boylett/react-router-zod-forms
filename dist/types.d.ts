@@ -370,7 +370,7 @@ export declare namespace ZodForms {
         type Forms<SchemaType extends z.ZodObject<any>, PayloadTypes extends {
             [key in "default" | keyof SchemaType["_zod"]["def"]["shape"]]: any;
         }> = {
-            [Intent in "default" | keyof z.output<SchemaType>]?: (props: Intent extends "default" ? ZodForms.Response.Payload<any, PayloadTypes["default"]> : ZodForms.Response.Payload<Replace<SchemaType["_zod"]["def"]["shape"][Intent], File, FileUpload>, PayloadTypes[Intent]>) => Promise<(Intent extends "default" ? ZodForms.Response<any, PayloadTypes["default"]> | any : ZodForms.Response<Replace<SchemaType["_zod"]["def"]["shape"][Intent], File, FileUpload>, PayloadTypes[Intent]>) | void>;
+            [Intent in "default" | keyof z.output<SchemaType>]?: (props: Intent extends "default" ? ZodForms.Response.Payload<any, PayloadTypes["default"]> : ZodForms.Response.Payload<SchemaType["_zod"]["def"]["shape"][Intent], PayloadTypes[Intent]>) => Promise<(Intent extends "default" ? ZodForms.Response<any, PayloadTypes["default"]> | any : ZodForms.Response<SchemaType["_zod"]["def"]["shape"][Intent], PayloadTypes[Intent]> | globalThis.Response | any) | void>;
         };
         /**
         * Event hook handlers for a given schema

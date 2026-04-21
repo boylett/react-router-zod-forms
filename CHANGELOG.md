@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Implement class-based handler execution so that we can perform `this.<handler>(props)` from inside other handlers and access and update config options like `messages.error` or `maxFileSize` etc.
 
+## [1.2.3] - 2026-04-21
+
+### Fixed
+
+- Fixed `HandleZodForm.Forms` handler parameter type: removed spurious `Replace<ZodObject, File, FileUpload>` wrapper on the intent schema arg passed to `Payload<>` - `Payload` already applies `Replace` to `z.output<SchemaType>` internally, and wrapping the schema itself produced a mapped type that violated the `z.ZodObject<any>` constraint
+- Fixed `HandleZodForm.Forms` handler return type: widened non-default handler return to include `globalThis.Response | any`, resolving errors where handlers return React Router `redirect()` responses or custom plain objects - the `Response` name clash (Web API `Response` vs `ZodForms.Response`) was causing TypeScript to reject all such returns
+
 ## [1.2.2] - 2026-04-05
 
 ### Fixed
