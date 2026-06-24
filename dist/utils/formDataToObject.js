@@ -1,5 +1,9 @@
 import { Path } from "../index.js";
 /**
+ * Field name segments that would let submitted data reach the prototype chain
+ */
+const FORBIDDEN_KEYS = new Set(["__proto__", "constructor", "prototype"]);
+/**
  * Parse form data to a POJO
  *
  * @param input The form data to parse
@@ -12,6 +16,10 @@ export function formDataToObject(input, transform) {
     const output = {};
     input.forEach((value, key) => {
         const path = Path.split(key);
+        // Drop any field whose name would target the prototype chain
+        if (path.some(segment => typeof segment === "string" && FORBIDDEN_KEYS.has(segment))) {
+            return;
+        }
         let current = output;
         if (transform) {
             value = transform(key, value, path);
