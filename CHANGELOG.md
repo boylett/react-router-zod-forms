@@ -11,6 +11,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Implement class-based handler execution so that we can perform `this.<handler>(props)` from inside other handlers and access and update config options like `messages.error` or `maxFileSize` etc.
 
+## [1.3.1] - 2026-06-24
+
+### Added
+
+- **File input constraints** -- `z.file()` mime-type constraints are surfaced as the `accept` attribute on file inputs.
+- **Checkbox support** -- `z.stringbool()` checkboxes render a hidden companion so the unchecked state still submits a falsy value, with `checked` reflecting the schema default.
+- **Template literal patterns** -- `z.templateLiteral()` fields derive an HTML `pattern` attribute from their literal and schema parts.
+
+### Changed
+
+- **Form message summaries** -- a `<Message />` without a `name` now shows Zod's `prettifyError` output as a multi-line summary when the form has validation errors.
+
 ## [1.3.0] - 2026-06-24
 
 ### Security
