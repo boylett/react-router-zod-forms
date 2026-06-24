@@ -75,8 +75,12 @@ export class Path {
                         throw new Error(`Unmatched [ in path: ${path}`);
                     }
                     const content = path.slice(i + 1, end);
-                    const index = parseInt(content, 10);
-                    if (isNaN(index)) {
+                    // Only accept canonical, non-negative, safe integer indices
+                    if (!/^\d+$/.test(content)) {
+                        throw new Error(`Invalid index: [${content}] in path: ${path}`);
+                    }
+                    const index = Number(content);
+                    if (!Number.isSafeInteger(index)) {
                         throw new Error(`Invalid index: [${content}] in path: ${path}`);
                     }
                     if (token) {
@@ -146,9 +150,8 @@ export class Path {
                 return undefined;
             }
             if (segment === "[]") {
-                return Array.isArray(current)
-                    ? current[0]
-                    : undefined;
+                // An unindexed segment cannot identify a single element
+                return undefined;
             }
             else {
                 return current[segment];
