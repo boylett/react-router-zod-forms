@@ -162,7 +162,33 @@ return await handleZodForm({ request, schema }, {
 ```
 
 > [!NOTE]
-> `handleZodForm` will *always* return a [`ZodForms.Response`](https://github.com/boylett/react-router-zod-forms/blob/main/src/types.ts#L659) object, unless a [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response) is thrown specifically.
+> `handleZodForm` will *always* return a [`ZodForms.Response`](https://github.com/boylett/react-router-zod-forms/blob/main/src/types.ts) object, unless a [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response) is thrown specifically.
+
+##### Handler context (`this`)
+
+Handlers declared with `function` or method shorthand receive a `this` context exposing the other handlers and the configuration (arrow functions do not bind `this`). Use it to delegate to a sibling handler, read configuration, or override the response messages;
+
+```typescript
+return await handleZodForm({ request, schema }, {
+  async primary (props) {
+    // Delegate to another handler
+    return await this.secondary(props);
+  },
+
+  async secondary ({ data }) {
+    // Read configuration such as `this.maxFiles`, `this.schema` or `this.request`
+    if (!data.secondary_title) {
+      // Override the response message
+      this.messages.error = "A title is required";
+
+      throw new Error("Missing title");
+    }
+  },
+});
+```
+
+> [!NOTE]
+> `this.messages` overrides are reflected in the returned `response.message`. Parse-time options such as `maxFileSize` are read-only inside handlers, since parsing has already completed.
 
 #### 3. `hooks` – Event callbacks that help you modify the form data before and after it is parsed and validated
 
