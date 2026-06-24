@@ -18,7 +18,8 @@ export function Message(props) {
         throw new Error("`ZodFormsContext` is not defined. Make sure to wrap your `<App />` with `<ZodFormProvider />`.");
     }
     // Get current form context
-    formId ||= (useContext(ZodFormContext));
+    const contextFormId = useContext(ZodFormContext);
+    formId ||= contextFormId;
     // If a form was not defined
     if (!formId) {
         throw new Error("Form identifier not supplied. Pass `form` prop or wrap component with a Zod Forms `<Form />` component.");

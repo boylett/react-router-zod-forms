@@ -41,7 +41,8 @@ export function Form<
   }
 
   // Get current form context
-  formId ||= useContext(ZodFormContext);
+  const contextFormId = useContext(ZodFormContext);
+  formId ||= contextFormId;
 
   // If a form ID was not defined
   if (!formId) {
@@ -57,7 +58,8 @@ export function Form<
   }
 
   // Create a new form element reference
-  ref ||= useRef<HTMLFormElement>(null);
+  const localRef = useRef<HTMLFormElement>(null);
+  ref ||= localRef;
 
   // Assign the reference and validation result to context
   if (form && forms.current[ formId ]) {

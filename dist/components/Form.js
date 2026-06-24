@@ -18,7 +18,8 @@ export function Form(props) {
         throw new Error("`ZodFormsContext` is not defined. Make sure to wrap your `<App />` with `<ZodFormProvider />`.");
     }
     // Get current form context
-    formId ||= useContext(ZodFormContext);
+    const contextFormId = useContext(ZodFormContext);
+    formId ||= contextFormId;
     // If a form ID was not defined
     if (!formId) {
         throw new Error("Form identifier not supplied. Pass `id` prop or use `useZodForm` hook to generate this component.");
@@ -30,7 +31,8 @@ export function Form(props) {
         throw new Error("Could not connect to form context. Check `id` prop or wrap component with a Zod Forms `<Form />` component.");
     }
     // Create a new form element reference
-    ref ||= useRef(null);
+    const localRef = useRef(null);
+    ref ||= localRef;
     // Assign the reference and validation result to context
     if (form && forms.current[formId]) {
         forms.current[formId].form = ref;

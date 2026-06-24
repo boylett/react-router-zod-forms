@@ -40,7 +40,8 @@ export function Field<
   }
 
   // Get current form context
-  formId ||= useContext(ZodFormContext);
+  const contextFormId = useContext(ZodFormContext);
+  formId ||= contextFormId;
 
   // If a form was not defined
   if (!formId) {
