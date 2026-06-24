@@ -10,6 +10,44 @@ import { Path } from "../index.js";
  */
 const DATE_INPUT_TYPES = ["date", "datetime", "datetime-local", "month", "time", "week"];
 /**
+ * Escape a string for literal use inside a regular expression
+ *
+ * @param value - The string to escape
+ */
+function escapeRegExp(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+/**
+ * Build an HTML pattern attribute from the parts of a Zod template literal
+ *
+ * @param parts - The template literal parts, each a string literal or a Zod schema
+ */
+function templateLiteralPattern(parts) {
+    return parts
+        .map(part => {
+        if (part === null || typeof part !== "object") {
+            return escapeRegExp(String(part));
+        }
+        const def = part.def;
+        if (!def) {
+            return ".*";
+        }
+        if (def.type === "literal") {
+            return `(${(def.values || []).map((value) => escapeRegExp(String(value))).join("|")})`;
+        }
+        if (def.type === "enum") {
+            return `(${Object.values(def.entries || {}).map((value) => escapeRegExp(String(value))).join("|")})`;
+        }
+        if (def.type === "number") {
+            return (def.checks || []).some((check) => check?._zod?.def?.format === "safeint")
+                ? "-?\\d+"
+                : "-?\\d+(?:\\.\\d+)?";
+        }
+        return ".*";
+    })
+        .join("");
+}
+/**
  * Field component
  */
 export function Field(props) {
@@ -171,6 +209,12 @@ export function Field(props) {
                 // Set the field step count to 12
                 Object.assign(rest, {
                     step: 12,
+                });
+            }
+            // If the field is a template literal, derive a pattern from its parts
+            if (shape.def.type === "template_literal" && "parts" in shape.def && !("pattern" in rest)) {
+                Object.assign(rest, {
+                    pattern: templateLiteralPattern(shape.def.parts),
                 });
             }
             // Look through the field's checks
