@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  Strongly typed form management with <a href="https://reactrouter.com">React Router 7</a> and <a href="https://zod.dev">Zod 4</a>.
+  Strongly typed form management with <a href="https://reactrouter.com">React Router 7/8</a> and <a href="https://zod.dev">Zod 4</a>.
 </p>
 
 <p align="center">
@@ -18,7 +18,7 @@
 **React Router Zod Forms** aims to simplify the process of handling form submission and validation with React Router and Zod 4.
 
 > [!NOTE]
-> Requires [React 19](https://react.dev/blog/2024/12/05/react-19), [React Router 7](https://reactrouter.com) and [zod 4](https://zod.dev)
+> Requires [React 19](https://react.dev/blog/2024/12/05/react-19), [React Router 7 or 8](https://reactrouter.com) and [zod 4](https://zod.dev)
 
 ## Installation
 
@@ -180,7 +180,12 @@ return await handleZodForm({ request, schema }, {
 
 Uploaded files are parsed by [multipart-parser](https://github.com/mjackson/remix-the-web/tree/main/packages/multipart-parser) under-the-hood and converted to [FileUpload](https://github.com/mjackson/remix-the-web/blob/main/packages/form-data-parser/src/lib/form-data.ts#L19) instances before getting delivered to your handler data.
 
-File fields should implement `z.instanceof(File)` in the schema for correct validation.
+File fields should implement `z.instanceof(File)` or [`z.file()`](https://zod.dev/api?id=files) in the schema for correct validation. When a `z.file()` schema declares a mime-type constraint, the allowed types are surfaced to the browser as the input's `accept` attribute;
+
+```typescript
+avatar: z.file().mime([ "image/png", "image/jpeg" ]),
+// <Field name="avatar" type="file" /> renders accept="image/png,image/jpeg"
+```
 
 You can manipulate files directly from your handlers alongside all other form data. For instance;
 
@@ -377,6 +382,39 @@ To render a `select` field, you can set the `Field`'s `type` to `select` and add
 </Field>
 ```
 
+#### Schema-driven attributes
+
+`Field` reads your schema and applies the matching HTML validation attributes automatically, so the browser enforces the same rules as Zod. Any attribute you set explicitly always takes precedence.
+
+| Schema | Attribute |
+| - | - |
+| Non-optional, non-nullable field | `required` |
+| `z.string().min(n)` / `.max(n)` | `minlength` / `maxlength` |
+| `z.number().min(n)` / `.max(n)` | `min` / `max` |
+| `z.number().int()` (or `z.int()`) | `step="1"` |
+| `z.date().min(d)` / `.max(d)` | `min` / `max` (date and time inputs only) |
+| `z.string().regex(re)` | `pattern` |
+| `z.templateLiteral([ ... ])` | `pattern` derived from the literal parts |
+| `z.file().mime([ ... ])` | `accept` |
+
+Boolean checkboxes backed by [`z.stringbool()`](https://zod.dev/api?id=stringbools) are handled specially; `Field` renders a hidden companion input so an unchecked box still submits a falsy value, and reflects the schema default through `checked` rather than `value`.
+
+```tsx
+const schema = z.object({
+  signup: z.object({
+    age: z.number().int().min(18).max(120),
+    handle: z.templateLiteral([ "@", z.string() ]),
+    avatar: z.file().mime([ "image/png" ]),
+    subscribe: z.stringbool(),
+  }),
+});
+
+<Field name="age" type="number" />         // min="18" max="120" step="1"
+<Field name="handle" />                     // pattern="@.*"
+<Field name="avatar" type="file" />         // accept="image/png"
+<Field name="subscribe" type="checkbox" />  // hidden companion + checked default
+```
+
 #### Objects
 
 Schemas can be nested as deeply as you need. Field keys can reflect nested types using **dot notation**;
@@ -471,7 +509,7 @@ You can display all validation errors at once by passing in the catchall `*` wil
 <Message name="*" />
 ```
 
-Omitting `name` will cause the component to display the `message` sent back from [`handleZorm`](#server-handler)'s `response` payload.
+Omitting `name` will cause the component to display the `message` sent back from [`handleZodForm`](#server-handler)'s `response` payload. When the form has validation errors, it instead shows a prettified, multi-line summary of those errors via Zod's [`prettifyError`](https://zod.dev/error-formatting?id=zprettifyerror).
 
 #### Custom Components
 
