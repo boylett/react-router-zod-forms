@@ -7,16 +7,22 @@
  * @param transform A function to transform the value of each field
  */
 export function objectToFormData(object, formData = new FormData(), path = "", transform) {
-    if (object === null || object === undefined)
+    if (object === null || object === undefined) {
         return formData;
-    if (typeof object !== "object" || object instanceof Blob || object instanceof File) {
+    }
+    // Only plain objects and arrays are traversed; anything else is a leaf value
+    const traverse = Array.isArray(object) || (typeof object === "object" &&
+        (object.constructor === Object || object.constructor === undefined));
+    if (!traverse) {
         const value = transform
             ? transform(path, object)
             : object;
         if (value !== undefined) {
             formData.append(path, value instanceof Blob || value instanceof File
                 ? value
-                : String(value));
+                : value instanceof Date
+                    ? value.toISOString()
+                    : String(value));
         }
     }
     else if (Array.isArray(object)) {

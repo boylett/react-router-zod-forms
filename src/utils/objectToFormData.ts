@@ -1,6 +1,6 @@
 /**
  * Parse a POJO to form data
- * 
+ *
  * @param object The object to parse
  * @param formData The form data object to append to
  * @param path The current path in the object (used for recursion)
@@ -12,9 +12,17 @@ export function objectToFormData (
   path = "",
   transform?: (key: string, value: any) => FormDataEntryValue | undefined
 ): FormData {
-  if (object === null || object === undefined) return formData;
+  if (object === null || object === undefined) {
+    return formData;
+  }
 
-  if (typeof object !== "object" || object instanceof Blob || object instanceof File) {
+  // Only plain objects and arrays are traversed; anything else is a leaf value
+  const traverse = Array.isArray(object) || (
+    typeof object === "object" &&
+    (object.constructor === Object || object.constructor === undefined)
+  );
+
+  if (!traverse) {
     const value = transform
       ? transform(path, object)
       : object;
@@ -24,7 +32,9 @@ export function objectToFormData (
         path,
         value instanceof Blob || value instanceof File
           ? value
-          : String(value)
+          : value instanceof Date
+            ? value.toISOString()
+            : String(value)
       );
     }
   }
