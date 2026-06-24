@@ -179,10 +179,32 @@ export function Field<
         });
       }
 
+      // If the field has a maximum value
+      if ("maxValue" in shape && (shape as any).maxValue != null && !("max" in rest)) {
+        // Set the max attribute of the field
+        Object.assign(rest, {
+          max: (shape as any).maxValue,
+        });
+      }
+
+      // If the field has a minimum value
+      if ("minValue" in shape && (shape as any).minValue != null && !("min" in rest)) {
+        // Set the min attribute of the field
+        Object.assign(rest, {
+          min: (shape as any).minValue,
+        });
+      }
+
       if (
         (
-          // If the field is an integer
-          (shape.def.type === "number" && "format" in shape.def && shape.def.format === "safeint") ||
+          // If the field is an integer (z.int sets def.format; z.number().int() adds a safeint check)
+          (
+            shape.def.type === "number" &&
+            (
+              ("format" in shape.def && shape.def.format === "safeint") ||
+              (shape.def.checks || []).some((check: any) => check?._zod?.def?.format === "safeint")
+            )
+          ) ||
           // If the field is a datetime
           type === "date"
         ) && !(
