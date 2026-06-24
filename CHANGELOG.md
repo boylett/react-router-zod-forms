@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### To Do
+## [1.4.0] - 2026-06-24
 
-- Implement class-based handler execution so that we can perform `this.<handler>(props)` from inside other handlers and access and update config options like `messages.error` or `maxFileSize` etc.
+### Added
+
+- **Class-based handler execution** -- form handlers declared with `function` syntax receive a `this` context to invoke sibling handlers via `this.<handler>(props)` and read or override configuration such as `this.messages`.
 
 ## [1.3.1] - 2026-06-24
 
