@@ -559,14 +559,12 @@ export namespace ZodForms {
     export type Hooks<
       SchemaType extends z.ZodObject<any>,
     > = {
-        [ key in `${ "after" | "before" }${ "Upload" | "Validate" | "" }` ]?:
+        [ key in `${ "after" | "before" }${ "Validate" | "" }` ]?:
         key extends "after" | "before"
         ? (data: FormData) => void
         : key extends "afterValidate"
         ? (result?: z.ZodSafeParseResult<z.output<SchemaType>>) => z.ZodSafeParseResult<z.output<SchemaType>> | void
-        : key extends "beforeValidate"
-        ? (data?: z.output<SchemaType>) => z.output<SchemaType> | void
-        : () => void
+        : (data?: z.output<SchemaType>) => z.output<SchemaType> | void
       };
 
     /**
