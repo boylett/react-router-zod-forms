@@ -6,7 +6,7 @@ import type z from "zod";
 /**
  * Replace all instances of `From` with `To` in `Object`
  */
-type Replace<Object, From, To> = Object extends From ? To : Object extends Array<infer U> ? Array<Replace<U, From, To>> : Object extends Record<string, any> ? {
+type Replace<Object, From, To> = Object extends From ? To : Object extends Array<infer U> ? Array<Replace<U, From, To>> : Object extends Date | RegExp | Map<any, any> | Set<any> | ((...args: any[]) => any) ? Object : Object extends Record<string, any> ? {
     [K in keyof Object]: Replace<Object[K], From, To>;
 } : Object;
 /**
@@ -15,7 +15,7 @@ type Replace<Object, From, To> = Object extends From ? To : Object extends Array
  * @remarks
  * Replace `Blob` instances with an empty object so that we don't get paths like `file.lastModified` or `file.stream`.
  */
-export type SchemaPaths<SchemaType extends z.ZodObject<any>> = Paths<Replace<z.output<SchemaType>, Blob | File | FileUpload, {}>, {
+export type SchemaPaths<SchemaType extends z.ZodObject<any>> = Paths<Replace<z.output<SchemaType>, Blob | File | FileUpload | Date, {}>, {
     bracketNotation: true;
 }>;
 /**
