@@ -75,6 +75,9 @@ export function Field<
   // The schema for this field
   let shape: z.ZodType | undefined = undefined;
 
+  // Whether this field is a single boolean checkbox backed by a string-parsed boolean (e.g. z.stringbool())
+  let stringBoolean = false;
+
   // If the field is not hidden, make it focusable with keyboard shortcuts
   if (type !== "hidden" && !("tabIndex" in rest)) {
     rest.tabIndex ||= 0;
@@ -118,6 +121,24 @@ export function Field<
       // If the field is optional
       else if (isOptional && "innerType" in shape.def) {
         shape = shape.def.innerType as z.ZodType<any, any>;
+      }
+
+      // If this is a boolean checkbox backed by a string-parsed boolean (e.g. z.stringbool())
+      if (type === "checkbox") {
+        const parsedTrue = shape.safeParse("true");
+
+        if (parsedTrue.success && typeof parsedTrue.data === "boolean" && shape.safeParse("false").success) {
+          stringBoolean = true;
+
+          // Checkboxes reflect their state through `checked`, not `value`
+          if ("defaultValue" in rest) {
+            rest.defaultChecked = Boolean(rest.defaultValue);
+
+            delete rest.defaultValue;
+          }
+
+          rest.value ??= "true";
+        }
       }
 
       // If the field has a max date
@@ -372,17 +393,37 @@ export function Field<
             onChange={ handleChange }
             onInput={ handleInput } />
         )
-        : (
-          <input
-            { ...rest as any }
-            className={
-              `react-router-zod-forms__field ${ className || "" }`.trim()
-            }
-            form={ formId }
-            onBlur={ handleBlur }
-            onChange={ handleChange }
-            onInput={ handleInput }
-            type={ type } />
-        )
+        : stringBoolean
+          ? (
+            <>
+              <input
+                defaultValue="false"
+                form={ formId }
+                name={ rest.name }
+                type="hidden" />
+              <input
+                { ...rest as any }
+                className={
+                  `react-router-zod-forms__field ${ className || "" }`.trim()
+                }
+                form={ formId }
+                onBlur={ handleBlur }
+                onChange={ handleChange }
+                onInput={ handleInput }
+                type={ type } />
+            </>
+          )
+          : (
+            <input
+              { ...rest as any }
+              className={
+                `react-router-zod-forms__field ${ className || "" }`.trim()
+              }
+              form={ formId }
+              onBlur={ handleBlur }
+              onChange={ handleChange }
+              onInput={ handleInput }
+              type={ type } />
+          )
   );
 }

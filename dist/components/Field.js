@@ -1,4 +1,4 @@
-import { jsx as _jsx } from "react/jsx-runtime";
+import { jsx as _jsx, Fragment as _Fragment, jsxs as _jsxs } from "react/jsx-runtime";
 import { DateTime } from "luxon";
 import { useCallback, useContext, useRef } from "react";
 import { z } from "zod";
@@ -41,6 +41,8 @@ export function Field(props) {
     const { data, events, schema, validation, } = form;
     // The schema for this field
     let shape = undefined;
+    // Whether this field is a single boolean checkbox backed by a string-parsed boolean (e.g. z.stringbool())
+    let stringBoolean = false;
     // If the field is not hidden, make it focusable with keyboard shortcuts
     if (type !== "hidden" && !("tabIndex" in rest)) {
         rest.tabIndex ||= 0;
@@ -74,6 +76,19 @@ export function Field(props) {
             // If the field is optional
             else if (isOptional && "innerType" in shape.def) {
                 shape = shape.def.innerType;
+            }
+            // If this is a boolean checkbox backed by a string-parsed boolean (e.g. z.stringbool())
+            if (type === "checkbox") {
+                const parsedTrue = shape.safeParse("true");
+                if (parsedTrue.success && typeof parsedTrue.data === "boolean" && shape.safeParse("false").success) {
+                    stringBoolean = true;
+                    // Checkboxes reflect their state through `checked`, not `value`
+                    if ("defaultValue" in rest) {
+                        rest.defaultChecked = Boolean(rest.defaultValue);
+                        delete rest.defaultValue;
+                    }
+                    rest.value ??= "true";
+                }
             }
             // If the field has a max date
             if (DATE_INPUT_TYPES.includes(type) && "maxDate" in shape && !("max" in rest)) {
@@ -249,6 +264,8 @@ export function Field(props) {
             : (_jsx("select", { ...rest, className: `react-router-zod-forms__field ${className || ""}`.trim(), form: formId, multiple: true, onBlur: handleBlur, onChange: handleChange, onInput: handleInput, children: children }))
         : type === "textarea"
             ? (_jsx("textarea", { ...rest, className: `react-router-zod-forms__field ${className || ""}`.trim(), form: formId, onBlur: handleBlur, onChange: handleChange, onInput: handleInput }))
-            : (_jsx("input", { ...rest, className: `react-router-zod-forms__field ${className || ""}`.trim(), form: formId, onBlur: handleBlur, onChange: handleChange, onInput: handleInput, type: type })));
+            : stringBoolean
+                ? (_jsxs(_Fragment, { children: [_jsx("input", { defaultValue: "false", form: formId, name: rest.name, type: "hidden" }), _jsx("input", { ...rest, className: `react-router-zod-forms__field ${className || ""}`.trim(), form: formId, onBlur: handleBlur, onChange: handleChange, onInput: handleInput, type: type })] }))
+                : (_jsx("input", { ...rest, className: `react-router-zod-forms__field ${className || ""}`.trim(), form: formId, onBlur: handleBlur, onChange: handleChange, onInput: handleInput, type: type })));
 }
 //# sourceMappingURL=Field.js.map
