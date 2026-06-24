@@ -54,14 +54,14 @@
     "@mjackson/form-data-parser": "^0.9.1",
     "@mjackson/multipart-parser": "^0.10.1",
     "@total-typescript/tsconfig": "^1.0.4",
-    "@types/luxon": "^3.7.1",
-    "@types/react": "^19.2.14",
+    "@types/luxon": "^3.7.2",
+    "@types/react": "^19.2.17",
     "luxon": "^3.7.2",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "react-router": "^7.13.2",
-    "type-fest": "^5.5.0",
-    "typescript": "^6.0.2",
-    "zod": "^4.3.6"
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router": "^8.0.1",
+    "type-fest": "^5.7.0",
+    "typescript": "^6.0.3",
+    "zod": "^4.4.3"
   }
 }

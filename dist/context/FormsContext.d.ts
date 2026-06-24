@@ -17,4 +17,4 @@ export declare const ZodFormsContext: import("react").Context<{
  */
 export declare function ZodFormProvider({ children }: {
     children: ReactNode;
-}): import("react/jsx-runtime").JSX.Element;
+}): import("react").JSX.Element;

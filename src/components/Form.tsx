@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, type FocusEventHandler, type FormEventHandler, type InputEventHandler } from "react";
+import { useCallback, useContext, useEffect, useRef, type FocusEventHandler, type InputEventHandler, type SubmitEventHandler } from "react";
 import { Form as ReactRouterForm } from "react-router";
 import { z } from "zod";
 import { ZodFormContext } from "../context/FormContext.js";
@@ -117,7 +117,7 @@ export function Form<
   /**
    * Handle form submission
    */
-  const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
+  const handleSubmit = useCallback<SubmitEventHandler<HTMLFormElement>>(
     event => {
       let submitValidation = validation;
 
