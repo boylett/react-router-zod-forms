@@ -7,6 +7,11 @@ import { Path } from "../index.js";
 import type { SchemaPaths, ZodForms } from "../types.js";
 
 /**
+ * Input types that accept HTML min and max date constraints
+ */
+const DATE_INPUT_TYPES = [ "date", "datetime", "datetime-local", "month", "time", "week" ];
+
+/**
  * Field component
  */
 export function Field<
@@ -116,7 +121,7 @@ export function Field<
       }
 
       // If the field has a max date
-      if ("maxDate" in shape && !("max" in rest)) {
+      if (DATE_INPUT_TYPES.includes(type) && "maxDate" in shape && !("max" in rest)) {
         // Set the max date of the field
         Object.assign(rest, {
           max: DateTime
@@ -136,7 +141,7 @@ export function Field<
       }
 
       // If the field has a min date
-      if ("minDate" in shape && !("min" in rest)) {
+      if (DATE_INPUT_TYPES.includes(type) && "minDate" in shape && !("min" in rest)) {
         // Set the min date of the field
         Object.assign(rest, {
           min: DateTime
