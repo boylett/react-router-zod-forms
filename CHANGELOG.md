@@ -11,6 +11,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Implement class-based handler execution so that we can perform `this.<handler>(props)` from inside other handlers and access and update config options like `messages.error` or `maxFileSize` etc.
 
+## [1.3.0] - 2026-06-24
+
+### Security
+
+- **Prototype pollution guard** -- form fields named `__proto__`, `constructor`, or `prototype` are now dropped during parsing instead of being written onto the object prototype.
+
+### Added
+
+- **React Router 8 support** -- the `react-router` peer range is now `^7.0.0 || ^8.0.0`, so the library works on both majors from a single build.
+
+### Changed
+
+- **Updated dependencies** -- bumped `react`/`react-dom` to 19.2.7, `react-router` to 8, `zod` to 4.4, `type-fest` to 5.7, `typescript` to 6.0.3, and the React types.
+
+### Removed
+
+- **Dead upload hook keys** -- removed the non-functional `afterUpload` and `beforeUpload` keys from the `Hooks` type, which the server handler never invoked.
+
+### Fixed
+
+- **Form data array parsing** -- numeric indices are now honoured positionally, top-level `[]` collects into an array, and nested `[]` objects no longer duplicate their values.
+- **Date serialization** -- `objectToFormData` emits dates as ISO strings instead of silently dropping them from the form data.
+- **Path index validation** -- `Path.split` rejects negative, fractional, and malformed array indices rather than quietly coercing them through `parseInt`.
+- **Unindexed path lookups** -- `Path.pickFrom` returns `undefined` for an unindexed `[]` segment instead of always reading element zero.
+- **Number field constraints** -- `min` and `max` attributes are now derived from numeric schema bounds, which previously applied only to string lengths.
+- **Integer step** -- `step="1"` is applied to `z.number().int()` fields, not just `z.int()`, via Zod's public `format` getter.
+- **Date input constraints** -- `min` and `max` date attributes are applied only to date and time input types, never to text inputs.
+- **Date field types** -- `Date` fields keep their type in handler `data` and no longer generate spurious field paths such as `when.getTime`.
+- **Rules of hooks** -- `useContext` and `useRef` run unconditionally in `Field`, `Message`, and `Form`, so a toggled `form` or `id` prop cannot change hook order.
+- **Form registry teardown** -- a form is removed from the registry only on unmount, not on every dependency change, preventing detached-context errors.
+- **After hook control flow** -- the `after` hook runs outside `finally`, eliminating a return-in-`finally` pattern that could override a handler's result or error.
+
+## [1.2.4] - 2026-04-21
+
+### Changed
+
+- **Maintenance release** -- republished with no functional changes from 1.2.3.
+
 ## [1.2.3] - 2026-04-21
 
 ### Fixed
