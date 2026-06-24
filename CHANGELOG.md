@@ -43,12 +43,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Form registry teardown** -- a form is removed from the registry only on unmount, not on every dependency change, preventing detached-context errors.
 - **After hook control flow** -- the `after` hook runs outside `finally`, eliminating a return-in-`finally` pattern that could override a handler's result or error.
 
-## [1.2.4] - 2026-04-21
-
-### Changed
-
-- **Maintenance release** -- republished with no functional changes from 1.2.3.
-
 ## [1.2.3] - 2026-04-21
 
 ### Fixed
