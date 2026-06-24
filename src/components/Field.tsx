@@ -202,14 +202,8 @@ export function Field<
 
       if (
         (
-          // If the field is an integer (z.int sets def.format; z.number().int() adds a safeint check)
-          (
-            shape.def.type === "number" &&
-            (
-              ("format" in shape.def && shape.def.format === "safeint") ||
-              (shape.def.checks || []).some((check: any) => check?._zod?.def?.format === "safeint")
-            )
-          ) ||
+          // If the field is an integer
+          (shape as any).format === "safeint" ||
           // If the field is a datetime
           type === "date"
         ) && !(
