@@ -35,6 +35,29 @@ export async function handleZodForm<
     transform,
   } = options;
 
+  // Handler execution context, exposed as `this` inside each form handler
+  const context: any = {};
+
+  // Expose every handler so a handler can call its siblings via `this.<handler>(props)`
+  for (const key of Object.keys(forms)) {
+    const handler = (forms as any)[ key ];
+
+    if (typeof handler === "function") {
+      context[ key ] = (props: any) => handler.call(context, props);
+    }
+  }
+
+  // Expose configuration for reading, and message overrides for mutation, via `this`
+  Object.assign(context, {
+    maxFiles,
+    maxFileSize,
+    maxHeaderSize,
+    messages: messages ?? {},
+    request,
+    schema,
+    transform,
+  });
+
   // Custom form data handler
   const formData = new FormData();
 
@@ -130,7 +153,7 @@ export async function handleZodForm<
 
   let response: ZodForms.Response<SchemaType> = {
     intent,
-    message: messages?.success || "Success",
+    message: context.messages.success || "Success",
     payload: null,
     status: 200,
     validation,
@@ -225,7 +248,7 @@ export async function handleZodForm<
 
     try {
       const action = (
-        await forms[ intent ](payload as any) || undefined
+        await forms[ intent ].call(context, payload as any) || undefined
       );
 
       result = action ?? response;
@@ -239,7 +262,7 @@ export async function handleZodForm<
       else if (thrown instanceof Error) {
         console.error(thrown);
 
-        response.message = messages?.error || "Error";
+        response.message = context.messages.error || "Error";
         response.payload = thrown;
         response.status = 500;
 
@@ -300,7 +323,7 @@ export async function handleZodForm<
 
     try {
       const action = (
-        await forms.default(payload as any) || undefined
+        await forms.default.call(context, payload as any) || undefined
       );
 
       result = action ?? response;
@@ -314,7 +337,7 @@ export async function handleZodForm<
       else if (thrown instanceof Error) {
         console.error(thrown);
 
-        response.message = messages?.error || "Error";
+        response.message = context.messages.error || "Error";
         response.payload = thrown;
         response.status = 500;
 
@@ -362,7 +385,7 @@ export async function handleZodForm<
 
   console.error(`Unhandled form submission for intent '${ intent as string }' in ${ request.url }`);
 
-  response.message = messages?.notImplemented || "Not Implemented";
+  response.message = context.messages.notImplemented || "Not Implemented";
   response.payload = null;
   response.status = 501;
   response.validation = {

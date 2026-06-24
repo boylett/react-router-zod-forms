@@ -365,12 +365,66 @@ export declare namespace ZodForms {
      */
     namespace HandleZodForm {
         /**
+         * Bound form handlers, callable from within another handler via `this`
+         */
+        type Handlers<SchemaType extends z.ZodObject<any>, PayloadTypes extends {
+            [key in "default" | keyof SchemaType["_zod"]["def"]["shape"]]: any;
+        }> = {
+            [Intent in "default" | keyof z.output<SchemaType>]?: (props: Intent extends "default" ? ZodForms.Response.Payload<any, PayloadTypes["default"]> : ZodForms.Response.Payload<SchemaType["_zod"]["def"]["shape"][Intent], PayloadTypes[Intent]>) => Promise<(Intent extends "default" ? ZodForms.Response<any, PayloadTypes["default"]> | any : ZodForms.Response<SchemaType["_zod"]["def"]["shape"][Intent], PayloadTypes[Intent]> | globalThis.Response | any) | void>;
+        };
+        /**
+         * Execution context exposed as `this` inside each form handler
+         *
+         * @remarks
+         * Sibling handlers can be invoked via `this.<handler>(props)`, and the configuration
+         * options are available for reading. Mutating `messages` overrides the response text.
+         */
+        type Context<SchemaType extends z.ZodObject<any>, PayloadTypes extends {
+            [key in "default" | keyof SchemaType["_zod"]["def"]["shape"]]: any;
+        }> = ZodForms.HandleZodForm.Handlers<SchemaType, PayloadTypes> & {
+            /**
+             * Maximum number of files to upload for multipart data
+             */
+            maxFiles?: number;
+            /**
+             * Maximum file size for multipart data
+             */
+            maxFileSize?: number;
+            /**
+             * Maximum header size for multipart data
+             */
+            maxHeaderSize?: number;
+            /**
+             * Default response messages
+             *
+             * @remarks
+             * Mutate `error`, `notImplemented` or `success` to override the response text.
+             */
+            messages: {
+                error?: string;
+                notImplemented?: string;
+                success?: string;
+            };
+            /**
+             * The request object
+             */
+            request: Request;
+            /**
+             * The form schema
+             */
+            schema: SchemaType;
+            /**
+             * A function to transform the value of each formData field before it is parsed by Zod
+             */
+            transform?: (key: string, value: any, path: (number | string)[]) => any;
+        };
+        /**
          * Form handlers for a given schema
          */
         type Forms<SchemaType extends z.ZodObject<any>, PayloadTypes extends {
             [key in "default" | keyof SchemaType["_zod"]["def"]["shape"]]: any;
         }> = {
-            [Intent in "default" | keyof z.output<SchemaType>]?: (props: Intent extends "default" ? ZodForms.Response.Payload<any, PayloadTypes["default"]> : ZodForms.Response.Payload<SchemaType["_zod"]["def"]["shape"][Intent], PayloadTypes[Intent]>) => Promise<(Intent extends "default" ? ZodForms.Response<any, PayloadTypes["default"]> | any : ZodForms.Response<SchemaType["_zod"]["def"]["shape"][Intent], PayloadTypes[Intent]> | globalThis.Response | any) | void>;
+            [Intent in "default" | keyof z.output<SchemaType>]?: (this: ZodForms.HandleZodForm.Context<SchemaType, PayloadTypes>, props: Intent extends "default" ? ZodForms.Response.Payload<any, PayloadTypes["default"]> : ZodForms.Response.Payload<SchemaType["_zod"]["def"]["shape"][Intent], PayloadTypes[Intent]>) => Promise<(Intent extends "default" ? ZodForms.Response<any, PayloadTypes["default"]> | any : ZodForms.Response<SchemaType["_zod"]["def"]["shape"][Intent], PayloadTypes[Intent]> | globalThis.Response | any) | void>;
         };
         /**
         * Event hook handlers for a given schema

@@ -7,6 +7,25 @@ import { formDataToObject } from "../utils/formDataToObject.js";
  */
 export async function handleZodForm(options, forms, hooks) {
     const { maxFiles = 20, maxFileSize, maxHeaderSize, messages, request, schema, transform, } = options;
+    // Handler execution context, exposed as `this` inside each form handler
+    const context = {};
+    // Expose every handler so a handler can call its siblings via `this.<handler>(props)`
+    for (const key of Object.keys(forms)) {
+        const handler = forms[key];
+        if (typeof handler === "function") {
+            context[key] = (props) => handler.call(context, props);
+        }
+    }
+    // Expose configuration for reading, and message overrides for mutation, via `this`
+    Object.assign(context, {
+        maxFiles,
+        maxFileSize,
+        maxHeaderSize,
+        messages: messages ?? {},
+        request,
+        schema,
+        transform,
+    });
     // Custom form data handler
     const formData = new FormData();
     // If this is a multipart request, extract form data and handle file uploads
@@ -69,7 +88,7 @@ export async function handleZodForm(options, forms, hooks) {
     };
     let response = {
         intent,
-        message: messages?.success || "Success",
+        message: context.messages.success || "Success",
         payload: null,
         status: 200,
         validation,
@@ -133,7 +152,7 @@ export async function handleZodForm(options, forms, hooks) {
         let pendingThrow;
         let hasPendingThrow = false;
         try {
-            const action = (await forms[intent](payload) || undefined);
+            const action = (await forms[intent].call(context, payload) || undefined);
             result = action ?? response;
         }
         catch (thrown) {
@@ -142,7 +161,7 @@ export async function handleZodForm(options, forms, hooks) {
             }
             else if (thrown instanceof Error) {
                 console.error(thrown);
-                response.message = messages?.error || "Error";
+                response.message = context.messages.error || "Error";
                 response.payload = thrown;
                 response.status = 500;
                 result = response;
@@ -187,7 +206,7 @@ export async function handleZodForm(options, forms, hooks) {
         let pendingThrow;
         let hasPendingThrow = false;
         try {
-            const action = (await forms.default(payload) || undefined);
+            const action = (await forms.default.call(context, payload) || undefined);
             result = action ?? response;
         }
         catch (thrown) {
@@ -196,7 +215,7 @@ export async function handleZodForm(options, forms, hooks) {
             }
             else if (thrown instanceof Error) {
                 console.error(thrown);
-                response.message = messages?.error || "Error";
+                response.message = context.messages.error || "Error";
                 response.payload = thrown;
                 response.status = 500;
                 result = response;
@@ -230,7 +249,7 @@ export async function handleZodForm(options, forms, hooks) {
         return result;
     }
     console.error(`Unhandled form submission for intent '${intent}' in ${request.url}`);
-    response.message = messages?.notImplemented || "Not Implemented";
+    response.message = context.messages.notImplemented || "Not Implemented";
     response.payload = null;
     response.status = 501;
     response.validation = {
