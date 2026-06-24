@@ -91,9 +91,14 @@ export function Form(props) {
         element?.addEventListener("$ZodForms.externalFieldValidate", listener);
         return () => {
             element?.removeEventListener("$ZodForms.externalFieldValidate", listener);
-            delete forms?.current[formId];
         };
     }, [ref, formId, validate, onValidate]);
+    // Remove this form from the registry only when it truly unmounts
+    useEffect(() => {
+        return () => {
+            delete forms?.current[formId];
+        };
+    }, [forms, formId]);
     // Watch fetcher data to trigger response handler
     useEffect(() => {
         if (form?.data && form?.state === "idle") {
