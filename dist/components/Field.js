@@ -168,6 +168,13 @@ export function Field(props) {
                         pattern: String(check._zod.def.pattern).substring(1).replace(/\/([a-z]+)?$/i, ""),
                     });
                 }
+                // If the field restricts uploads to certain mime types
+                if ("check" in check._zod.def && check._zod.def.check === "mime_type" && "mime" in check._zod.def && !("accept" in rest)) {
+                    // Set the accept attribute from the allowed mime types
+                    Object.assign(rest, {
+                        accept: check._zod.def.mime.join(","),
+                    });
+                }
             }
             // If there are validation issues
             if (validation?.error?.issues?.length) {
