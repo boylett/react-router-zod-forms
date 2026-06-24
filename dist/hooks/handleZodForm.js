@@ -129,45 +129,51 @@ export async function handleZodForm(options, forms, hooks) {
             response,
             validation,
         };
+        let result;
+        let pendingThrow;
+        let hasPendingThrow = false;
         try {
             const action = (await forms[intent](payload) || undefined);
-            if (!action) {
-                return response;
+            result = action ?? response;
+        }
+        catch (thrown) {
+            if (thrown instanceof Response) {
+                result = thrown;
             }
-            return action;
+            else if (thrown instanceof Error) {
+                console.error(thrown);
+                response.message = messages?.error || "Error";
+                response.payload = thrown;
+                response.status = 500;
+                result = response;
+            }
+            else {
+                pendingThrow = thrown;
+                hasPendingThrow = true;
+            }
+        }
+        // Run the after hook outside of `finally` so it cannot swallow the handler result or error
+        try {
+            hooks?.after?.(formData);
         }
         catch (thrown) {
             if (thrown instanceof Response) {
                 return thrown;
             }
-            if (thrown instanceof Error) {
-                console.error(thrown);
-                response.message = messages?.error || "Error";
-                response.payload = thrown;
-                response.status = 500;
-                return response;
+            else if (thrown &&
+                typeof thrown === "object" &&
+                ("intent" in thrown &&
+                    "message" in thrown &&
+                    "status" in thrown &&
+                    "validation" in thrown)) {
+                return thrown;
             }
             throw thrown;
         }
-        finally {
-            try {
-                hooks?.after?.(formData);
-            }
-            catch (thrown) {
-                if (thrown instanceof Response) {
-                    return thrown;
-                }
-                else if (thrown &&
-                    typeof thrown === "object" &&
-                    ("intent" in thrown &&
-                        "message" in thrown &&
-                        "status" in thrown &&
-                        "validation" in thrown)) {
-                    return thrown;
-                }
-                throw thrown;
-            }
+        if (hasPendingThrow) {
+            throw pendingThrow;
         }
+        return result;
     }
     if ("default" in forms && forms.default) {
         const payload = {
@@ -177,45 +183,51 @@ export async function handleZodForm(options, forms, hooks) {
             response,
             validation,
         };
+        let result;
+        let pendingThrow;
+        let hasPendingThrow = false;
         try {
             const action = (await forms.default(payload) || undefined);
-            if (!action) {
-                return response;
+            result = action ?? response;
+        }
+        catch (thrown) {
+            if (thrown instanceof Response) {
+                result = thrown;
             }
-            return action;
+            else if (thrown instanceof Error) {
+                console.error(thrown);
+                response.message = messages?.error || "Error";
+                response.payload = thrown;
+                response.status = 500;
+                result = response;
+            }
+            else {
+                pendingThrow = thrown;
+                hasPendingThrow = true;
+            }
+        }
+        // Run the after hook outside of `finally` so it cannot swallow the handler result or error
+        try {
+            hooks?.after?.(formData);
         }
         catch (thrown) {
             if (thrown instanceof Response) {
                 return thrown;
             }
-            if (thrown instanceof Error) {
-                console.error(thrown);
-                response.message = messages?.error || "Error";
-                response.payload = thrown;
-                response.status = 500;
-                return response;
+            else if (thrown &&
+                typeof thrown === "object" &&
+                ("intent" in thrown &&
+                    "message" in thrown &&
+                    "status" in thrown &&
+                    "validation" in thrown)) {
+                return thrown;
             }
             throw thrown;
         }
-        finally {
-            try {
-                hooks?.after?.(formData);
-            }
-            catch (thrown) {
-                if (thrown instanceof Response) {
-                    return thrown;
-                }
-                else if (thrown &&
-                    typeof thrown === "object" &&
-                    ("intent" in thrown &&
-                        "message" in thrown &&
-                        "status" in thrown &&
-                        "validation" in thrown)) {
-                    return thrown;
-                }
-                throw thrown;
-            }
+        if (hasPendingThrow) {
+            throw pendingThrow;
         }
+        return result;
     }
     console.error(`Unhandled form submission for intent '${intent}' in ${request.url}`);
     response.message = messages?.notImplemented || "Not Implemented";
