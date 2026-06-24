@@ -13,46 +13,61 @@ export function formDataToObject(input, transform) {
     if ("onsubmit" in input) {
         input = new FormData(input);
     }
-    const output = {};
+    // A holder whose `value` is reassignable, so a top-level array or index can replace the root
+    const root = { value: undefined };
     input.forEach((value, key) => {
         const path = Path.split(key);
         // Drop any field whose name would target the prototype chain
         if (path.some(segment => typeof segment === "string" && FORBIDDEN_KEYS.has(segment))) {
             return;
         }
-        let current = output;
         if (transform) {
             value = transform(key, value, path);
         }
+        if (path.length === 0) {
+            return;
+        }
+        let parent = root;
+        let parentKey = "value";
         for (let i = 0; i < path.length; i++) {
-            const key = path[i];
-            if (key !== undefined) {
-                if (key === "[]") {
-                    if (!Array.isArray(current)) {
-                        current = [current];
-                    }
-                    current.push(value);
+            const segment = path[i];
+            if (segment === undefined) {
+                continue;
+            }
+            const isLast = i === path.length - 1;
+            // The container this segment indexes into lives at parent[ parentKey ];
+            // create it lazily, typed by the segment ([]/number -> array, key -> object)
+            if (parent[parentKey] === undefined || parent[parentKey] === null) {
+                parent[parentKey] = segment === "[]" || typeof segment === "number"
+                    ? []
+                    : {};
+            }
+            const container = parent[parentKey];
+            // Unindexed "[]" segments append rather than address a fixed slot
+            if (segment === "[]") {
+                if (isLast) {
+                    container.push(value);
                     continue;
                 }
-                if (i === path.length - 1) {
-                    if (Array.isArray(current)) {
-                        current.push(value);
-                    }
-                    else {
-                        current[key] = value;
-                    }
-                }
-                else {
-                    if (!(key in current)) {
-                        current[key] = path[i + 1] === "[]" || typeof path[i + 1] === "number"
-                            ? []
-                            : {};
-                    }
-                    current = current[key];
-                }
+                // Start a fresh element for this occurrence and descend into it
+                container.push(path[i + 1] === "[]" || typeof path[i + 1] === "number"
+                    ? []
+                    : {});
+                parent = container;
+                parentKey = container.length - 1;
+                continue;
             }
+            // Concrete object key or numeric array index
+            if (isLast) {
+                container[segment] = value;
+                continue;
+            }
+            parent = container;
+            parentKey = segment;
         }
     });
-    return output;
+    return (root.value === undefined
+        ? {}
+        : root.value);
 }
 //# sourceMappingURL=formDataToObject.js.map

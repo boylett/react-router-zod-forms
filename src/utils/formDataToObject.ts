@@ -7,7 +7,7 @@ const FORBIDDEN_KEYS = new Set([ "__proto__", "constructor", "prototype" ]);
 
 /**
  * Parse form data to a POJO
- * 
+ *
  * @param input The form data to parse
  * @param transform A function to transform the value of each field
  */
@@ -21,7 +21,8 @@ export function formDataToObject<
     input = new FormData(input);
   }
 
-  const output: any = {};
+  // A holder whose `value` is reassignable, so a top-level array or index can replace the root
+  const root: { value: any; } = { value: undefined };
 
   input.forEach(
     (value, key) => {
@@ -32,49 +33,73 @@ export function formDataToObject<
         return;
       }
 
-      let current = output;
-
       if (transform) {
         value = transform(key, value, path);
       }
 
+      if (path.length === 0) {
+        return;
+      }
+
+      let parent: any = root;
+      let parentKey: number | string = "value";
+
       for (let i = 0; i < path.length; i++) {
-        const key = path[ i ];
+        const segment = path[ i ];
 
-        if (key !== undefined) {
-          if (key === "[]") {
-            if (!Array.isArray(current)) {
-              current = [ current ];
-            }
+        if (segment === undefined) {
+          continue;
+        }
 
-            current.push(value);
+        const isLast = i === path.length - 1;
+
+        // The container this segment indexes into lives at parent[ parentKey ];
+        // create it lazily, typed by the segment ([]/number -> array, key -> object)
+        if (parent[ parentKey ] === undefined || parent[ parentKey ] === null) {
+          parent[ parentKey ] = segment === "[]" || typeof segment === "number"
+            ? []
+            : {};
+        }
+
+        const container: any = parent[ parentKey ];
+
+        // Unindexed "[]" segments append rather than address a fixed slot
+        if (segment === "[]") {
+          if (isLast) {
+            container.push(value);
 
             continue;
           }
 
-          if (i === path.length - 1) {
-            if (Array.isArray(current)) {
-              current.push(value);
-            }
+          // Start a fresh element for this occurrence and descend into it
+          container.push(
+            path[ i + 1 ] === "[]" || typeof path[ i + 1 ] === "number"
+              ? []
+              : {}
+          );
 
-            else {
-              current[ key ] = value;
-            }
-          }
+          parent = container;
+          parentKey = container.length - 1;
 
-          else {
-            if (!(key in current)) {
-              current[ key ] = path[ i + 1 ] === "[]" || typeof path[ i + 1 ] === "number"
-                ? []
-                : {};
-            }
-
-            current = current[ key ];
-          }
+          continue;
         }
+
+        // Concrete object key or numeric array index
+        if (isLast) {
+          container[ segment ] = value;
+
+          continue;
+        }
+
+        parent = container;
+        parentKey = segment;
       }
     }
   );
 
-  return output as Type;
+  return (
+    root.value === undefined
+      ? {}
+      : root.value
+  ) as Type;
 }
