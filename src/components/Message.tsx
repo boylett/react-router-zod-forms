@@ -78,10 +78,24 @@ export function Message<
 
   // If a field name is not set
   if (!name) {
-    // If there is not a message
-    if (!data?.message && !data?.status) {
+    // A prettified summary of any validation errors on the form
+    const summary = (
+      typeof z.prettifyError === "function" && validation && !validation.success && validation.error?.issues?.length
+        ? z.prettifyError(validation.error)
+        : undefined
+    );
+
+    // If there is neither a response message nor a validation summary
+    if (!summary && !data?.message && !data?.status) {
       return undefined;
     }
+
+    // The response message text, shown when there is no validation summary
+    const text = (
+      data && data.status >= 400 && data.payload && data.payload instanceof Error
+        ? data.payload.message
+        : data?.message
+    );
 
     return (
       children
@@ -102,20 +116,20 @@ export function Message<
             className={
               `react-router-zod-forms__form-message ${ className || "" }`.trim()
             }
-            data-status={ data.status }
-            title={
-              data.status >= 400 && data.payload && data.payload instanceof Error
-                ? data.payload.message
-                : data.message
-            }
+            data-status={ data?.status }
+            title={ summary || text }
             { ...rest }>
-            <p>
-              {
-                data.status >= 400 && data.payload && data.payload instanceof Error
-                  ? data.payload.message
-                  : data.message
-              }
-            </p>
+            {
+              String(summary || text || "")
+                .split("\n")
+                .map(
+                  (line, index) => (
+                    <p key={ index }>
+                      { line }
+                    </p>
+                  )
+                )
+            }
           </Element>
         )
     );

@@ -45,20 +45,26 @@ export function Message(props) {
     }
     // If a field name is not set
     if (!name) {
-        // If there is not a message
-        if (!data?.message && !data?.status) {
+        // A prettified summary of any validation errors on the form
+        const summary = (typeof z.prettifyError === "function" && validation && !validation.success && validation.error?.issues?.length
+            ? z.prettifyError(validation.error)
+            : undefined);
+        // If there is neither a response message nor a validation summary
+        if (!summary && !data?.message && !data?.status) {
             return undefined;
         }
+        // The response message text, shown when there is no validation summary
+        const text = (data && data.status >= 400 && data.payload && data.payload instanceof Error
+            ? data.payload.message
+            : data?.message);
         return (children
             ? children({
                 ...rest,
                 className: `react-router-zod-forms__form-message ${className || ""}`.trim(),
             }, schema, data)
-            : (_jsx(Element, { className: `react-router-zod-forms__form-message ${className || ""}`.trim(), "data-status": data.status, title: data.status >= 400 && data.payload && data.payload instanceof Error
-                    ? data.payload.message
-                    : data.message, ...rest, children: _jsx("p", { children: data.status >= 400 && data.payload && data.payload instanceof Error
-                        ? data.payload.message
-                        : data.message }) })));
+            : (_jsx(Element, { className: `react-router-zod-forms__form-message ${className || ""}`.trim(), "data-status": data?.status, title: summary || text, ...rest, children: String(summary || text || "")
+                    .split("\n")
+                    .map((line, index) => (_jsx("p", { children: line }, index))) })));
     }
     // If validation is not set for this field
     if (!validation || validation.success || validation.error.issues.length === 0) {
